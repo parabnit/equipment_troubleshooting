@@ -1,0 +1,3 @@
+New Training - 1
+Training Pending - 2
+Miscellaneous - 3

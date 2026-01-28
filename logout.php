@@ -1,0 +1,9 @@
+<?php
+session_start();
+session_destroy();
+unset($_SESSION['login']);
+unset($_SESSION['memberid']);
+unset($_SESSION['role']);
+header("location:https://www.iitbnf.iitb.ac.in/iitbnfonline/login.php");
+exit();
+?>
