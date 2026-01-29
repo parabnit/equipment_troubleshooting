@@ -162,6 +162,63 @@ file-attach,
   border-radius: 50%;
 }
 
+/* ==============================
+   MOBILE VIEW — Tracking Dialog
+   ============================== */
+@media (max-width: 768px) {
+
+  /* Hide header */
+  .tracking-table thead {
+    display: none;
+  }
+
+  .tracking-table,
+  .tracking-table tbody,
+  .tracking-table tr,
+  .tracking-table td {
+    display: block;
+    width: 100%;
+  }
+
+  .tracking-table tr {
+    margin-bottom: 16px;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+    padding: 8px;
+  }
+
+  .tracking-table td {
+    border: none !important;
+    padding: 8px 6px;
+  }
+
+  .tracking-table td::before {
+    content: attr(data-label);
+    display: block;
+    font-size: 11px;
+    font-weight: 600;
+    color: #6c757d;
+    margin-bottom: 2px;
+    text-transform: uppercase;
+  }
+
+  /* Disable column resizer on mobile */
+  .col-resizer {
+    display: none !important;
+  }
+
+  /* Remove horizontal scroll */
+  .table-responsive {
+    overflow-x: visible;
+  }
+
+  /* Make attachments full width */
+  .file-attach {
+    width: 100%;
+    justify-content: center;
+  }
+}
 
 </style>
 
@@ -210,9 +267,14 @@ file-attach,
             $row = array_map(fn($v) => htmlspecialchars(stripslashes($v ?? ''), ENT_QUOTES, 'UTF-8'), $row);
             ?>
             <tr>
-              <td><?= getName($row['status_mark_by']) ?><br><?= display_date($row['timestamp']) ?></td>
-              <td><?= $row['working_team'] ?><br><?= $row['work_done_by'] ?></td>
-		<td>
+              <td data-label="Status Marked By">
+                <?= getName($row['status_mark_by']) ?><br><?= display_date($row['timestamp']) ?>
+              </td>
+              <td data-label="Working Team / Work Done By">
+                <?= $row['working_team'] ?><br><?= $row['work_done_by'] ?>
+              </td>
+
+		<td data-label="Diagnosis">
               <?= htmlspecialchars_decode(makeLinksClickable($row['diagnosis'])) ?>
               <?php if (!empty($row['file'])): ?>
                 <br>
@@ -220,7 +282,7 @@ file-attach,
               <?php endif; ?>
             </td>
 
-            <td>
+            <td data-label="Action Plan">
               <?= htmlspecialchars_decode(makeLinksClickable($row['action_taken'])) ?>
               <?php if (!empty($row['file'])): ?>
                 <br>
@@ -233,9 +295,13 @@ file-attach,
                   <a href="<?= $row['file'] ?>" target="_blank" class="file-attach">Attachment</a>
                 <?php endif; ?>
               </td>
-              <td><?= htmlspecialchars_decode($row['vendor_name']) ?><br><?= htmlspecialchars_decode($row['vendor_contact']) ?><br><?= htmlspecialchars_decode($row['vendor_comments']) ?></td>
-              <td><?= htmlspecialchars_decode($row['spare_parts']) ?><br><?= htmlspecialchars_decode($row['cost_spare_parts']) ?><br><?= htmlspecialchars_decode($row['procurement_time_spares']) ?></td>
-              <td><?= htmlspecialchars_decode($row['comments']) ?></td>
+
+              <td data-label="Vendor Info">
+                <?= htmlspecialchars_decode($row['vendor_name']) ?><br><?= htmlspecialchars_decode($row['vendor_contact']) ?><br><?= htmlspecialchars_decode($row['vendor_comments']) ?></td>
+              <td data-label="Spare Parts / Procurement">
+                <?= htmlspecialchars_decode($row['spare_parts']) ?><br><?= htmlspecialchars_decode($row['cost_spare_parts']) ?><br><?= htmlspecialchars_decode($row['procurement_time_spares']) ?></td>
+             <td data-label="Comments">
+                <?= htmlspecialchars_decode($row['comments']) ?></td>
             </tr>
           <?php endforeach; ?>
         </tbody>

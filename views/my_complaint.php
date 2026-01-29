@@ -103,6 +103,59 @@ $statusMap = [
 .badge-training  { background:#6f42c1; color:#fff; }   /* Purple */
 .badge-inventory { background:#0dcaf0; color:#000; }   /* Cyan */
 
+
+/* =========================
+   STEP 1: Mobile Responsive Table
+   ========================= */
+@media (max-width: 768px) {
+
+    #complaintsTable thead {
+        display: none;
+    }
+
+    #complaintsTable,
+    #complaintsTable tbody,
+    #complaintsTable tr,
+    #complaintsTable td {
+        display: block;
+        width: 100%;
+    }
+
+    #complaintsTable tr {
+        margin-bottom: 16px;
+        background: #fff;
+        border-radius: 12px;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+        padding: 8px;
+    }
+
+    #complaintsTable tbody td {
+        border: none !important;
+        padding: 8px 6px;
+        background: transparent;
+    }
+
+    #complaintsTable tbody td::before {
+        content: attr(data-label);
+        display: block;
+        font-size: 11px;
+        font-weight: 600;
+        color: #6c757d;
+        margin-bottom: 2px;
+        text-transform: uppercase;
+    }
+
+    .desc {
+        max-width: 100%;
+    }
+
+    .track-link {
+        display: inline-block;
+        margin-top: 6px;
+    }
+}
+
+
 </style>
 
 <main class="container-fluid py-4">
@@ -155,18 +208,18 @@ $statusMap = [
                     ?>
 
                     <tr>
-                        <td>
+                        <td data-label="Member">
                             <div class="member-name"><?= htmlspecialchars(getName($c['member_id'])) ?></div>
                             <div class="small-muted"><?= display_date($c['time_of_complaint']) ?></div>
                         </td>
 
-                        <td>
+                        <td data-label="Type">
                             <span class="badge <?= $typeColor ?>">
                                 <?= $typeText ?>
                             </span>
                         </td>
 
-                        <td>
+                        <td data-label="Component / Tool">
                             <div class="tool-name"><?= htmlspecialchars($toolName) ?></div>
                             <?php if ($expectedCompletion): ?>
                                 <div class="small-muted">
@@ -175,7 +228,7 @@ $statusMap = [
                             <?php endif; ?>
                         </td>
 
-                      <td class="desc">
+                      <td class="desc" data-label="Description">
                             <span class="desc-short">
                                 <?= renderComplaintDesc(shortDesc($shortDesc)) ?>
                                 <?= $hasMore ? '…' : '' ?>
@@ -196,7 +249,7 @@ $statusMap = [
                         </td>
 
 
-                        <td>
+                        <td data-label="Status">
                             <span class="badge bg-<?= $statusColor ?>">
                                 <?= $statusText ?>
                             </span>
@@ -243,10 +296,12 @@ $(function () {
 
     $('#complaintsTable').DataTable({
         order: [],
-        pageLength: 10,
+        pageLength: 5,      // better for mobile
         stateSave: true,
-        responsive: true
+        responsive: false, // we handle with CSS
+        autoWidth: false
     });
+
 
     $(document).on('click', '.desc-toggle', function () {
         const cell = $(this).closest('.desc');

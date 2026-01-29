@@ -443,6 +443,95 @@ select {
   cursor: pointer;
 }
 
+/* =================================
+   MOBILE VIEW — Main Complaints Page
+   ================================= */
+@media (max-width: 768px) {
+
+  #allComplaints thead {
+    display: none;
+  }
+
+  #allComplaints,
+  #allComplaints tbody,
+  #allComplaints tr,
+  #allComplaints td {
+    display: block;
+    width: 100%;
+  }
+
+  #allComplaints tr {
+    margin-bottom: 16px;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+    padding: 8px;
+  }
+
+  #allComplaints td {
+    border: none !important;
+    padding: 8px 6px !important;
+  }
+
+  #allComplaints td::before {
+    content: attr(data-label);
+    display: block;
+    font-size: 11px;
+    font-weight: 600;
+    color: #6c757d;
+    margin-bottom: 2px;
+    text-transform: uppercase;
+  }
+
+  /* Remove horizontal scrolling */
+  .table-responsive {
+    overflow-x: visible !important;
+  }
+
+  /* Buttons full width on mobile */
+  #allComplaints .btn {
+    width: 100%;
+    margin-bottom: 6px;
+  }
+
+  /* Center icons */
+  #allComplaints td[style*="text-align:center"] {
+    text-align: left !important;
+  }
+
+  /* Child row indent reset for mobile */
+  #allComplaints tbody tr.child-row td:first-child {
+    padding-left: 8px !important;
+    border-left: none !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .d-flex.align-items-center.gap-3 {
+    flex-direction: column;
+    align-items: stretch !important;
+  }
+}
+/* Ensure child rows show on mobile */
+@media (max-width: 768px) {
+
+  #allComplaints tbody tr.child-row {
+    display: block !important;
+  }
+
+  #allComplaints tbody tr.child-row td {
+    display: block !important;
+    background: #f8f9fa !important;
+    margin-bottom: 6px;
+    border-radius: 6px;
+  }
+
+  #allComplaints tbody tr.child-row td::before {
+    color: #495057;
+  }
+}
+
+
 </style>
 
 <div class="container-fluid">
@@ -596,7 +685,7 @@ select {
                 <tr class="parent-row" id="row-<?= (int)$d['complaint_id'] ?>">
 
                 <!-- Member Info -->
-    <td>
+    <td data-label="Member">
   <?= getName($d['allocated_to']) ?>
   <br><small><?= display_date($d['time_of_complaint']) ?></small>
   <br><small class="text-muted">Complaint ID: <?= (int)$d['complaint_id'] ?></small><br><small class="text-muted">Created by: <?= getName($d['member_id']) ?></small>
@@ -618,7 +707,7 @@ select {
 
 
                 <!-- Tool Info -->
-              <td>
+              <td data-label="Tool & Category">
               <?php
               // Default tool name
               $toolName = 'Miscellaneous';
@@ -663,7 +752,7 @@ select {
 
 
              <!-- Complaint Description -->
-                <td class="desc-cell">
+                <td class="desc-cell" data-label="Complaint Description">
   <?= renderExpandableText(shortDesc(nl2br(htmlspecialchars_decode($d['complaint_description'])))) ?>
   <?php if (!empty($d['upload_file'])): ?>
     <a href="<?= htmlspecialchars($d['upload_file'], ENT_QUOTES) ?>" target="_blank" rel="noopener noreferrer">
@@ -673,11 +762,11 @@ select {
 </td>
 
 <?php if ($type == 4): ?>
-                  <td><?= shortDesc($d['process_develop']) ?></td>
-                  <td><?= shortDesc($d['anti_contamination_develop']) ?></td>
+                  <td data-label="Process Development"><?= shortDesc($d['process_develop']) ?></td>
+                  <td data-label="Anti Contamination Development"><?= shortDesc($d['anti_contamination_develop']) ?></td>
                 <?php endif; ?>
                 <!-- Action or Track -->
-                <td style="text-align:center;">
+                <td style="text-align:center;" data-label="Action / Track">
                   <?php if (($status == 'pending' || $status == 'inprocess' || $status == 'onhold')  && $permission_key == 1): ?>
                     <form action="action_taken.php" method="post" enctype="multipart/form-data" style="display:inline; ">
                       <input type="hidden" name="complaint_id" value="<?= $d['complaint_id'] ?>">
@@ -744,7 +833,7 @@ select {
 
 
                   <!-- ✅ Transfer To Team -->
-                 <td style="text-align:center;">
+                 <td style="text-align:center;" data-label="Transfer / History">
                   <?php 
                   if (($head==1 || $user_role=="all") && $permission_key == 1){ ?>
  		   <a
@@ -774,7 +863,7 @@ select {
 
 
                   <!-- Status -->
-                  <td>
+                  <td data-label="Status">
                     <input type="hidden" name="complaint_id" value="<?= $d["complaint_id"]; ?>">
 
                     <select name="status"
@@ -875,14 +964,17 @@ select {
   }
 
   $(document).ready(function() {
-   $('#allComplaints').DataTable({
-      autoWidth: false,   // IMPORTANT
-      order: [],
-      stateSave: true,
-      columnDefs: [
-        { orderable: false, targets: 'no-sort' } // disables sorting for any <th class="no-sort">
-      ]
-    });
+    $('#allComplaints').DataTable({
+    responsive: false,   // IMPORTANT — we handle mobile
+    autoWidth: false,
+    order: [],
+    stateSave: true,
+    pageLength: 5,       // better for mobile
+    columnDefs: [
+      { orderable: false, targets: 'no-sort' }
+    ]
+  });
+
   });
 
 
@@ -970,11 +1062,20 @@ $(document).on("click", ".view-children-btn", function () {
 
       rows.forEach(function (r) {
         // Handle "type 4" extra info inside the loop where 'r' is defined
-        let extra = "";
-if (type == 4) {
-          extra = `
-          <td> ${escapeHtml(r.process_develop || "N/A")}</td>
-          <td> ${escapeHtml(r.anti_contamination_develop || "N/A")}</td>
+      let processTd = "";
+      let antiTd = "";
+
+        if (type == 4) {
+          processTd = `
+            <td data-label="Process Development">
+              ${escapeHtml(r.process_develop || "N/A")}
+            </td>
+          `;
+
+          antiTd = `
+            <td data-label="Anti Contamination Development">
+              ${escapeHtml(r.anti_contamination_develop || "N/A")}
+            </td>
           `;
         } else if(r.process_develop !=null || r.anti_contamination_develop!=null) {
           extra = `
@@ -1045,21 +1146,21 @@ if (type == 4) {
 
         html += `
           <tr class="child-row child-of-${originalId}">
-            <td class="child-indent">
+            <td class="child-indent" data-label="Member">
               <div><b>${escapeHtml(r.allocated_to_name || "")}</b> <span class="badge bg-secondary ms-2">Child</span></div>
               <small>${escapeHtml(r.time_of_complaint || "")}</small>
               <br><small class="text-muted">Created by: ${escapeHtml(r.member_name || "")}</small>
               <br><small class="text-muted">Complaint ID: ${r.complaint_id}</small><br>
               <small class="text-muted">Head: ${typeName}</small>
             </td>
-            <td class="child-indent">
+            <td class="child-indent" data-label="Tool & Category">
               ${escapeHtml(getToolNameClient(r.tool_name, type))}
             </td>
-            <td>
+            <td data-label="Complaint Description">
               ${renderExpandableTextJS(escapeHtml(cleanDesc).replace(/\n/g, "<br>"))}
               ${extra}
             </td>
-            <td style="text-align:center;">
+            <td style="text-align:center;" data-label="Action / Track">
               ${r.status != 2 ? `
                 <form action="action_taken.php" method="post" style="display:inline;">
                   <input type="hidden" name="complaint_id" value="${r.complaint_id}">
@@ -1081,13 +1182,13 @@ if (type == 4) {
                     No Data
                   <?php endif; ?>
             </td>
-            <td style="text-align:center;">
+           <td style="text-align:center;" data-label="Transfer / History">
               ${canTransfer ? `
                 <a href="complaint.php?complaint_id=${r.complaint_id}&type=${type}&return=${encodeURIComponent(window.location.href)}" class="btn btn-sm btn-outline-primary">Transfer</a>
               ` : '<span class="text-muted">N/A</span>'}
             </td>
             
-            <td>${status_extra}</td>
+           <td data-label="Status">${status_extra}</td>
           </tr>
         `;
       });

@@ -7,12 +7,74 @@ $currentStatus = $_GET['status'] ?? '';
 $teamHeads = getTeamHead('all'); // all team heads
 $isTeamHead = in_array($_SESSION['memberid'], $teamHeads);
 ?>
+
+<style>
+    .mobile-menu-wrapper {
+    display: flex;
+    justify-content: center;
+    margin: 12px 0 16px;
+}
+
+.mobile-menu-btn {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    background: linear-gradient(135deg, #2563eb, #1e40af);
+    color: #fff;
+    border: none;
+
+    padding: 12px 22px;       /* Bigger tap area */
+    border-radius: 999px;     /* Pill style */
+
+    font-size: 15px;
+    font-weight: 600;
+
+    min-width: 140px;
+    justify-content: center;
+
+    box-shadow: 0 6px 14px rgba(0, 0, 0, 0.25);
+    transition: all 0.25s ease;
+}
+
+.mobile-menu-btn i {
+    font-size: 18px;
+    transition: transform 0.3s ease;
+}
+
+/* Tap feedback */
+.mobile-menu-btn:active {
+    transform: scale(0.96);
+}
+
+/* Open state */
+.mobile-menu-btn[aria-expanded="true"] i {
+    transform: rotate(90deg);
+}
+
+/* Small phones */
+@media (max-width: 360px) {
+    .mobile-menu-btn {
+        font-size: 14px;
+        padding: 10px 18px;
+        min-width: 120px;
+    }
+}
+yyyy
+</style>
 <!-- Mobile Menu Toggle Button -->
-<div class="d-md-none text-end mb-2">
-    <button class="btn btn-outline-primary btn-sm" type="button" data-bs-toggle="collapse" data-bs-target="#sideMenu" aria-expanded="false" aria-controls="sideMenu">
-        <i class="fas fa-bars"></i> Menu
+<div class="d-md-none mobile-menu-wrapper">
+    <button class="mobile-menu-btn"
+            type="button"
+            data-bs-toggle="collapse"
+            data-bs-target="#sideMenu"
+            aria-expanded="false"
+            aria-controls="sideMenu">
+        <i class="fas fa-bars"></i>
+        <span>Menu</span>
     </button>
 </div>
+
 
 <!-- Sidebar Menu -->
 <!-- Sidebar Menu -->

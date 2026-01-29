@@ -160,6 +160,100 @@ unset($_SESSION['flash_message']);
     border-radius: 20px;
     padding: 2px 12px;
 }
+
+/* =========================
+   Mobile Responsive Table
+   ========================= */
+@media (max-width: 768px) {
+
+  #closedComplaints thead {
+    display: none;
+  }
+
+  #closedComplaints,
+  #closedComplaints tbody,
+  #closedComplaints tr,
+  #closedComplaints td {
+    display: block;
+    width: 100%;
+  }
+
+  #closedComplaints tr {
+    margin-bottom: 14px;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+    padding: 8px;
+  }
+
+  #closedComplaints td {
+    border: none !important;
+    padding: 6px 4px;
+  }
+
+  #closedComplaints td::before {
+    content: attr(data-label);
+    display: block;
+    font-size: 11px;
+    font-weight: 600;
+    color: #6c757d;
+    margin-bottom: 2px;
+    text-transform: uppercase;
+  }
+
+  .track-link {
+    display: inline-block;
+    padding: 6px 0;
+  }
+
+}
+
+@media (max-width: 768px) {
+
+  #closedComplaints tr {
+    background: #ffffff;
+    border-radius: 14px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    padding: 12px 14px;
+    border-left: 4px solid #0d6efd;   /* visual accent */
+  }
+
+}
+@media (max-width: 768px) {
+
+  .member-name {
+    font-size: 16px;
+    font-weight: 700;
+  }
+
+  .tool-name {
+    font-size: 14px;
+    margin-top: 4px;
+  }
+
+}
+
+@media (max-width: 768px) {
+
+  #closedComplaints td {
+    padding: 8px 0;
+    border-bottom: 1px dashed #e9ecef !important;
+  }
+
+  #closedComplaints td:last-child {
+    border-bottom: none !important;
+  }
+
+}
+@media (max-width: 768px) {
+  .btn.w-100 {
+    border-radius: 20px;
+    font-weight: 600;
+  }
+}
+
+
+
 </style>
 
 <div class="container-fluid">
@@ -243,13 +337,13 @@ unset($_SESSION['flash_message']);
 <?php foreach ($details as $d): ?>
 <tr class="parent-row">
 
-<td>
+<td data-label="Member">
     <div class="member-name"><?= getName($d['member_id']) ?></div>
     <div class="small-muted"><?= display_date($d['time_of_complaint']) ?></div>
     <div class="small-muted">ID: <?= $d['complaint_id'] ?></div>
 </td>
 
-<td>
+<td data-label="Tool & Category">
 <?php
 $toolName = 'Miscellaneous';
 if (in_array($type, [1,4]) && $d['machine_id']!=0) $toolName = getToolName($d['machine_id']);
@@ -274,19 +368,21 @@ if ($ec) {
 ?>
 </td>
 
-<td class="desc"><?= shortDesc($d['complaint_description']) ?></td>
+<td class="desc" data-label="Description"><?= shortDesc($d['complaint_description']) ?></td>
 
-<td class="text-center">
-<a href="#" class="track-link"
-onclick="return viewTrack(<?= $d['complaint_id'] ?>,<?= $type ?>)">
-View
+<td class="text-center" data-label="Track">
+<a href="javascript:void(0);" 
+   class="btn btn-sm btn-primary w-100 mt-1"
+   onclick="viewTrack(<?= $d['complaint_id'] ?>,<?= $type ?>)">
+   View Tracking
 </a>
+
 </td>
 
-<td><?= $d['allocated_to'] ? getName($d['allocated_to']) : '' ?></td>
+<td data-label="Allocated To"><?= $d['allocated_to'] ? getName($d['allocated_to']) : '' ?></td>
 
-<td>
-<div class="status-box">Closed</div>
+<td data-label="Status">
+<span class="badge bg-success">Closed</span>
 <div class="small-muted"><?= display_date($d['status_timestamp']) ?></div>
 <div class="small-muted">
 <?= count_day($d['time_of_complaint'],$d['status_timestamp']) ?> days
@@ -315,24 +411,39 @@ View
 
 <script>
 $(function(){
-    $('#closedComplaints').DataTable({
-        order: [],
-        stateSave: true,
-        pagingType: "simple_numbers"
+   $('#closedComplaints').DataTable({
+    order: [],
+    stateSave: true,
+    pagingType: "simple_numbers",
+    pageLength: 5,     // MOBILE FRIENDLY
+    autoWidth: false,
+    responsive: false // we handle responsiveness
     });
+
 });
 
-function viewTrack(id,type){
- $('<div>').load(
-  'view_tracks.php?complaint_id='+id+'&type='+type
- ).dialog({
-  title:'Complaint Tracking',
-  width:'95%',
-  height:600,
-  modal:true
- });
- return false;
+function viewTrack(id, type){
+
+  // Remove old dialog (IMPORTANT for mobile)
+  $('#trackDialog').remove();
+
+  const div = $('<div id="trackDialog"></div>');
+
+  div.load(
+    'view_tracks.php?complaint_id=' + id + '&type=' + type
+  ).dialog({
+    title: 'Complaint Tracking',
+    width: '98%',
+    height: window.innerHeight - 40,   // MOBILE SAFE
+    modal: true,
+    close: function(){
+      $('#trackDialog').remove();      // CLEANUP
+    }
+  });
+
+  return false;
 }
+
 </script>
 
 <?php include '../includes/footer.php'; ?>

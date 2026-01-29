@@ -322,6 +322,59 @@ input:checked + .slider:before {
   white-space:normal;
   word-break:break-word;
 }
+
+/* =========================
+   MOBILE VIEW — Daily Tasks
+   ========================= */
+@media (max-width: 768px) {
+
+  #DailytaskComplaints thead {
+    display: none;
+  }
+
+  #DailytaskComplaints,
+  #DailytaskComplaints tbody,
+  #DailytaskComplaints tr,
+  #DailytaskComplaints td {
+    display: block;
+    width: 100%;
+  }
+
+  #DailytaskComplaints tr {
+    margin-bottom: 16px;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+    padding: 8px;
+  }
+
+  #DailytaskComplaints td {
+    border: none !important;
+    padding: 8px 6px;
+  }
+
+  #DailytaskComplaints td::before {
+    content: attr(data-label);
+    display: block;
+    font-size: 11px;
+    font-weight: 600;
+    color: #6c757d;
+    margin-bottom: 2px;
+    text-transform: uppercase;
+  }
+
+  .desc-cell {
+    max-width: 100%;
+  }
+
+  /* Make action buttons full width on mobile */
+  #DailytaskComplaints .btn,
+  #DailytaskComplaints select,
+  #DailytaskComplaints input[type="text"] {
+    width: 100%;
+  }
+}
+
 </style>
 <script type="text/javascript" src="../assets/js/datetimepicker.js"></script>
 <link rel="stylesheet" href="../assets/css/datetimepicker.css" type="text/css" />
@@ -434,14 +487,14 @@ input:checked + .slider:before {
 <?php foreach ($details as $d): ?>
 <tr>
 
-<td>
+<td data-label="Member">
 <strong><?= getName($d['allocated_to']) ?></strong><br>
 <small><?= display_date($d['time_of_complaint']) ?></small><br>
 <small class="text-muted">#<?= $d['complaint_id'] ?></small>
 <small class="text-muted">Created By:- <?=getName($d['member_id']) ?></small>
 </td>
 
-<td>
+<td data-label="Tool & Cat">
 <?php
 // TOOLS (Equipment, Facility, Safety, Process)
 if ($type == 1 || $type == 4) {
@@ -472,15 +525,15 @@ if ($ec !== '') {
 
 </td>
 
-<td class="desc-cell"><?= shortDesc($d['complaint_description']) ?></td>
+<td class="desc-cell" data-label="Description"><?= shortDesc($d['complaint_description']) ?></td>
 
 <?php if ($type == 4): ?>
-<td><?= shortDesc($d['process_develop']) ?></td>
-<td><?= shortDesc($d['anti_contamination_develop']) ?></td>
+<td data-label="Process Dev"><?= shortDesc($d['process_develop']) ?></td>
+<td data-label="Anti Contamination"><?= shortDesc($d['anti_contamination_develop']) ?></td>
 <?php endif; ?>
 
 
-<td style="text-align:center;">
+<td data-label="Allocation / Track" style="text-align:center;">
    <?php if ($d['status'] != '2'): ?>
                     <form action="action_taken.php" method="post" enctype="multipart/form-data" style="display:inline; ">
                       <input type="hidden" name="complaint_id" value="<?= $d['complaint_id'] ?>">
@@ -506,7 +559,7 @@ if ($ec !== '') {
 
 </td>
 
-<td>
+<td data-label="Status">
 <?php
   // normalize status safely
   $rawStatus = $d['status'] ?? 0;
@@ -674,10 +727,13 @@ if ($ec !== '') {
 <script>
 $(document).ready(function(){
   $('#DailytaskComplaints').DataTable({
-    pageLength: 10,
+    pageLength: 5,       // better for mobile
     stateSave: true,
-    order: []
+    order: [],
+    responsive: false,  // handled by CSS
+    autoWidth: false
   });
+
 });
 
 function timeshow(id) {
