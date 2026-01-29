@@ -715,51 +715,77 @@ function insert_allocation($complaint_id,$team_head,$type,$work_description)
 	$stmt->close();
 }
 
-function my_complaint($member_id, $type,$scheduler)
+function my_complaint($member_id, $type, $scheduler)
 {
-	global $db_equip;
-	$data = array();
+    global $db_equip;
 
-	if($scheduler==0)
-	{
-		$sql = "SELECT * FROM equipment_complaint WHERE member_id = ? AND type = ?  ORDER BY time_of_complaint DESC";
-		$stmt = mysqli_prepare($db_equip, $sql);
-		mysqli_stmt_bind_param($stmt, "ii", $member_id, $type);
-	}
-	else
-	{
-		$sql = "SELECT * FROM equipment_complaint WHERE member_id = ? AND type = ? and scheduler = ? ORDER BY time_of_complaint DESC";
-		$stmt = mysqli_prepare($db_equip, $sql);
-		mysqli_stmt_bind_param($stmt, "iii", $member_id, $type, $scheduler);
-	}
+    $data = [];
+    $stmt = null;
 
-	// Execute & fetch results
-	mysqli_stmt_execute($stmt);
-	$result = mysqli_stmt_get_result($stmt);
+    /* ------------------------------
+       Build query dynamically
+    ------------------------------ */
 
-	$i = 0;
-	while ($row = mysqli_fetch_assoc($result)) {
-		$data[$i]['complaint_id']          = $row['complaint_id'];
-		$data[$i]['parent_id']             = $row['parent_id'];
-		$data[$i]['original_id']           = $row['original_id'];
-		$data[$i]['member_id']             = $row['member_id'];
-		$data[$i]['machine_id']            = $row['machine_id'];
-		$data[$i]['process_develop']          = $row['process_develop'];
-		$data[$i]['anti_contamination_develop'] = $row['anti_contamination_develop'];
-		$data[$i]['complaint_description'] = $row['complaint_description'];
-		$data[$i]['time_of_complaint']    = $row['time_of_complaint'];
-		$data[$i]['status']               = $row['status'];
-		$data[$i]['status_timestamp']      = $row['status_timestamp'];
-		$data[$i]['upload_file']          = $row['upload_file'];
-		$data[$i]['type']                 = $row['type'];
-		$data[$i]['allocated_to']         = $row['allocated_to'];
-		$data[$i]['scheduler']            = $row['scheduler'];
-		$i++;
-	}
+    if ($scheduler == 0) {
 
-	mysqli_stmt_close($stmt);
-	return $data;
+        // Fetch all complaints for member (no scheduler filter)
+        $sql = "
+            SELECT *
+            FROM equipment_complaint
+            WHERE member_id = ?
+            ORDER BY time_of_complaint DESC
+        ";
+
+        $stmt = mysqli_prepare($db_equip, $sql);
+        mysqli_stmt_bind_param($stmt, "i", $member_id);
+
+    } else {
+
+        // Fetch complaints for member + scheduler
+        $sql = "
+            SELECT *
+            FROM equipment_complaint
+            WHERE member_id = ?
+              AND scheduler = ?
+            ORDER BY time_of_complaint DESC
+        ";
+
+        $stmt = mysqli_prepare($db_equip, $sql);
+        mysqli_stmt_bind_param($stmt, "ii", $member_id, $scheduler);
+    }
+
+    /* ------------------------------
+       Execute & fetch
+    ------------------------------ */
+
+    mysqli_stmt_execute($stmt);
+    $result = mysqli_stmt_get_result($stmt);
+
+    while ($row = mysqli_fetch_assoc($result)) {
+
+        $data[] = [
+            'complaint_id'              => $row['complaint_id'],
+            'parent_id'                 => $row['parent_id'],
+            'original_id'               => $row['original_id'],
+            'member_id'                 => $row['member_id'],
+            'machine_id'                => $row['machine_id'],
+            'process_develop'           => $row['process_develop'],
+            'anti_contamination_develop'=> $row['anti_contamination_develop'],
+            'complaint_description'     => $row['complaint_description'],
+            'time_of_complaint'         => $row['time_of_complaint'],
+            'status'                    => $row['status'],
+            'status_timestamp'          => $row['status_timestamp'],
+            'upload_file'               => $row['upload_file'],
+            'type'                      => $row['type'],
+            'allocated_to'              => $row['allocated_to'],
+            'scheduler'                 => $row['scheduler']
+        ];
+    }
+
+    mysqli_stmt_close($stmt);
+    return $data;
 }
+
 
 function my_allocated_complaint($member_id, $type, $scheduler, $tools_name ,$is_critical)
 {
@@ -2282,6 +2308,64 @@ function getTxtCategories($type) {
 
     return $data;
 }
+
+function renderComplaintDesc(string $text): string
+{
+    // Decode entities like &#039;
+    $text = html_entity_decode($text, ENT_QUOTES, 'UTF-8');
+
+    // Remove stored HTML like <br>, <p>, etc.
+    $text = strip_tags($text);
+
+    // Normalize newlines
+    $text = preg_replace("/\r\n|\r|\n/", "\n", $text);
+
+    // Convert newlines to real <br>
+    return nl2br($text, false);
+}
+
+function renderExpandableText($text, $limit = 200) {
+    $text = trim(htmlspecialchars_decode(strip_tags($text)));
+
+    if (mb_strlen($text) <= $limit) {
+        return nl2br(htmlspecialchars($text));
+    }
+
+    $short = mb_substr($text, 0, $limit);
+
+    return '
+      <span class="short-text">'.nl2br(htmlspecialchars($short)).'...</span>
+      <span class="full-text d-none">'.nl2br(htmlspecialchars($text)).'</span>
+      <a href="#" class="toggle-desc ms-1">Show more</a>
+    ';
+}
+
+function getOriginalComplaintId($complaint_id) {
+    global $db_equip;
+
+    $sql = "SELECT original_id 
+            FROM equipment_complaint 
+            WHERE complaint_id = " . (int)$complaint_id;
+
+    $res = mysqli_query($db_equip, $sql);
+    $row = mysqli_fetch_assoc($res);
+
+    return (int)($row['original_id'] ?? 0);
+}
+
+function isComplaintClosed($complaint_id) {
+    global $db_equip;
+
+    $sql = "SELECT status 
+            FROM equipment_complaint 
+            WHERE complaint_id = " . (int)$complaint_id;
+
+    $res = mysqli_query($db_equip, $sql);
+    $row = mysqli_fetch_assoc($res);
+
+    return ((int)$row['status'] === 2); // assuming 2 = Closed
+}
+
 
 
 

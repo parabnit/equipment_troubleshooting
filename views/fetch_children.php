@@ -63,26 +63,41 @@ while ($r = mysqli_fetch_assoc($res)) {
 
     // Tool name logic
     if (isset($r['machine_id'])) {
+
         if ($r['type'] == 1 || $r['type'] == 4) {
             $r['tool_name'] = ($r['machine_id'] == 0)
                 ? 'Miscellaneous'
                 : getToolName($r['machine_id']);
+
         } elseif ($r['type'] == 2) {
             $r['tool_name'] = ($r['machine_id'] == 0)
                 ? 'Miscellaneous'
                 : getToolName_facility($r['machine_id']);
+
         } elseif ($r['type'] == 3) {
             $r['tool_name'] = ($r['machine_id'] == 0)
                 ? 'Miscellaneous'
                 : getToolName_safety($r['machine_id']);
+
+        } elseif (in_array((int)$r['type'], [5,6,7,8,9], true)) {
+
+            // ✅ FIX: Category-based complaints
+            $categories = getTxtCategories((int)$r['type']);
+            $catId = (string)$r['machine_id'];
+
+            $r['tool_name'] = $categories[$catId] ?? 'Miscellaneous';
+
         } else {
             $r['tool_name'] = 'N/A';
         }
+
     } else {
         $r['tool_name'] = '';
     }
 
+
     $rows[] = $r;
+    
 }
 
 mysqli_stmt_close($stmt);

@@ -46,13 +46,34 @@ $memberName = getName($complaint['member_id']);
 $allocatedTo = !empty($complaint['allocated_to']) ? getName($complaint['allocated_to']) : null;
 $toolName = 'Unknown';
 
+// Equipment & Process
 if ($_POST['type'] == 1 || $_POST['type'] == 4) {
-  $toolName = getToolName($complaint['machine_id']);
-} elseif ($_POST['type'] == 2) {
-  $toolName = getToolName_facility($complaint['machine_id']);
-} elseif ($_POST['type'] == 3) {
-  $toolName = getToolName_safety($complaint['machine_id']);
+    $toolName = getToolName($complaint['machine_id']);
 }
+
+// Facility
+elseif ($_POST['type'] == 2) {
+    $toolName = getToolName_facility($complaint['machine_id']);
+}
+
+// Safety
+elseif ($_POST['type'] == 3) {
+    $toolName = getToolName_safety($complaint['machine_id']);
+}
+
+// HR, IT, Purchase, Training, Inventory
+elseif (in_array($_POST['type'], [5, 6, 7, 8, 9])) {
+
+    $categories = getTxtCategories($_POST['type']);
+
+    // when machine_id = 0 → show category name
+    if ((int)$complaint['machine_id'] === 0) {
+        $toolName = array_values($categories)[0] ?? 'Miscellaneous';
+    } else {
+        $toolName = $categories[$complaint['machine_id']] ?? 'Miscellaneous';
+    }
+}
+
 
 $timeOfComplaint = display_timestamp($complaint['time_of_complaint']);
 

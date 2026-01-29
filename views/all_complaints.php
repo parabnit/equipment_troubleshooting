@@ -277,7 +277,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['status_update'])) {
 
   $complaint_id = (int)($_POST['complaint_id'] ?? 0);
   $status_db    = (int)($_POST['status'] ?? -1);
-  $c_date       = $_POST['c_date'] ?? '';
+  if ($status_db === 2) {
+    // CLOSED → force current datetime
+    $c_date = date('Y-m-d H:i:s');
+  } else {
+    // Others → only date from user
+    $c_date = $_POST['c_date'] ?? '';
+  }
+
   $updated_by   = (int)($_SESSION['memberid'] ?? 0);
 
   if ($complaint_id <= 0 || $status_db < 0) {
@@ -424,6 +431,16 @@ select {
 
 #allComplaints tbody tr.parent-row a.track-link:hover {
   color: #084298 !important;
+}
+
+
+.short-text, .full-text {
+  white-space: normal;
+  word-break: break-word;
+}
+.toggle-desc {
+  font-weight: 600;
+  cursor: pointer;
 }
 
 </style>
@@ -647,7 +664,7 @@ select {
 
              <!-- Complaint Description -->
                 <td class="desc-cell">
-  <?= shortDesc(nl2br(htmlspecialchars_decode($d['complaint_description']))) ?>
+  <?= renderExpandableText(shortDesc(nl2br(htmlspecialchars_decode($d['complaint_description'])))) ?>
   <?php if (!empty($d['upload_file'])): ?>
     <a href="<?= htmlspecialchars($d['upload_file'], ENT_QUOTES) ?>" target="_blank" rel="noopener noreferrer">
       <i class="fa-solid fa-file-lines"></i>
@@ -810,15 +827,39 @@ select {
   $('input[name="c_date"]').hide()
 
   function timeshow(j) {
+    const status = $("#complanit_status" + j).val();
+    const $dateInput = $("#c_date" + j);
 
-    console.log($("#complanit_status" + j).val());
-    if ($("#complanit_status" + j).val() == 2 || $("#complanit_status" + j).val() == 1) {
-      $("#c_date" + j).show();
-      $("#c_date" + j).datetimepicker();
-      $("#c_date" + j).focus();
-    } else
-      $("#c_date" + j).hide();
+    if (status == 2) { 
+      // CLOSED → Auto set current datetime, hide calendar
+      const now = new Date();
+
+      const formatted =
+        now.getFullYear() + "-" +
+        String(now.getMonth() + 1).padStart(2, '0') + "-" +
+        String(now.getDate()).padStart(2, '0') + " " +
+        String(now.getHours()).padStart(2, '0') + ":" +
+        String(now.getMinutes()).padStart(2, '0') + ":" +
+        String(now.getSeconds()).padStart(2, '0');
+
+      $dateInput.val(formatted).hide();  // hide calendar
+    } 
+    else if (status == 1 || status == 3 || status == 0) {
+      // OTHER STATUSES → Show DATE ONLY picker
+      $dateInput.val("").show();
+
+      $dateInput.datetimepicker({
+        timepicker: false,     // ❌ no time
+        format: 'Y-m-d'        // ✅ date only
+      });
+
+      $dateInput.focus();
+    } 
+    else {
+      $dateInput.hide();
+    }
   }
+
 
   function viewTrack(complaintId, type) {
     const dialog = document.createElement('div');
@@ -875,7 +916,10 @@ select {
     const closedDate = new Date($("#c_date" + j).val());
     const complaintDate = new Date(complaintDateStr);
     const lastTrackingDate = lastDateStr ? new Date(lastDateStr) : null;
-    if ($("#c_date" + j).is(":visible")) {
+    const status = $("#complanit_status" + j).val();
+
+    // Only validate date if NOT closed
+      if (status != 2 && $("#c_date" + j).is(":visible")) {
       if (!$("#c_date" + j).val()) {
         alert("Please enter 'Date'");
         $("#c_date" + j).focus();
@@ -1012,7 +1056,7 @@ if (type == 4) {
               ${escapeHtml(getToolNameClient(r.tool_name, type))}
             </td>
             <td>
-              ${escapeHtml(cleanDesc).replace(/\n/g, "<br>")}
+              ${renderExpandableTextJS(escapeHtml(cleanDesc).replace(/\n/g, "<br>"))}
               ${extra}
             </td>
             <td style="text-align:center;">
@@ -1088,6 +1132,40 @@ function getNameClient(id){ return id ? (id) : ""; }
 
 // PLACEHOLDER: same
 function getToolNameClient(machineId, type){ return machineId ? (machineId) : ""; }
+
+
+
+function renderExpandableTextJS(text, limit = 200) {
+    // Ensure text is string and decode HTML entities
+    text = String(text || "");
+    
+    // Decode HTML entities for display
+    const txt = $("<textarea/>").html(text).text();
+
+    if (txt.length <= limit) {
+        // If short, just return with <br> preserved
+        return txt.replace(/\n/g, "<br>");
+    }
+
+    const shortText = txt.substring(0, limit);
+
+    return `
+        <span class="short-text">${shortText}...</span>
+        <span class="full-text d-none">${txt.replace(/\n/g, "<br>")}</span>
+        <a href="#" class="toggle-desc ms-1">Show more</a>
+    `;
+}
+$(document).on("click", ".toggle-desc", function (e) {
+  e.preventDefault();
+
+  const link = $(this);
+  const container = link.closest("td");
+
+  container.find(".short-text, .full-text").toggleClass("d-none");
+  link.text(link.text() === "Show more" ? "Show less" : "Show more");
+});
+
+
 </script>
 
 

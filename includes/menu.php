@@ -54,24 +54,11 @@ $isTeamHead = in_array($_SESSION['memberid'], $teamHeads);
         </a>
 
         <!-- My Complaints -->
-        <a href="javascript:void(0)"
-            class="list-group-item list-group-item-action bg-light fw-bold"
-            data-bs-toggle="collapse"
-            data-bs-target="#collapseMyComplaints"
-            role="button"
-            aria-expanded="false"
-            aria-controls="collapseMyComplaints">
+        <a href="../views/my_complaint.php"
+        class="list-group-item list-group-item-action <?php echo ($currentPage == 'my_complaint.php') ? 'active' : ''; ?>">
             My Complaints
         </a>
 
-        <div class="collapse <?php echo ($currentPage == 'my_complaint.php') ? 'show' : ''; ?>" id="collapseMyComplaints">
-            <?php
-            $types = ['1' => 'Equipment','2' => 'Facility','3' => 'Safety','4' => 'Process','5' => 'HR','6' => 'IT','7' => 'Purchase','8' => 'Training','9' => 'Inventory'];
-
-            foreach ($types as $key => $label): ?>
-                <a href="../views/my_complaint.php?type=<?php echo $key; ?>" class="list-group-item list-group-item-action ps-4"><?php echo $label; ?></a>
-            <?php endforeach; ?>
-        </div>
         <!-- Daily Tasks -->
               <a class="list-group-item list-group-item-action bg-light fw-bold"
             href="javascript:void(0)"
@@ -296,19 +283,11 @@ $isTeamHead = in_array($_SESSION['memberid'], $teamHeads);
         </div>
  <?php endif; ?>
         <!-- Statistics -->
-        <a class="list-group-item list-group-item-action bg-light fw-bold"
-            href="javascript:void(0)"
-            data-bs-toggle="collapse"
-            data-bs-target="#collapseStats"
-            role="button"
-            aria-expanded="false"
-            aria-controls="collapseStats">
+            <a href="../views/statistics.php"
+            class="list-group-item list-group-item-action <?php echo ($currentPage == 'statistics.php') ? 'active' : ''; ?>">
             Statistics
-        </a>
+            </a>
 
-        <div class="collapse <?php echo ($currentPage == 'statistics.php') ? 'show' : ''; ?>" id="collapseStats">
-            <a href="../views/statistics.php" class="list-group-item list-group-item-action ps-4">Dashboard</a>
-        </div>
 
         <!-- Help -->
         <a href="../assets/efp_troubleshooting_help.pdf" class="list-group-item list-group-item-action" target="_blank">

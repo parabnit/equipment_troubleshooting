@@ -45,12 +45,52 @@ $details = closed_complaint($type, $tools_name, $tabledata);
 
 /* Re-open complaint */
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['reopen'])) {
-    reopen_complain((int)$_POST['complaint_id']);
-    $_SESSION['flash_message'] =
-        "<div class='alert alert-success'>Complaint reopened successfully.</div>";
+
+    $complaint_id = (int)$_POST['complaint_id'];
+
+    // Get ORIGINAL complaint id
+    $original_id = getOriginalComplaintId($complaint_id);
+
+    // If this is a child complaint
+    if ($original_id > 0) {
+
+        // Check if original complaint is closed
+        if (isComplaintClosed($original_id)) {
+
+            // ❌ BLOCK reopen + Swal
+            $_SESSION['flash_message'] = "
+              <script>
+                Swal.fire({
+                  icon: 'error',
+                  title: 'Cannot Re-Open',
+                  html: 'This complaint cannot be reopened because the <b>original complaint</b> is already closed.<br><br>Please reopen the original complaint first.',
+                  confirmButtonText: 'OK'
+                });
+              </script>
+            ";
+
+            header("Location: " . $_SERVER['REQUEST_URI']);
+            exit;
+        }
+    }
+
+    // ✅ Allowed → reopen
+    reopen_complain($complaint_id);
+
+    $_SESSION['flash_message'] = "
+      <script>
+        Swal.fire({
+          icon: 'success',
+          title: 'Reopened',
+          text: 'Complaint reopened successfully.'
+        });
+      </script>
+    ";
+
     header("Location: ".$_SERVER['REQUEST_URI']);
     exit;
 }
+
 
 $message = $_SESSION['flash_message'] ?? '';
 unset($_SESSION['flash_message']);

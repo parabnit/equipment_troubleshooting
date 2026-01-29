@@ -4,220 +4,267 @@ include("../includes/header.php");
 include("../config/connect.php");
 include("../includes/common.php");
 
-$type = isset($_GET['type']) ? check_number($_GET['type']) : 0;
+/* Fetch complaints */
+$complaints = my_complaint($_SESSION['memberid'], 0, 0);
 
-$complaints = my_complaint($_SESSION['memberid'], $type, 0);
+/* Type labels + DISTINCT colors */
+$typeMap = [
+    1 => ['Equipment', 'badge-equipment'],   // Blue
+    2 => ['Facility', 'badge-facility'],     // Teal
+    3 => ['Safety', 'badge-safety'],          // Red
+    4 => ['Process', 'badge-process'],        // Orange
+    5 => ['HR', 'badge-hr'],                  // Grey
+    6 => ['IT', 'badge-it'],                  // Dark
+    7 => ['Purchase', 'badge-purchase'],      // Green
+    8 => ['Training', 'badge-training'],      // Purple
+    9 => ['Inventory', 'badge-inventory']     // Cyan (DIFFERENT from Facility)
+];
 
-$types = [1 => "Equipment", 2 => "Facility", 3 => "Safety", 4 => "Process"];
+
+/* Status labels + DISTINCT colors */
+$statusMap = [
+    0 => ['Pending', 'secondary'],     // grey (NOT yellow)
+    1 => ['In Process', 'info'],
+    2 => ['Closed', 'success'],
+    3 => ['On Hold', 'warning']
+];
 ?>
 
 <style>
-/* Card-style DataTable rows */
 #complaintsTable {
     border-collapse: separate;
-    border-spacing: 0 10px;
+    border-spacing: 0 12px;
+    width: 100%;
 }
 
 #complaintsTable thead th {
-    background: #0d6efd;
+    background: linear-gradient(90deg, #0d6efd, #084298);
     color: #fff;
-    border: none;
     font-weight: 600;
+    border: none;
 }
 
-#complaintsTable tbody tr td {
+#complaintsTable tbody td {
     background: #f8f9fa;
+    padding: 12px;
     vertical-align: top;
     border-top: 1px solid #dee2e6;
     border-bottom: 1px solid #dee2e6;
 }
 
-#complaintsTable tbody tr td:first-child {
+#complaintsTable tbody td:first-child {
     border-left: 1px solid #dee2e6;
-    border-radius: 8px 0 0 8px;
+    border-radius: 10px 0 0 10px;
 }
 
-#complaintsTable tbody tr td:last-child {
+#complaintsTable tbody td:last-child {
     border-right: 1px solid #dee2e6;
-    border-radius: 0 8px 8px 0;
+    border-radius: 0 10px 10px 0;
 }
 
-/* Member name */
-.member-name {
-    font-weight: 600;
-    font-size: 15px;
-}
+.member-name { font-weight: 600; }
+.tool-name { font-weight: 600; color: #0d6efd; }
+.small-muted { font-size: 12px; color: #6c757d; }
 
-/* Tool name */
-.tool-name {
-    font-weight: 600;
-    color: #0d6efd;
-}
-
-/* Description */
 .desc {
-    color: #444;
+    max-width: 420px;
+    line-height: 1.5;
+    word-break: break-word;
 }
 
-/* Status badge */
-.status-badge {
+.desc-more { display: none; }
+
+.desc-toggle {
+    cursor: pointer;
+    color: #0d6efd;
     font-weight: 600;
-    color: #198754;
+    font-size: 12px;
+    margin-top: 4px;
 }
 
-/* Track link */
+.badge {
+    font-size: 12px;
+    padding: 6px 10px;
+}
+
 .track-link {
     font-weight: 600;
     text-decoration: underline;
 }
 
-/* Small muted text */
-.small-muted {
-    font-size: 12px;
-    color: #6c757d;
-}
+/* Complaint Type Badges */
+.badge-equipment { background:#0d6efd; color:#fff; }   /* Blue */
+.badge-facility  { background:#20c997; color:#fff; }   /* Teal */
+.badge-safety    { background:#dc3545; color:#fff; }   /* Red */
+.badge-process   { background:#fd7e14; color:#fff; }   /* Orange */
+.badge-hr        { background:#6c757d; color:#fff; }   /* Grey */
+.badge-it        { background:#212529; color:#fff; }   /* Dark */
+.badge-purchase  { background:#198754; color:#fff; }   /* Green */
+.badge-training  { background:#6f42c1; color:#fff; }   /* Purple */
+.badge-inventory { background:#0dcaf0; color:#000; }   /* Cyan */
+
 </style>
 
-<main class="container py-4">
-  <div class="row">
-    <div class="col-md-3">
-      <?php include("../includes/menu.php"); ?>
+<main class="container-fluid py-4">
+<div class="row">
+
+    <div class="col-md-2">
+        <?php include("../includes/menu.php"); ?>
     </div>
 
-    <div class="col-md-9">
-      <div class="card shadow-sm">
-        <div class="card-header bg-primary text-white">
-          My Complaints - <?= $types[$type] ?? "Unknown" ?>
-        </div>
+    <div class="col-md-10">
+        <div class="card shadow-sm">
+            <div class="card-header bg-primary text-white fw-semibold">
+                My Complaints
+            </div>
 
-        <div class="card-body">
-          <?php if (count($complaints) === 0): ?>
-            <div class="alert alert-info">No complaints found for this category.</div>
-          <?php else: ?>
+            <div class="card-body">
+
+            <?php if (empty($complaints)): ?>
+                <div class="alert alert-info">No complaints found.</div>
+            <?php else: ?>
 
             <div class="table-responsive">
-              <table id="complaintsTable" class="table table-sm align-middle">
+            <table id="complaintsTable" class="table table-sm align-middle">
                 <thead>
-                  <tr>
-                    <th>Member</th>
-                    <th>Tool</th>
-                    <th>Description</th>
-                    <?= $type == 4 ? '<th>Process Development</th><th>Anti Contamination</th>' : '' ?>
-                    <th>Status</th>
-                    <th>Tracking</th>
-                  </tr>
+                    <tr>
+                        <th>Member</th>
+                        <th>Type</th>
+                        <th>Component / Tool</th>
+                        <th>Description</th>
+                        <th>Status</th>
+                        <th>Tracking</th>
+                    </tr>
                 </thead>
 
                 <tbody>
-                <?php foreach ($complaints as $comp): ?>
-                  <?php if ($comp['type'] != $type) continue; ?>
+                <?php foreach ($complaints as $c): ?>
 
-                  <?php
-                  if ($comp['status'] == 0) $statusText = 'Pending';
-                  elseif ($comp['status'] == 1) $statusText = 'In process';
-                  elseif ($comp['status'] == 2) $statusText = 'Closed';
-                  elseif ($comp['status'] == 3) $statusText = 'On Hold';
-                  else $statusText = 'Unknown';
+                    <?php
+                    [$typeText, $typeColor] = $typeMap[$c['type']] ?? ['Unknown', 'dark'];
+                    [$statusText, $statusColor] = $statusMap[$c['status']] ?? ['Unknown', 'dark'];
 
-                  if ($type == 1 || $type == 4)
-                    $toolName = ($comp['machine_id'] == 0) ? 'Miscellaneous' : getToolName($comp['machine_id']);
-                  elseif ($type == 2)
-                    $toolName = ($comp['machine_id'] == 0) ? 'Miscellaneous' : getToolName_facility($comp['machine_id']);
-                  elseif ($type == 3)
-                    $toolName = ($comp['machine_id'] == 0) ? 'Miscellaneous' : getToolName_safety($comp['machine_id']);
-                  else
-                    $toolName = 'N/A';
+                    $toolName = getComplaintComponentName($c);
 
-                  $expectedCompletion = EC_date($comp['complaint_id']);
-                  ?>
+                    /* RAW DB text (NO decode) */
+                    $fullDesc  = trim($c['complaint_description']);
+                    $shortDesc = mb_substr($fullDesc, 0, 200);
+                    $hasMore   = mb_strlen($fullDesc) > 200;
 
-                  <tr>
-                    <td>
-                      <div class="member-name"><?= getName($comp['member_id']) ?></div>
-                      <div class="small-muted"><?= display_date($comp['time_of_complaint']) ?></div>
-                    </td>
+                    $expectedCompletion = EC_date($c['complaint_id']);
+                    ?>
 
-                    <td>
-                      <div class="tool-name"><?= $toolName ?></div>
-                      <?php if ($expectedCompletion): ?>
-                        <div class="small-muted">
-                          Expected: <?= display_date($expectedCompletion) ?>
-                        </div>
-                      <?php endif; ?>
-                    </td>
+                    <tr>
+                        <td>
+                            <div class="member-name"><?= htmlspecialchars(getName($c['member_id'])) ?></div>
+                            <div class="small-muted"><?= display_date($c['time_of_complaint']) ?></div>
+                        </td>
 
-                    <td class="desc">
-                      <?= shortDesc(htmlspecialchars_decode($comp['complaint_description'])) ?>
-                      <?= !empty($comp['upload_file'])
-                        ? ' <a href="'.$comp['upload_file'].'" target="_blank">
-                            <i class="bi bi-file-earmark ms-1"></i>
-                          </a>'
-                        : '' ?>
-                    </td>
+                        <td>
+                            <span class="badge <?= $typeColor ?>">
+                                <?= $typeText ?>
+                            </span>
+                        </td>
 
-                    <?php if ($type == 4): ?>
-                      <td><?= shortDesc($comp['process_develop']) ?></td>
-                      <td><?= shortDesc($comp['anti_contamination_develop']) ?></td>
-                    <?php endif; ?>
+                        <td>
+                            <div class="tool-name"><?= htmlspecialchars($toolName) ?></div>
+                            <?php if ($expectedCompletion): ?>
+                                <div class="small-muted">
+                                    Expected: <?= display_date($expectedCompletion) ?>
+                                </div>
+                            <?php endif; ?>
+                        </td>
 
-                    <td>
-                      <div class="status-badge"><?= $statusText ?></div>
-                      <?php
-                      $resolved = $comp['status_timestamp'];
-                      $validResolved = $resolved && $resolved !== '0000-00-00 00:00:00';
-                      if ($statusText == 'Closed' && $validResolved):
-                      ?>
-                        <div class="small-muted"><?= display_date($resolved) ?></div>
-                        <div class="small-muted">
-                          <?= count_day($comp['time_of_complaint'], $resolved) ?> day(s)
-                        </div>
-                      <?php endif; ?>
-                    </td>
+                      <td class="desc">
+                            <span class="desc-short">
+                                <?= renderComplaintDesc(shortDesc($shortDesc)) ?>
+                                <?= $hasMore ? '…' : '' ?>
+                            </span>
 
-                    <td>
-                      <?php if (count(trouble_track($comp['complaint_id'], '')) > 0): ?>
-                        <a href="#" class="track-link"
-                           onclick="return view(<?= $comp['complaint_id'] ?>, <?= $type ?>);">
-                           View
-                        </a>
-                      <?php else: ?>
-                        <span class="small-muted">No Data</span>
-                      <?php endif; ?>
-                    </td>
-                  </tr>
+                            <?php if ($hasMore): ?>
+                                <span class="desc-more">
+                                    <?= renderComplaintDesc(shortDesc($fullDesc)) ?>
+                                </span>
+                                <div class="desc-toggle">Show More</div>
+                            <?php endif; ?>
+
+                            <?php if (!empty($c['upload_file'])): ?>
+                                <a href="<?= htmlspecialchars($c['upload_file']) ?>" target="_blank">
+                                    <i class="bi bi-file-earmark-text"></i>
+                                </a>
+                            <?php endif; ?>
+                        </td>
+
+
+                        <td>
+                            <span class="badge bg-<?= $statusColor ?>">
+                                <?= $statusText ?>
+                            </span>
+
+                            <?php if ($c['status'] == 2 && $c['status_timestamp'] != '0000-00-00 00:00:00'): ?>
+                                <div class="small-muted mt-1">
+                                    <?= display_date($c['status_timestamp']) ?>
+                                </div>
+                                <div class="small-muted">
+                                    <?= count_day($c['time_of_complaint'], $c['status_timestamp']) ?> day(s)
+                                </div>
+                            <?php endif; ?>
+                        </td>
+
+                        <td>
+                            <?php if (count(trouble_track($c['complaint_id'], '')) > 0): ?>
+                                <a href="#" class="track-link"
+                                   onclick="return view(<?= (int)$c['complaint_id'] ?>, <?= (int)$c['type'] ?>);">
+                                   View
+                                </a>
+                            <?php else: ?>
+                                <span class="small-muted">No Data</span>
+                            <?php endif; ?>
+                        </td>
+                    </tr>
+
                 <?php endforeach; ?>
                 </tbody>
-              </table>
+            </table>
             </div>
 
-          <?php endif; ?>
+            <?php endif; ?>
+
+            </div>
         </div>
-      </div>
     </div>
-  </div>
+</div>
 </main>
 
-<!-- View Tracking Modal -->
 <div id="dialog" title="View Tracking" style="display:none;font-size:12px;"></div>
 
 <script>
-$(document).ready(function() {
+$(function () {
+
     $('#complaintsTable').DataTable({
         order: [],
+        pageLength: 10,
         stateSave: true,
-        pageLength: 10
+        responsive: true
+    });
+
+    $(document).on('click', '.desc-toggle', function () {
+        const cell = $(this).closest('.desc');
+        cell.find('.desc-short, .desc-more').toggle();
+        $(this).text($(this).text() === 'Show More' ? 'Show Less' : 'Show More');
     });
 });
 
-function view(complaint_id, type) {
+function view(id, type) {
     $('#dialog').dialog({
         height: 600,
-        width: "60%",
+        width: '65%',
         modal: true
-    });
-    $('#dialog').load("view_tracks.php?complaint_id=" + complaint_id + "&type=" + type);
+    }).load('view_tracks.php?complaint_id=' + id + '&type=' + type);
+
     return false;
 }
+
 </script>
 
 <?php include("../includes/footer.php"); ?>

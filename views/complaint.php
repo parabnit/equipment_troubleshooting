@@ -335,7 +335,7 @@ switch ($type) {
       $member_email[] = get_email_user($member);
     }
     }
-    $subject = "New Complaint -$team Submitted";
+    $subject = "New Task/Complaint - $team Submitted";
 $desc = $description;
 
 // if description contains literal "\n"
