@@ -326,6 +326,9 @@ input:checked + .slider:before {
 /* =========================
    MOBILE VIEW — Daily Tasks
    ========================= */
+/* =========================
+   PREMIUM Mobile UI — Daily Tasks
+   ========================= */
 @media (max-width: 768px) {
 
   #DailytaskComplaints thead {
@@ -341,39 +344,142 @@ input:checked + .slider:before {
   }
 
   #DailytaskComplaints tr {
-    margin-bottom: 16px;
-    background: #fff;
-    border-radius: 12px;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.08);
-    padding: 8px;
+    margin-bottom: 22px;
+    background: linear-gradient(180deg, #ffffff, #f8faff);
+    border-radius: 18px;
+    box-shadow: 0 10px 28px rgba(13,110,253,0.10);
+    padding: 16px 14px 14px 18px;
+    border: 1px solid #e3ebff;
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* Accent gradient strip */
+  #DailytaskComplaints tr::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 6px;
+    background: linear-gradient(180deg, #0d6efd, #6610f2);
+    border-radius: 18px 0 0 18px;
   }
 
   #DailytaskComplaints td {
     border: none !important;
-    padding: 8px 6px;
+    padding: 10px 8px;
+    background: transparent;
+    position: relative;
+    z-index: 1;
   }
 
   #DailytaskComplaints td::before {
     content: attr(data-label);
     display: block;
     font-size: 11px;
-    font-weight: 600;
+    font-weight: 800;
     color: #6c757d;
-    margin-bottom: 2px;
+    margin-bottom: 4px;
     text-transform: uppercase;
+    letter-spacing: .6px;
   }
 
+  /* Member section */
+  td[data-label="Member"] strong {
+    font-size: 16px;
+    font-weight: 800;
+    color: #0d6efd;
+  }
+
+  /* Tool & dates */
+  td[data-label="Tool & Cat"] {
+    font-size: 14px;
+    font-weight: 600;
+    color: #212529;
+  }
+
+  td[data-label="Tool & Cat"] small {
+    display: block;
+    margin-top: 4px;
+    color: #6c757d;
+  }
+
+  /* Description as inner card */
   .desc-cell {
-    max-width: 100%;
+    font-size: 14px;
+    line-height: 1.75;
+    background: #ffffff;
+    border-radius: 14px;
+    padding: 12px 14px;
+    box-shadow: inset 0 0 0 1px #eef2ff;
   }
 
-  /* Make action buttons full width on mobile */
-  #DailytaskComplaints .btn,
-  #DailytaskComplaints select,
-  #DailytaskComplaints input[type="text"] {
-    width: 100%;
+  .show-more-link {
+    display: inline-block;
+    margin-top: 10px;
+    padding: 6px 14px;
+    border-radius: 50px;
+    background: linear-gradient(135deg,#e7f1ff,#f1eaff);
+    font-size: 12px;
+    font-weight: 800;
+    color: #0d6efd !important;
+    text-transform: uppercase;
+    letter-spacing: .5px;
+    box-shadow: 0 4px 12px rgba(13,110,253,0.15);
   }
+
+  /* Action button (Take Action) */
+  #DailytaskComplaints .btn-outline-success {
+    border-radius: 12px;
+    padding: 10px;
+    box-shadow: 0 4px 12px rgba(25,135,84,0.2);
+  }
+
+  /* Track link as button */
+  #DailytaskComplaints a[href*="Track"],
+  #DailytaskComplaints a[onclick*="viewTrack"] {
+    display: inline-block;
+    margin-top: 8px;
+    padding: 8px 16px;
+    border-radius: 12px;
+    background: linear-gradient(135deg,#0d6efd,#6610f2);
+    color: #fff !important;
+    font-weight: 700;
+    text-decoration: none;
+    box-shadow: 0 6px 16px rgba(102,16,242,0.25);
+  }
+
+  /* Status badge */
+  #DailytaskComplaints .badge {
+    font-size: 12px;
+    padding: 8px 14px;
+    border-radius: 50px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+  }
+
+  /* Status form controls full width */
+  #DailytaskComplaints select,
+  #DailytaskComplaints input[type="text"],
+  #DailytaskComplaints .btn-primary {
+    width: 100%;
+    border-radius: 12px;
+  }
+
+  #DailytaskComplaints .btn-primary {
+    font-weight: 700;
+    box-shadow: 0 6px 16px rgba(13,110,253,0.25);
+  }
+
+  /* Reopen button */
+  #DailytaskComplaints .btn-outline-danger {
+    border-radius: 12px;
+    font-weight: 700;
+    box-shadow: 0 4px 12px rgba(220,53,69,0.2);
+  }
+
 }
+
 
 </style>
 <script type="text/javascript" src="../assets/js/datetimepicker.js"></script>

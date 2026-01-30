@@ -107,6 +107,12 @@ $statusMap = [
 /* =========================
    STEP 1: Mobile Responsive Table
    ========================= */
+/* =========================
+   ENHANCED Mobile View
+   ========================= */
+/* =========================
+   PREMIUM Mobile UI
+   ========================= */
 @media (max-width: 768px) {
 
     #complaintsTable thead {
@@ -122,38 +128,119 @@ $statusMap = [
     }
 
     #complaintsTable tr {
-        margin-bottom: 16px;
-        background: #fff;
-        border-radius: 12px;
-        box-shadow: 0 2px 6px rgba(0,0,0,0.08);
-        padding: 8px;
+        margin-bottom: 20px;
+        background: linear-gradient(180deg, #ffffff, #f8faff);
+        border-radius: 18px;
+        box-shadow: 0 8px 24px rgba(13,110,253,0.08);
+        padding: 16px 14px;
+        border: 1px solid #e3ebff;
+        position: relative;
+        overflow: hidden;
+    }
+
+    /* Accent strip on left */
+    #complaintsTable tr::before {
+        content: "";
+        position: absolute;
+        left: 0;
+        top: 0;
+        bottom: 0;
+        width: 5px;
+        background: linear-gradient(180deg, #0d6efd, #6610f2);
+        border-radius: 18px 0 0 18px;
     }
 
     #complaintsTable tbody td {
         border: none !important;
-        padding: 8px 6px;
+        padding: 10px 8px;
         background: transparent;
+        position: relative;
+        z-index: 1;
     }
 
     #complaintsTable tbody td::before {
         content: attr(data-label);
         display: block;
         font-size: 11px;
-        font-weight: 600;
+        font-weight: 700;
         color: #6c757d;
-        margin-bottom: 2px;
+        margin-bottom: 4px;
         text-transform: uppercase;
+        letter-spacing: .5px;
     }
 
+    /* Header feel for Member */
+    td[data-label="Member"] .member-name {
+        font-size: 16px;
+        font-weight: 800;
+        color: #0d6efd;
+    }
+
+    /* Type + Status inline pills */
+    td[data-label="Type"] .badge,
+    td[data-label="Status"] .badge {
+        font-size: 12px;
+        padding: 8px 14px;
+        border-radius: 50px;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+    }
+
+    /* Tool highlight */
+    .tool-name {
+        font-size: 14px;
+        font-weight: 700;
+        color: #212529;
+    }
+
+    /* Description as content card */
     .desc {
-        max-width: 100%;
+        font-size: 14px;
+        line-height: 1.75;
+        background: #ffffff;
+        border-radius: 12px;
+        padding: 10px 12px;
+        box-shadow: inset 0 0 0 1px #eef2ff;
     }
 
+    /* Show more as pill button */
+    .desc-toggle {
+        display: inline-block;
+        margin-top: 10px;
+        padding: 6px 14px;
+        border-radius: 50px;
+        background: linear-gradient(135deg,#e7f1ff,#f1eaff);
+        font-size: 12px;
+        font-weight: 800;
+        color: #0d6efd;
+        text-transform: uppercase;
+        letter-spacing: .5px;
+        box-shadow: 0 4px 12px rgba(13,110,253,0.15);
+    }
+
+    /* Tracking link as button */
     .track-link {
         display: inline-block;
-        margin-top: 6px;
+        margin-top: 10px;
+        padding: 8px 16px;
+        border-radius: 12px;
+        background: linear-gradient(135deg,#0d6efd,#6610f2);
+        color: #fff !important;
+        font-weight: 700;
+        text-decoration: none;
+        box-shadow: 0 6px 16px rgba(102,16,242,0.25);
+    }
+
+    .track-link:hover {
+        opacity: .9;
+    }
+
+    /* Spacing improvements */
+    #complaintsTable td {
+        margin-bottom: 4px;
     }
 }
+
+
 
 
 </style>
