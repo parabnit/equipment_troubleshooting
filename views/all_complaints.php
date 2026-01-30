@@ -375,8 +375,6 @@ if (!empty($_SESSION['flash_message'])) {
   overflow-x: hidden !important;
 }
 
-
-
 select {
   max-width: 200px;
   white-space: nowrap;
@@ -391,7 +389,7 @@ select {
 
 /* Parent row (original complaint) */
 #allComplaints tbody tr.parent-row > td {
-  background: #e9ecef !important;  /* light grey */
+  background: #e9ecef !important;
   color: #111 !important;
   border-color: #cfd4da !important;
 }
@@ -403,7 +401,7 @@ select {
 
 /* Child rows */
 #allComplaints tbody tr.child-row > td {
-  background: #ffffff !important;  /* white */
+  background: #ffffff !important;
   color: #111 !important;
   border-color: #dee2e6 !important;
 }
@@ -411,7 +409,7 @@ select {
 /* Child nesting indicator */
 #allComplaints tbody tr.child-row td:first-child {
   padding-left: 28px !important;
-  border-left: 6px solid #adb5bd !important; /* grey marker line */
+  border-left: 6px solid #adb5bd !important;
   position: relative;
 }
 
@@ -424,7 +422,7 @@ select {
   color: #6c757d;
 }
 
-/* Optional: nicer "View Children" button (neutral) */
+/* Optional: nicer "View Children" button */
 .view-children-btn {
   background: #f8f9fa !important;
   border: 1px solid #adb5bd !important;
@@ -445,7 +443,6 @@ select {
   color: #084298 !important;
 }
 
-
 .short-text, .full-text {
   white-space: normal;
   word-break: break-word;
@@ -456,7 +453,7 @@ select {
 }
 
 /* =================================
-   MOBILE VIEW — Main Complaints Page
+   MOBILE VIEW — Main Complaints Page (ENHANCED)
    ================================= */
 @media (max-width: 768px) {
 
@@ -473,29 +470,29 @@ select {
   }
 
   #allComplaints tr {
-    margin-bottom: 16px;
-    background: #fff;
-    border-radius: 12px;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.08);
-    padding: 8px;
+    margin-bottom: 18px;
+    background: #ffffff;
+    border-radius: 16px;
+    box-shadow: 0 6px 16px rgba(0,0,0,0.12);
+    padding: 12px 10px;
   }
 
   #allComplaints td {
     border: none !important;
-    padding: 8px 6px !important;
+    padding: 10px 8px !important;
   }
 
   #allComplaints td::before {
     content: attr(data-label);
     display: block;
     font-size: 11px;
-    font-weight: 600;
+    font-weight: 700;
     color: #6c757d;
-    margin-bottom: 2px;
+    margin-bottom: 4px;
     text-transform: uppercase;
+    letter-spacing: .4px;
   }
 
-  /* Remove horizontal scrolling */
   .table-responsive {
     overflow-x: visible !important;
   }
@@ -503,17 +500,19 @@ select {
   /* Buttons full width on mobile */
   #allComplaints .btn {
     width: 100%;
-    margin-bottom: 6px;
+    margin-bottom: 8px;
+    border-radius: 12px;
+    font-weight: 700;
   }
 
-  /* Center icons */
+  /* Center icons reset */
   #allComplaints td[style*="text-align:center"] {
     text-align: left !important;
   }
 
   /* Child row indent reset for mobile */
   #allComplaints tbody tr.child-row td:first-child {
-    padding-left: 8px !important;
+    padding-left: 10px !important;
     border-left: none !important;
   }
 }
@@ -524,6 +523,7 @@ select {
     align-items: stretch !important;
   }
 }
+
 /* Ensure child rows show on mobile */
 @media (max-width: 768px) {
 
@@ -534,8 +534,9 @@ select {
   #allComplaints tbody tr.child-row td {
     display: block !important;
     background: #f8f9fa !important;
-    margin-bottom: 6px;
-    border-radius: 6px;
+    margin-bottom: 8px;
+    border-radius: 10px;
+    box-shadow: inset 0 0 0 1px #e5e9f2;
   }
 
   #allComplaints tbody tr.child-row td::before {
@@ -544,7 +545,7 @@ select {
 }
 
 /* ================================
-   MOBILE — Better Child Complaint UI
+   MOBILE — Better Child Complaint UI (ENHANCED)
    ================================ */
 @media (max-width: 768px) {
 
@@ -552,33 +553,37 @@ select {
   #allComplaints tr.parent-row {
     border-left: 6px solid #6c757d;
     background: #ffffff;
+    border-radius: 18px;
   }
 
-  /* Child row as nested card */
+  /* Child row as premium nested card */
   #allComplaints tr.child-row {
-    margin-left: 12px;
+    margin-left: 14px;
     border-left: 4px solid #adb5bd;
     background: #f8f9fa !important;
+    border-radius: 16px;
     position: relative;
+    box-shadow: 0 8px 22px rgba(0,0,0,0.10);
   }
 
   /* Visual "Child" ribbon */
   #allComplaints tr.child-row::before {
     content: "Child Complaint";
     position: absolute;
-    top: -8px;
-    left: 10px;
-    background: #adb5bd;
+    top: -10px;
+    left: 12px;
+    background: linear-gradient(135deg,#adb5bd,#6c757d);
     color: #fff;
     font-size: 10px;
-    font-weight: 600;
-    padding: 2px 6px;
-    border-radius: 4px;
+    font-weight: 700;
+    padding: 3px 8px;
+    border-radius: 999px;
+    box-shadow: 0 4px 10px rgba(0,0,0,.25);
   }
 
-  /* Tighter spacing for child cards */
+  /* Tighter but cleaner spacing */
   #allComplaints tr.child-row td {
-    padding: 6px 6px !important;
+    padding: 8px 8px !important;
     background: #f8f9fa !important;
   }
 
@@ -587,25 +592,28 @@ select {
     color: #495057;
   }
 
-  /* Make child action buttons smaller */
+  /* Make child action buttons smaller but tappable */
   #allComplaints tr.child-row .btn {
     font-size: 12px;
-    padding: 4px 6px;
+    padding: 6px 8px;
+    border-radius: 10px;
   }
 
   /* Parent Expand button full width */
   .view-children-btn {
     width: 100%;
     font-size: 13px;
+    border-radius: 12px;
+    font-weight: 700;
   }
 
   /* Separate parent & children visually */
   #allComplaints tr.parent-row {
-    margin-bottom: 6px;
+    margin-bottom: 8px;
   }
 
   #allComplaints tr.child-row {
-    margin-bottom: 10px;
+    margin-bottom: 14px;
   }
 }
 
@@ -615,6 +623,7 @@ select {
 #allComplaints tbody tr.child-row.d-none {
   display: none !important;
 }
+
 
 
 </style>
