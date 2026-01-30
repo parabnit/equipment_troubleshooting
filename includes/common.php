@@ -2366,6 +2366,36 @@ function isComplaintClosed($complaint_id) {
     return ((int)$row['status'] === 2); // assuming 2 = Closed
 }
 
+function getComplaintTypeById($complaint_id) {
+  global $db_equip;
+  $sql = "SELECT type FROM complaints WHERE complaint_id = " . (int)$complaint_id;
+  $res = mysqli_query($db_equip, $sql);
+  $row = mysqli_fetch_assoc($res);
+  return (int)($row['type'] ?? 0);
+}
+
+function canUserUpdateType($member_id, $type) {
+
+  // Lab managers can update ALL
+  if (is_LabManager($member_id) || is_AssistLabManager($member_id)) {
+    return true;
+  }
+
+  switch ($type) {
+    case 1: return is_EquipmentHead($member_id);
+    case 2: return is_FacilityHead($member_id);
+    case 3: return is_SafetyHead($member_id);
+    case 4: return is_ProcessHead($member_id);
+    case 5: return is_HRHead($member_id);
+    case 6: return is_ITHead($member_id);
+    case 7: return is_PurchaseHead($member_id);
+    case 8: return is_TrainingHead($member_id);
+    case 9: return is_InventoryHead($member_id);
+    default: return false;
+  }
+}
+
+
 
 
 

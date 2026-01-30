@@ -276,6 +276,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['reopen'])) {
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['status_update'])) {
 
   $complaint_id = (int)($_POST['complaint_id'] ?? 0);
+  $complaint_type = getComplaintTypeById($complaint_id);
+
+  if (!canUserUpdateType($updated_by, $complaint_type)) {
+    $_SESSION['flash_message'] = "
+      <div class='alert alert-danger'>
+        You are not authorized to update status for this department.
+      </div>";
+    header("Location: " . $_SERVER['REQUEST_URI']);
+    exit;
+  }
+
+
   $status_db    = (int)($_POST['status'] ?? -1);
   if ($status_db === 2) {
     // CLOSED → force current datetime
@@ -1089,38 +1101,6 @@ $(document).on("click", ".view-children-btn", function () {
         }
 
 
-  // IMPORTANT: form must submit to THIS page (so status_update works)
-  status_extra = `
-    <form method="post" onsubmit="return check(${r.complaint_id}, '${escapeJs(r.time_of_complaint || "")}', '')">
-      <input type="hidden" name="complaint_id" value="${r.complaint_id}">
-
-      <select name="status"
-        id="complanit_status${r.complaint_id}"
-        onchange="timeshow(${r.complaint_id});"
-        class="form-select form-select-sm mb-2">
-        <option value="0" ${r.status == 0 ? 'selected' : ''}>Pending</option>
-        <option value="1" ${r.status == 1 ? 'selected' : ''}>In Process</option>
-        <option value="2" ${r.status == 2 ? 'selected' : ''}>Closed</option>
-        <option value="3" ${r.status == 3 ? 'selected' : ''}>On Hold</option>
-      </select>
-
-      <input type="text"
-        id="c_date${r.complaint_id}"
-        name="c_date"
-        class="form-control form-control-sm mb-2"
-        style="display:none;" />
-
-      <button type="submit" name="status_update" class="btn btn-sm btn-primary w-100">
-        Submit
-      </button>
-    </form>
-  `;
-
-        const statusText =
-          r.status == 0 ? "Pending" :
-          r.status == 1 ? "In process" :
-          r.status == 2 ? "Closed" :
-          r.status == 3 ? "On Hold" : "";
 
         let typeName = "";
         let roleKey = "";
@@ -1138,6 +1118,52 @@ $(document).on("click", ".view-children-btn", function () {
         }
 
         const canTransfer = (CURRENT_USER_ROLE === "all" || CURRENT_USER_ROLE === roleKey);
+        const canUpdateStatus = (CURRENT_USER_ROLE === "all" || CURRENT_USER_ROLE === roleKey);
+        
+  // IMPORTANT: form must submit to THIS page (so status_update works)
+  let status_extra = "";
+
+  if (canUpdateStatus) {
+    status_extra = `
+      <form method="post" onsubmit="return check(${r.complaint_id}, '${escapeJs(r.time_of_complaint || "")}', '')">
+        <input type="hidden" name="complaint_id" value="${r.complaint_id}">
+
+        <select name="status"
+          id="complanit_status${r.complaint_id}"
+          onchange="timeshow(${r.complaint_id});"
+          class="form-select form-select-sm mb-2">
+          <option value="0" ${r.status == 0 ? 'selected' : ''}>Pending</option>
+          <option value="1" ${r.status == 1 ? 'selected' : ''}>In Process</option>
+          <option value="2" ${r.status == 2 ? 'selected' : ''}>Closed</option>
+          <option value="3" ${r.status == 3 ? 'selected' : ''}>On Hold</option>
+        </select>
+
+        <input type="text"
+          id="c_date${r.complaint_id}"
+          name="c_date"
+          class="form-control form-control-sm mb-2"
+          style="display:none;" />
+
+        <button type="submit" name="status_update" class="btn btn-sm btn-primary w-100">
+          Submit
+        </button>
+      </form>
+    `;
+  } else {
+    status_extra = `
+      <span class="badge bg-secondary">View Only</span><br>
+      <small class="text-muted">Not your department</small>
+    `;
+  }
+
+
+        const statusText =
+          r.status == 0 ? "Pending" :
+          r.status == 1 ? "In process" :
+          r.status == 2 ? "Closed" :
+          r.status == 3 ? "On Hold" : "";
+
+
 
         // CLEANING LOGIC FOR JS
         let cleanDesc = r.complaint_description || "";
