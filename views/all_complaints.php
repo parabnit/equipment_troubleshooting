@@ -543,6 +543,79 @@ select {
   }
 }
 
+/* ================================
+   MOBILE — Better Child Complaint UI
+   ================================ */
+@media (max-width: 768px) {
+
+  /* Parent card stronger */
+  #allComplaints tr.parent-row {
+    border-left: 6px solid #6c757d;
+    background: #ffffff;
+  }
+
+  /* Child row as nested card */
+  #allComplaints tr.child-row {
+    margin-left: 12px;
+    border-left: 4px solid #adb5bd;
+    background: #f8f9fa !important;
+    position: relative;
+  }
+
+  /* Visual "Child" ribbon */
+  #allComplaints tr.child-row::before {
+    content: "Child Complaint";
+    position: absolute;
+    top: -8px;
+    left: 10px;
+    background: #adb5bd;
+    color: #fff;
+    font-size: 10px;
+    font-weight: 600;
+    padding: 2px 6px;
+    border-radius: 4px;
+  }
+
+  /* Tighter spacing for child cards */
+  #allComplaints tr.child-row td {
+    padding: 6px 6px !important;
+    background: #f8f9fa !important;
+  }
+
+  /* Slight indent for child labels */
+  #allComplaints tr.child-row td::before {
+    color: #495057;
+  }
+
+  /* Make child action buttons smaller */
+  #allComplaints tr.child-row .btn {
+    font-size: 12px;
+    padding: 4px 6px;
+  }
+
+  /* Parent Expand button full width */
+  .view-children-btn {
+    width: 100%;
+    font-size: 13px;
+  }
+
+  /* Separate parent & children visually */
+  #allComplaints tr.parent-row {
+    margin-bottom: 6px;
+  }
+
+  #allComplaints tr.child-row {
+    margin-bottom: 10px;
+  }
+}
+
+/* ================================
+   FIX: Allow child rows to hide on mobile
+   ================================ */
+#allComplaints tbody tr.child-row.d-none {
+  display: none !important;
+}
+
 
 </style>
 
@@ -1055,10 +1128,14 @@ $(document).on("click", ".view-children-btn", function () {
 
   const existing = $(".child-of-" + originalId);
   if (existing.length > 0) {
-    existing.toggle();
-    btn.text(existing.is(":visible") ? "Hide (" + existing.length + ")" : "Expand (" + existing.length + ")");
+    existing.toggleClass("d-none");
+
+    const isVisible = !existing.first().hasClass("d-none");
+    btn.text(isVisible ? "Hide (" + existing.length + ")" : "Expand (" + existing.length + ")");
+
     return;
   }
+
 
   btn.prop("disabled", true).text("Loading...");
 
@@ -1219,8 +1296,20 @@ $(document).on("click", ".view-children-btn", function () {
         `;
       });
 
-      $("#row-" + originalId).after(html);
+     $("#row-" + originalId).after(html);
+
+      /* ✅ Auto scroll to first child on mobile */
+      if (window.innerWidth < 768) {
+        const firstChild = $(".child-of-" + originalId).first();
+        if (firstChild.length) {
+          $('html, body').animate({
+            scrollTop: firstChild.offset().top - 80
+          }, 400);
+        }
+      }
+
       btn.prop("disabled", false).text("Hide (" + rows.length + ")");
+
     })
     .fail(function () {
       btn.prop("disabled", false).text("Expand");
