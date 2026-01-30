@@ -11,7 +11,7 @@ function sendEmail($to, $from, $subject, $body)
 {
     $mail = new PHPMailer();
     $mail->isSMTP();
-    // $mail->Host = "sandesh.ee.iitb.ac.in";
+    $mail->Host = "sandesh.ee.iitb.ac.in";
 
     $mail->setFrom($from);
     $mail->CharSet = "UTF-8";
@@ -42,7 +42,7 @@ function sendEmailCC($to, $cc, $from, $subject, $body)
 {
     $mail = new PHPMailer();
     $mail->isSMTP();
-    // $mail->Host = "sandesh.ee.iitb.ac.in";
+    $mail->Host = "sandesh.ee.iitb.ac.in";
 
     $mail->setFrom($from);
     $mail->isHTML(true);
@@ -304,7 +304,7 @@ function send_complaint_closed_email($complaint_id)
      $cc = "deepti.rukade@gmail.com";
     
     $toolName = ($machine_id == 0) ? 'Miscellaneous' : getToolName($machine_id);
-    $subject = "The Complaint for $team has been closed";
+    $subject = "The Task/Complaint for $team has been closed";
 
     $body = "<table border='0' width='100%'>\n".
         "<tr><td colspan='2'><table><tr><td colspan='2'><b>A Complaint has been closed for $team</b>,<br>\n".
@@ -318,7 +318,7 @@ function send_complaint_closed_email($complaint_id)
     // remove debug echo when done
     // echo $body;
 
-    // sendEmailCC($to, $cc, $from, $subject, $body);
+    sendEmailCC($to, $cc, $from, $subject, $body);
 }
 
 
