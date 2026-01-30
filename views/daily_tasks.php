@@ -525,7 +525,40 @@ if ($ec !== '') {
 
 </td>
 
-<td class="desc-cell" data-label="Description"><?= shortDesc($d['complaint_description']) ?></td>
+<td class="desc-cell" data-label="Description">
+
+<?php
+  $fullRaw   = $d['complaint_description'] ?? '';
+  $fullDesc  = renderComplaintDesc(shortDesc($fullRaw));
+
+  // Plain text length check (no <br>)
+  $plainText = strip_tags($fullDesc);
+  $isLong    = mb_strlen($plainText) > 120;
+
+  // Short version (first 120 chars)
+  $shortText = mb_substr($plainText, 0, 120);
+  $shortDesc = nl2br(htmlspecialchars($shortText), false);
+?>
+
+<span class="desc-short">
+  <?= $shortDesc ?>
+  <?= $isLong ? '...' : '' ?>
+</span>
+
+<?php if ($isLong): ?>
+  <span class="desc-full" style="display:none;">
+    <?= $fullDesc ?>
+  </span>
+
+  <a href="javascript:void(0);"
+     class="show-more-link text-primary fw-semibold"
+     onclick="toggleDesc(this)">
+     Show More
+  </a>
+<?php endif; ?>
+
+</td>
+
 
 <?php if ($type == 4): ?>
 <td data-label="Process Dev"><?= shortDesc($d['process_develop']) ?></td>
@@ -769,6 +802,23 @@ function timeshow(id) {
     });
     return false;
   }
+
+  function toggleDesc(el) {
+  const $cell = $(el).closest('.desc-cell');
+  const $short = $cell.find('.desc-short');
+  const $full  = $cell.find('.desc-full');
+
+  if ($full.is(':visible')) {
+    $full.hide();
+    $short.show();
+    $(el).text('Show More');
+  } else {
+    $short.hide();
+    $full.show();
+    $(el).text('Show Less');
+  }
+}
+
 </script>
 
 
