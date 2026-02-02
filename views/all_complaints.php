@@ -277,6 +277,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['status_update'])) {
 
   $complaint_id = (int)($_POST['complaint_id'] ?? 0);
   $complaint_type = getComplaintTypeById($complaint_id);
+  $updated_by   = (int)($_SESSION['memberid'] ?? 0);
 
   if (!canUserUpdateType($updated_by, $complaint_type)) {
     $_SESSION['flash_message'] = "
@@ -297,7 +298,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['status_update'])) {
     $c_date = $_POST['c_date'] ?? '';
   }
 
-  $updated_by   = (int)($_SESSION['memberid'] ?? 0);
 
   if ($complaint_id <= 0 || $status_db < 0) {
     $message = "<div class='alert alert-danger'>Please fill all required fields.</div>";
@@ -1009,39 +1009,40 @@ select {
 <script>
   $('input[name="c_date"]').hide()
 
-  function timeshow(j) {
+ function timeshow(j) {
     const status = $("#complanit_status" + j).val();
     const $dateInput = $("#c_date" + j);
 
     if (status == 2) { 
-      // CLOSED → Auto set current datetime, hide calendar
-      const now = new Date();
+        // CLOSED → Auto set current datetime, hide calendar
+        const now = new Date();
 
-      const formatted =
-        now.getFullYear() + "-" +
-        String(now.getMonth() + 1).padStart(2, '0') + "-" +
-        String(now.getDate()).padStart(2, '0') + " " +
-        String(now.getHours()).padStart(2, '0') + ":" +
-        String(now.getMinutes()).padStart(2, '0') + ":" +
-        String(now.getSeconds()).padStart(2, '0');
+        const formatted =
+            now.getFullYear() + "-" +
+            String(now.getMonth() + 1).padStart(2, '0') + "-" +
+            String(now.getDate()).padStart(2, '0') + " " +
+            String(now.getHours()).padStart(2, '0') + ":" +
+            String(now.getMinutes()).padStart(2, '0') + ":" +
+            String(now.getSeconds()).padStart(2, '0');
 
-      $dateInput.val(formatted).hide();  // hide calendar
+        $dateInput.val(formatted).hide();  // hide calendar
     } 
-    else if (status == 1 || status == 3 || status == 0) {
-      // OTHER STATUSES → Show DATE ONLY picker
-      $dateInput.val("").show();
+    else if (status == 1) {  // ONLY In Process
+        // Show DATE picker
+        $dateInput.val("").show();
 
-      $dateInput.datetimepicker({
-        timepicker: false,     // ❌ no time
-        format: 'Y-m-d'        // ✅ date only
-      });
+        $dateInput.datetimepicker({
+            timepicker: false,     // ❌ no time
+            format: 'Y-m-d'        // ✅ date only
+        });
 
-      $dateInput.focus();
+        $dateInput.focus();
     } 
     else {
-      $dateInput.hide();
+        $dateInput.hide();  // hide for Pending or On Hold
     }
-  }
+}
+
 
 
   function viewTrack(complaintId, type) {

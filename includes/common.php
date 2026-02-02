@@ -2368,7 +2368,7 @@ function isComplaintClosed($complaint_id) {
 
 function getComplaintTypeById($complaint_id) {
   global $db_equip;
-  $sql = "SELECT type FROM complaints WHERE complaint_id = " . (int)$complaint_id;
+  $sql = "SELECT type FROM equipment_complaint WHERE complaint_id = " . (int)$complaint_id;
   $res = mysqli_query($db_equip, $sql);
   $row = mysqli_fetch_assoc($res);
   return (int)($row['type'] ?? 0);
