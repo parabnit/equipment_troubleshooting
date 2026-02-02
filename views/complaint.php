@@ -345,7 +345,7 @@ $desc = str_replace(["\\r\\n", "\\n", "\\r"], "\n", $desc);
 
 // escape HTML + convert newlines to <br>
 date_default_timezone_set('Asia/Kolkata');
-$desc = nl2br(htmlspecialchars_decode($desc, ENT_QUOTES, 'UTF-8'), false);
+$desc = nl2br(htmlspecialchars_decode($desc));
 $body = '<table width="100%" cellpadding="0" cellspacing="0" border="0" role="presentation">
   <tr>
     <td style="font-family: Arial, sans-serif; font-size:14px; line-height:20px; color:#111; padding:16px;">
