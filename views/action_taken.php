@@ -37,6 +37,22 @@ $status_map = [
   2 => 'Closed',
   3 => 'On Hold'
 ];
+
+$type_map = [
+  1 => 'Equipment',
+  2 => 'Facility',
+  3 => 'Safety',
+  4 => 'Process',
+  5 => 'HR',
+  6 => 'IT',
+  7 => 'Purchase',
+  8 => 'Training',
+  9 => 'Inventory'
+];
+
+$complaint_type_text = $type_map[$_POST['type']] ?? 'Unknown';
+
+
 $status_text = $status_map[$complaint['status']] ?? 'Unknown';
 
 // echo "Complaint Status: " . $status_text;
@@ -150,11 +166,336 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
   }
 }
 
-
-
-
-
 ?>
+<style>
+/* Container spacing */
+.previous-actions-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* Each action card */
+.previous-actions-list .card {
+  border: none;
+  border-left: 6px solid transparent;
+  border-image: linear-gradient(180deg, #0d6efd, #6610f2) 1;
+  background: linear-gradient(135deg, #f5f7ff, #ffffff);
+  border-radius: 14px;
+  padding: 16px 18px;
+  box-shadow: 0 6px 18px rgba(13, 110, 253, 0.08);
+  transition: all 0.25s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Soft glow highlight strip */
+.previous-actions-list .card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    120deg,
+    rgba(13, 110, 253, 0.08),
+    transparent 60%
+  );
+  pointer-events: none;
+}
+
+/* Hover animation */
+.previous-actions-list .card:hover {
+  transform: translateY(-3px) scale(1.01);
+  box-shadow: 0 12px 28px rgba(13, 110, 253, 0.15);
+}
+
+/* Labels */
+.previous-actions-list strong {
+  color: #0d6efd;
+  font-weight: 600;
+  letter-spacing: 0.2px;
+}
+
+/* Paragraph text */
+.previous-actions-list p {
+  font-size: 14.5px;
+  line-height: 1.7;
+  color: #333;
+  margin-bottom: 6px;
+}
+
+/* Date + user meta */
+.previous-actions-list .meta {
+  font-size: 12.5px;
+  color: #6c757d;
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Section headings inside card */
+.previous-actions-list .section-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: #495057;
+  margin-top: 10px;
+  margin-bottom: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Divider line */
+.previous-actions-list .divider {
+  height: 1px;
+  background: linear-gradient(to right, #dee2e6, transparent);
+  margin: 10px 0;
+}
+
+/* ===== Vendor Box Super Premium ===== */
+.vendor-box {
+  border-radius: 18px;
+  background: linear-gradient(145deg, #f5f9ff, #ffffff);
+  border: 1px solid #d6e4ff;
+  box-shadow:
+    0 10px 25px rgba(13,110,253,0.10),
+    inset 0 1px 0 rgba(255,255,255,0.8);
+  padding: 16px 16px 14px;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Subtle glow strip on left */
+.vendor-box::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 4px;
+  height: 100%;
+  background: linear-gradient(180deg, #0d6efd, #6610f2);
+  border-radius: 4px 0 0 4px;
+}
+
+/* ===== Header ===== */
+.vendor-header {
+  font-size: 15px;
+  font-weight: 800;
+  color: #0d6efd;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
+  letter-spacing: 0.3px;
+}
+
+/* ===== Yes/No Toggle Pills ===== */
+.vendor-toggle {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+
+.vendor-radio span {
+  border-radius: 14px;
+  padding: 9px 0;
+  font-size: 13px;
+  font-weight: 700;
+  border: 1px solid #d0dbf5;
+  background: linear-gradient(180deg, #ffffff, #f2f6ff);
+  box-shadow: inset 0 1px 0 #fff;
+}
+
+.vendor-radio input:checked + span {
+  background: linear-gradient(135deg, #0d6efd, #4f46e5);
+  color: #fff;
+  border: none;
+  box-shadow:
+    0 6px 14px rgba(13,110,253,0.35),
+    inset 0 1px 0 rgba(255,255,255,0.2);
+  transform: translateY(-1px);
+}
+
+/* ===== Compact Groups ===== */
+.form-group-compact {
+  margin-bottom: 12px;
+}
+
+.form-group-compact label {
+  font-size: 11.5px;
+  font-weight: 700;
+  color: #3b4a6b;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  margin-bottom: 4px;
+}
+
+/* ===== Inputs & Textareas ===== */
+.vendor-box .form-control {
+  border-radius: 10px;
+  border: 1px solid #dde6f7;
+  background: linear-gradient(180deg, #ffffff, #f8faff);
+  font-size: 13.5px;
+  padding: 9px 10px;
+  transition: all 0.2s ease;
+}
+
+.vendor-box .form-control:focus {
+  border-color: #0d6efd;
+  box-shadow:
+    0 0 0 3px rgba(13,110,253,0.15),
+    0 4px 10px rgba(13,110,253,0.15);
+  background: #fff;
+}
+
+/* ===== Interaction Quality Pills ===== */
+.vendor-quality {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.quality-pill span {
+  padding: 6px 12px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+  border: 1px solid #d6deef;
+  background: linear-gradient(180deg, #ffffff, #f4f7ff);
+  box-shadow: inset 0 1px 0 #fff;
+  transition: all 0.2s ease;
+}
+
+.quality-pill span:hover {
+  border-color: #0d6efd;
+  transform: translateY(-1px);
+}
+
+.quality-pill input:checked + span {
+  background: linear-gradient(135deg, #198754, #20c997);
+  color: #fff;
+  border: none;
+  box-shadow:
+    0 6px 14px rgba(25,135,84,0.35),
+    inset 0 1px 0 rgba(255,255,255,0.2);
+  transform: translateY(-1px) scale(1.03);
+}
+
+/* ===== Disabled State ===== */
+.vendor-box input:disabled,
+.vendor-box textarea:disabled {
+  background: #eef2f7 !important;
+  border-color: #e0e6f0;
+  opacity: 0.75;
+}
+
+/* ===== Micro Animations ===== */
+.vendor-box * {
+  transition: box-shadow 0.2s ease, transform 0.15s ease;
+}
+/* ===== Premium Colorful Complaint Info ===== */
+.complaint-tile {
+  border-radius: 18px;
+  padding: 16px 18px;
+  color: #fff;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 12px 30px rgba(0,0,0,0.15);
+  transition: all 0.25s ease;
+}
+
+.complaint-tile:hover {
+  transform: translateY(-4px) scale(1.02);
+  box-shadow: 0 18px 45px rgba(0,0,0,0.25);
+}
+
+.complaint-tile .label {
+  font-size: 11px;
+  letter-spacing: 1px;
+  opacity: 0.85;
+  text-transform: uppercase;
+}
+
+.complaint-tile .value {
+  font-size: 18px;
+  font-weight: 800;
+  margin-top: 4px;
+}
+
+/* Color themes */
+.tile-type {
+  background: linear-gradient(135deg, #6366f1, #8b5cf6);
+}
+
+.tile-user {
+  background: linear-gradient(135deg, #06b6d4, #22d3ee);
+}
+
+.tile-tool {
+  background: linear-gradient(135deg, #f59e0b, #fbbf24);
+  color: #1f2933;
+}
+
+.tile-status {
+  background: linear-gradient(135deg, #ef4444, #f97316);
+}
+
+.tile-time {
+  background: linear-gradient(135deg, #10b981, #34d399);
+}
+
+.tile-allocated {
+  background: linear-gradient(135deg, #ec4899, #f472b6);
+}
+
+/* Description box colorful */
+.desc-box {
+  background: linear-gradient(135deg, #0f172a, #1e293b);
+  color: #fff;
+  border-radius: 18px;
+  padding: 18px;
+  box-shadow: 0 12px 35px rgba(15,23,42,0.5);
+  border-left: 6px solid #38bdf8;
+}
+
+/* ===== Compact Premium Complaint Info ===== */
+.complaint-tile {
+  border-radius: 14px;
+  padding: 10px 12px;              /* 🔽 smaller padding */
+  color: #fff;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.18);
+  transition: all 0.2s ease;
+  min-height: 64px;               /* 🔽 control height */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.complaint-tile:hover {
+  transform: translateY(-2px) scale(1.01);  /* 🔽 less hover jump */
+  box-shadow: 0 12px 28px rgba(0,0,0,0.28);
+}
+
+.complaint-tile .label {
+  font-size: 9.5px;               /* 🔽 smaller label */
+  letter-spacing: 0.8px;
+  opacity: 0.85;
+  text-transform: uppercase;
+  line-height: 1.2;
+}
+
+.complaint-tile .value {
+  font-size: 14.5px;              /* 🔽 smaller value */
+  font-weight: 800;
+  margin-top: 2px;
+  line-height: 1.2;
+}
+
+
+</style>
+
 
 <div class="container mt-4">
   <div class="row">
@@ -171,22 +512,62 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
         </div>
         <div class="card-body">
           <!-- Complaint Meta Info -->
-          <div class="small mb-3">
-            <div>
-              Complaint by: <strong><?= $memberName ?></strong> |
-              Tool: <strong><?= $toolName ?></strong> |
-              Time: <strong><?= $timeOfComplaint ?></strong>|
-              Complaint Status: <strong><?= $status_text ?></strong>
-              <?php if ($allocatedTo): ?>
-                | <span class="badge bg-warning text-dark">Allocated To: <?= $allocatedTo ?></span>
-              <?php endif; ?>
+          <!-- ===== Ultra Colorful Complaint Info ===== -->
+          <div class="row g-2 mb-3">
+
+            <div class="col-md-3">
+              <div class="complaint-tile tile-type">
+                <div class="label">Complaint Type</div>
+                <div class="value">🏷️ <?= htmlspecialchars($complaint_type_text) ?></div>
+              </div>
             </div>
+
+            <div class="col-md-3">
+              <div class="complaint-tile tile-user">
+                <div class="label">Complaint By</div>
+                <div class="value">👤 <?= htmlspecialchars($memberName) ?></div>
+              </div>
+            </div>
+
+            <div class="col-md-3">
+              <div class="complaint-tile tile-tool">
+                <div class="label">Tool / Category</div>
+                <div class="value">🛠️ <?= htmlspecialchars($toolName) ?></div>
+              </div>
+            </div>
+
+            <div class="col-md-3">
+              <div class="complaint-tile tile-status">
+                <div class="label">Status</div>
+                <div class="value">🚦 <?= htmlspecialchars($status_text) ?></div>
+              </div>
+            </div>
+
+            <div class="col-md-3">
+              <div class="complaint-tile tile-time">
+                <div class="label">Complaint Time</div>
+                <div class="value">🕒 <?= htmlspecialchars($timeOfComplaint) ?></div>
+              </div>
+            </div>
+
+            <?php if ($allocatedTo): ?>
+            <div class="col-md-3">
+              <div class="complaint-tile tile-allocated">
+                <div class="label">Allocated To</div>
+                <div class="value">👨‍🔧 <?= htmlspecialchars($allocatedTo) ?></div>
+              </div>
+            </div>
+            <?php endif; ?>
+
           </div>
+          <!-- ===== End Ultra Colorful Complaint Info ===== -->
+
+
 
           <!-- Complaint Description -->
-          <div style="word-wrap:break-word;" class="mb-4">
-            <strong>Complaint Description:</strong>
-            <p class="mb-0"><?= nl2br(htmlspecialchars_decode($shortDesc)) ?></p>
+          <div class="desc-box mb-4">
+            <div class="fw-bold mb-2">📝 Complaint Description</div>
+            <?= nl2br(htmlspecialchars_decode($shortDesc)) ?>
           </div>
 
           <!-- Action + Previous Side-by-Side -->
@@ -245,58 +626,84 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
                       <input type="text" class="form-control" name="work_done_by" id="work_done_by" maxlength="99">
                     </div>
 
-                    <div class="mb-3">
-                      <label class="form-label">Vendor Interaction</label><br>
-                      <div class="form-check form-check-inline">
-                        <input class="form-check-input" type="radio" name="vendor_interaction" value="Yes" onclick="display_vendor_interaction('Yes')">
-                        <label class="form-check-label">Yes</label>
+                   <!-- ===== Vendor Interaction (Compact Premium UI) ===== -->
+                      <div class="vendor-box mb-3">
+
+                        <div class="vendor-header">
+                          🤝 Vendor Interaction
+                        </div>
+
+                        <!-- Yes / No -->
+                        <div class="vendor-toggle">
+                          <label class="vendor-radio">
+                            <input type="radio" name="vendor_interaction" value="Yes"
+                                  onclick="display_vendor_interaction('Yes')">
+                            <span>Yes</span>
+                          </label>
+
+                         <label class="vendor-radio">
+                          <input type="radio" name="vendor_interaction" value="No"
+                                onclick="display_vendor_interaction('No')" checked>
+                          <span>No</span>
+                        </label>
+
+                        </div>
+
+                        <!-- Vendor Name -->
+                        <div class="form-group-compact">
+                          <label>Vendor Name <span class="text-danger">*</span></label>
+                          <input type="text"
+                                class="form-control"
+                                id="vendor_select"
+                                name="vendor_select"
+                                placeholder="Enter Vendor Name"
+                                maxlength="80">
+                          <div id="alt_vendor_select" class="text-danger small"></div>
+                        </div>
+
+                        <!-- Vendor Contact -->
+                        <div class="form-group-compact">
+                          <label>Vendor Contact <span class="text-danger">*</span></label>
+                          <textarea class="form-control"
+                                    name="vendor_contact"
+                                    id="vendor_contact"
+                                    rows="2"
+                                    placeholder="Phone / Email"></textarea>
+                          <div id="alt_vendor_contact" class="text-danger small"></div>
+                        </div>
+
+                        <!-- Interaction Quality -->
+                        <div class="form-group-compact">
+                          <label>Interaction Quality <span class="text-danger">*</span></label>
+                          <div class="vendor-quality">
+                            <?php
+                            $options = ["Very good", "Good", "Satisfactory", "Not Satisfactory"];
+                            foreach ($options as $option) {
+                              echo '
+                              <label class="quality-pill">
+                                <input type="radio" name="interaction" value="'.$option.'">
+                                <span>'.$option.'</span>
+                              </label>';
+                            }
+                            ?>
+                          </div>
+                          <div id="alt_interaction" class="text-danger small"></div>
+                        </div>
+
+                        <!-- Vendor Comments -->
+                        <div class="form-group-compact">
+                          <label>Comments <span class="text-danger">*</span></label>
+                          <textarea class="form-control"
+                                    name="feedback"
+                                    id="feedback"
+                                    rows="2"
+                                    maxlength="499"
+                                    placeholder="Short feedback"></textarea>
+                          <div id="alt_feedback" class="text-danger small"></div>
+                        </div>
+
                       </div>
-                      <div class="form-check form-check-inline">
-                        <input class="form-check-input" type="radio" name="vendor_interaction" value="No" onclick="display_vendor_interaction('No')">
-                        <label class="form-check-label">No</label>
-                      </div>
-                    </div>
-
-                  
-
-		<div class="mb-3">
-                      <label class="form-label">Vendor Name <span class="text-danger">*</span> </label>
-
-                      <input
-                        type="text"
-                        class="form-control"
-                        id="vendor_select"
-                        name="vendor_select"
-                        placeholder="Enter Vendor Name"
-                        maxlength="80" />
-                      <div id="alt_vendor_select" class="text-danger small"></div>
-                    </div>
-
-                    <div class="mb-3">
-                      <label class="form-label">Vendor Contact <span class="text-danger">*</span>  </label>
-                      <textarea class="form-control" name="vendor_contact" id="vendor_contact" rows="3"></textarea>
-                        <div id="alt_vendor_contact" class="text-danger small"></div>
-		    </div>
-
-                    <div class="mb-3">
-                      <label class="form-label">Interaction Quality <span class="text-danger">*</span>  </label>
-                      <?php
-                      $options = ["Very good", "Good", "Satisfactory", "Not Satisfactory"];
-                      foreach ($options as $option) {
-                        echo '<div class="form-check">
-                          <input class="form-check-input" type="radio" name="interaction" value="' . $option . '">
-                          <label class="form-check-label">' . $option . '</label>
-                        </div>';
-                      }
-                      ?>
-			<div id="alt_interaction" class="text-danger small"></div>
-                    </div>
-
-                    <div class="mb-3">
-                      <label class="form-label">Comments <span class="text-danger">*</span>  </label>
-                      <textarea class="form-control" name="feedback" id="feedback" rows="3" maxlength="499"></textarea>
-                    <div id="alt_feedback" class="text-danger small"></div>
-		    </div>
+                      <!-- ===== End Vendor Interaction ===== -->
 
 
                     <div class="mb-3">
@@ -369,30 +776,53 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
                         <a href="#" onclick="return view(<?= $_POST['complaint_id'] ?>, <?= $_POST['type'] ?>);" class="btn btn-sm btn-outline-primary">View</a>
                       </div>
 
-                      <div class="table-responsive">
-                        <table class="table table-bordered table-sm table-hover align-middle">
-                          <thead class="table-light">
-                            <tr>
-                              <th width="20%">Date</th>
-                              <th width="20%">Diagnosis</th>
-                              <th width="20%">Action Taken</th>
-                              <th width="20%">Action Plan</th>
-                              <th width="20%">Comments</th>
-                            </tr>
-                          </thead>
-                          <tbody>
-                            <?php for ($i = 0; $i < count($details) && $i < 2; $i++): ?>
-                              <tr>
-                                <td><?= display_timestamp($details[$i]['timestamp']) ?><br><small><?= getName($details[$i]['status_mark_by']) ?></small></td>
-                                <td><?= shortDesc($details[$i]['diagnosis']) ?></td>
-                                <td><?= shortDesc($details[$i]['action_taken']) ?></td>
-                                <td><?= shortDesc($details[$i]['action_plan']) ?></td>
-                                <td><?= shortDesc($details[$i]['comments']) ?></td>
-                              </tr>
-                            <?php endfor; ?>
-                          </tbody>
-                        </table>
+                     <div class="previous-actions-list">
+
+                        <?php for ($i = 0; $i < count($details) && $i < 2; $i++): ?>
+                          <div class="card mb-3 border-0 shadow-sm">
+                            <div class="card-body">
+
+                              <div class="d-flex justify-content-between align-items-center mb-2">
+                                <div>
+                                  <span class="badge bg-secondary">
+                                    <?= display_timestamp($details[$i]['timestamp']) ?>
+                                  </span>
+                                  <small class="text-muted ms-2">
+                                    by <?= getName($details[$i]['status_mark_by']) ?>
+                                  </small>
+                                </div>
+                              </div>
+
+                              <p class="mb-2">
+                                <strong>🩺 Diagnosis:</strong><br>
+                                <span class="text-dark"><?= nl2br(htmlspecialchars_decode($details[$i]['diagnosis'])) ?></span>
+                              </p>
+
+                              <p class="mb-2">
+                                <strong>⚙️ Action Taken:</strong><br>
+                                <span class="text-dark"><?= nl2br(htmlspecialchars_decode($details[$i]['action_taken'])) ?></span>
+                              </p>
+
+                              <?php if (!empty($details[$i]['action_plan'])): ?>
+                                <p class="mb-2">
+                                  <strong>📋 Action Plan:</strong><br>
+                                  <span class="text-dark"><?= nl2br(htmlspecialchars_decode($details[$i]['action_plan'])) ?></span>
+                                </p>
+                              <?php endif; ?>
+
+                              <?php if (!empty($details[$i]['comments'])): ?>
+                                <p class="mb-0">
+                                  <strong>💬 Comments:</strong><br>
+                                  <span class="text-muted"><?= nl2br(htmlspecialchars_decode($details[$i]['comments'])) ?></span>
+                                </p>
+                              <?php endif; ?>
+
+                            </div>
+                          </div>
+                        <?php endfor; ?>
+
                       </div>
+
 
                     <?php else: ?>
                       <p class="text-muted">No previous actions found.</p>
@@ -467,7 +897,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
     $('#vendor_contact').prop('disabled', true);
     $('#feedback').prop('disabled', true);
     $("input[name='interaction']").prop('disabled', true);
+
+    // ✅ Force default state = No (sync UI + logic)
+    display_vendor_interaction('No');
   });
+
 
   function display_vendor_interaction(status) {
     const enable = (status === 'Yes');
