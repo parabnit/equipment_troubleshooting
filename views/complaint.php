@@ -64,6 +64,9 @@ $complaintHistory = [];
  * Transfer complaint → auto-filled
  */
 $complaint_description = '';
+$complaint_process_develop = '';
+$complaint_anti_cont_develop = '';
+
 
 /**
  * STEP 1: Fetch selected complaint (ONLY when transfer)
@@ -79,11 +82,14 @@ if ($is_existing_complaint) {
     );
 
     if ($res && mysqli_num_rows($res) > 0) {
-        $complaintInfo = mysqli_fetch_assoc($res);
+      $complaintInfo = mysqli_fetch_assoc($res);
 
-        // ✅ Auto-fill description for transfer
-        $complaint_description = $complaintInfo['complaint_description'] ?? '';
-    }
+      // ✅ Auto-fill fields for transfer
+      $complaint_description      = $complaintInfo['complaint_description'] ?? '';
+      $complaint_process_develop = $complaintInfo['process_develop'] ?? '';
+      $complaint_anti_cont_develop = $complaintInfo['anti_contamination_develop'] ?? '';
+  }
+
 }
 
 /**
@@ -671,12 +677,15 @@ if ($is_existing_complaint) {
             <!-- Conditional Fields -->
             <div class="mb-3 d-none" id="process_development_row">
               <label for="process_develop" class="form-label">Process Development</label>
-              <input type="text" class="form-control" name="process_develop" id="process_develop" disabled>
+              <input type="text" class="form-control" name="process_develop" id="process_develop" disabled value="<?= htmlspecialchars($complaint_process_develop ?? '', ENT_QUOTES, 'UTF-8') ?>">
+
             </div>
 
             <div class="mb-3 d-none" id="anti_contamination_row">
               <label for="anti_contamination_develop" class="form-label">Anti-Contamination Development</label>
-              <input type="text" class="form-control" name="anti_contamination_develop" id="anti_contamination_develop" disabled>
+             <input type="text" class="form-control" name="anti_contamination_develop" id="anti_contamination_develop" disabled
+              value="<?= htmlspecialchars($complaint_anti_cont_develop ?? '', ENT_QUOTES, 'UTF-8') ?>">
+
             </div>
 
             <!-- Description -->
@@ -1063,6 +1072,12 @@ function enableFormFields() {
       antiInput.value = "";
     }
   }
+
+    // 🔁 Auto-show Process fields on transfer
+  <?php if ($is_existing_complaint && $type == 4): ?>
+    setProcessFieldsVisibility(4);
+  <?php endif; ?>
+
 
   // safe b64 for text
   function b64encode(str) {
