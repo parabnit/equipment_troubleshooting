@@ -6,6 +6,20 @@ $currentType = $_GET['type'] ?? '';
 $currentStatus = $_GET['status'] ?? '';
 $teamHeads = getTeamHead('all'); // all team heads
 $isTeamHead = in_array($_SESSION['memberid'], $teamHeads);
+
+$canViewTasksAndComplaints = (
+    is_LabManager($_SESSION['memberid']) ||
+    is_AssistLabManager($_SESSION['memberid']) ||
+    is_EquipmentHead($_SESSION['memberid']) || is_EquipmentTeam($_SESSION['memberid']) ||
+    is_FacilityHead($_SESSION['memberid'])  || is_FacilityTeam($_SESSION['memberid']) ||
+    is_SafetyHead($_SESSION['memberid'])    || is_SafetyTeam($_SESSION['memberid']) ||
+    is_ProcessHead($_SESSION['memberid'])   || is_ProcessTeam($_SESSION['memberid']) ||
+    is_HRHead($_SESSION['memberid'])        || is_HRTeam($_SESSION['memberid']) ||
+    is_ITHead($_SESSION['memberid'])        || is_ITTeam($_SESSION['memberid']) ||
+    is_PurchaseHead($_SESSION['memberid'])  || is_PurchaseTeam($_SESSION['memberid']) ||
+    is_TrainingHead($_SESSION['memberid'])  || is_TrainingTeam($_SESSION['memberid']) ||
+    is_InventoryHead($_SESSION['memberid']) || is_InventoryTeam($_SESSION['memberid'])
+);
 ?>
 
 <style>
@@ -60,7 +74,7 @@ $isTeamHead = in_array($_SESSION['memberid'], $teamHeads);
         min-width: 120px;
     }
 }
-yyyy
+
 </style>
 <!-- Mobile Menu Toggle Button -->
 <div class="d-md-none mobile-menu-wrapper">
@@ -120,7 +134,7 @@ yyyy
         class="list-group-item list-group-item-action <?php echo ($currentPage == 'my_complaint.php') ? 'active' : ''; ?>">
             My Complaints
         </a>
-
+        <?php if ($canViewTasksAndComplaints): ?>
         <!-- Daily Tasks -->
               <a class="list-group-item list-group-item-action bg-light fw-bold"
             href="javascript:void(0)"
@@ -193,9 +207,9 @@ yyyy
 
                         
             </div>
+        <?php endif; ?>
 
-
-
+        <?php if ($canViewTasksAndComplaints): ?>
         <!-- Pending Complaints -->
         <a class="list-group-item list-group-item-action bg-light fw-bold"
             href="javascript:void(0)"
@@ -255,7 +269,9 @@ yyyy
 
                         
         </div>
+    <?php endif; ?>
 
+    <?php if ($canViewTasksAndComplaints): ?>
         <!-- Closed Complaints -->
         <a class="list-group-item list-group-item-action bg-light fw-bold"
             href="javascript:void(0)"
@@ -321,6 +337,7 @@ yyyy
                      
 
         </div>
+        <?php endif; ?>
 <?php if (is_Admin($_SESSION['memberid']) == 1 || is_ITadmin($_SESSION['memberid']) == 1): ?>
         <!-- Periodic Checks -->
         <a href="../views/periodic_checks.php" class="list-group-item list-group-item-action">
@@ -378,4 +395,5 @@ yyyy
         </a> -->
 
     </div>
+    
 </div>

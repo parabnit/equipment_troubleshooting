@@ -14,8 +14,16 @@ $types = [
     1 => "Equipment",
     2 => "Facility",
     3 => "Safety",
-    4 => "Process"
+    4 => "Process",
+    5 => "HR",
+    6 => "IT",
+    7 => "Purchase",
+    8 => "Training",
+    9 => "Inventory"
 ];
+
+
+
 ?>
 
 <style>
@@ -520,15 +528,27 @@ $types = [
                         1 => "⚙️", // Equipment
                         2 => "🏢", // Facility
                         3 => "🚨", // Safety
-                        4 => "📈"  // Process
+                        4 => "📈", // Process
+                        5 => "👥", // HR
+                        6 => "💻", // IT
+                        7 => "🛒", // Purchase
+                        8 => "🎓", // Training
+                        9 => "📦"  // Inventory
                     ];
+
                     switch ($tid) {
                         case 1: $team="equipment"; break;
                         case 2: $team="facility"; break;
                         case 3: $team="safety"; break;
                         case 4: $team="process"; break;
+                        case 5: $team="hr"; break;
+                        case 6: $team="it"; break;
+                        case 7: $team="purchase"; break;
+                        case 8: $team="training"; break;
+                        case 9: $team="inventory"; break;
                         default: $team=""; break;
                     }
+
                     $icon = $icons[$tid] ?? '📝';
                     $members = getTeamMembers($team);
                     ?>
