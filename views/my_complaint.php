@@ -286,6 +286,16 @@ $statusMap = [
             <?php else: ?>
 
             <div class="table-responsive">
+                <?php
+                    $showProcessCols = false;
+                    foreach ($complaints as $cc) {
+                        if ((int)$cc['type'] === 4) {
+                            $showProcessCols = true;
+                            break;
+                        }
+                    }
+                ?>
+
             <table id="complaintsTable" class="table table-sm align-middle">
                 <thead>
                     <tr>
@@ -294,6 +304,10 @@ $statusMap = [
                         <th class="d-none">TypeId</th>
                         <th>Component / Tool</th>
                         <th>Description</th>
+                       <?php if ($showProcessCols): ?>
+                            <th>Process Development</th>
+                            <th>Anti-Contamination Development</th>
+                        <?php endif; ?>
                         <th>Status</th>
                         <th>Tracking</th>
                     </tr>
@@ -359,6 +373,23 @@ $statusMap = [
                                 </a>
                             <?php endif; ?>
                         </td>
+
+                        <?php if ($showProcessCols): ?>
+
+                            <?php if ((int)$c['type'] === 4): ?>
+                                <td data-label="Process Development">
+                                    <?= htmlspecialchars($c['process_develop'] ?? '-') ?>
+                                </td>
+
+                                <td data-label="Anti-Contamination Development">
+                                    <?= htmlspecialchars($c['anti_contamination_develop'] ?? '-') ?>
+                                </td>
+                            <?php else: ?>
+                                <td>-</td>
+                                <td>-</td>
+                            <?php endif; ?>
+
+                        <?php endif; ?>
 
 
                         <td data-label="Status">
