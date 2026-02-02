@@ -315,7 +315,7 @@ switch ($type) {
     $success = true;
     $from = get_email_user($memberid);
     //$cc = "deepti.rukade@gmail.com";
-    //$cc = "rohansghumare@gmail.com";
+    $cc = "rohansghumare@gmail.com";
     $members = getTeamMembers($team);
     
     // echo "<pre>".print_r($members)."</pre>";
@@ -336,6 +336,8 @@ switch ($type) {
     }
     }
     $subject = "New Task/Complaint - $team Submitted";
+    $member_email = ['30004916@iitb.ac.in','parabnitin51@gmail.com','30005869@iitb.ac.in','30005964@iitb.ac.in','pateltausif78@gmail.com','p15430@iitb.ac.in'];
+    $subject = "New Task/Complaint - $team Submitted";
 $desc = $description;
 
 // if description contains literal "\n"
@@ -343,7 +345,7 @@ $desc = str_replace(["\\r\\n", "\\n", "\\r"], "\n", $desc);
 
 // escape HTML + convert newlines to <br>
 date_default_timezone_set('Asia/Kolkata');
-$desc = nl2br(htmlspecialchars($desc, ENT_QUOTES, 'UTF-8'), false);
+$desc = nl2br(htmlspecialchars_decode($desc, ENT_QUOTES, 'UTF-8'), false);
 $body = '<table width="100%" cellpadding="0" cellspacing="0" border="0" role="presentation">
   <tr>
     <td style="font-family: Arial, sans-serif; font-size:14px; line-height:20px; color:#111; padding:16px;">
