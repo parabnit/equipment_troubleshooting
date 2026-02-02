@@ -259,6 +259,27 @@ $statusMap = [
             </div>
 
             <div class="card-body">
+                <div class="d-flex flex-wrap gap-2 align-items-end mb-3">
+    <div>
+        <label class="form-label mb-1 fw-semibold">Filter by Type</label>
+        <select id="filterType" class="form-select form-select-sm">
+            <option value="">All Types</option>
+            <?php foreach ($typeMap as $k => $v): ?>
+                <option value="<?= (int)$k ?>"><?= htmlspecialchars($v[0]) ?></option>
+            <?php endforeach; ?>
+        </select>
+    </div>
+
+    <div>
+        <button type="button" id="applyFilter" class="btn btn-sm btn-primary">
+            Filter
+        </button>
+        <button type="button" id="resetFilter" class="btn btn-sm btn-outline-secondary">
+            Reset
+        </button>
+    </div>
+</div>
+
 
             <?php if (empty($complaints)): ?>
                 <div class="alert alert-info">No complaints found.</div>
@@ -270,6 +291,7 @@ $statusMap = [
                     <tr>
                         <th>Member</th>
                         <th>Type</th>
+                        <th class="d-none">TypeId</th>
                         <th>Component / Tool</th>
                         <th>Description</th>
                         <th>Status</th>
@@ -305,6 +327,9 @@ $statusMap = [
                                 <?= $typeText ?>
                             </span>
                         </td>
+
+                        <td class="d-none"><?= (int)$c['type'] ?></td>
+
 
                         <td data-label="Component / Tool">
                             <div class="tool-name"><?= htmlspecialchars($toolName) ?></div>
@@ -381,21 +406,44 @@ $statusMap = [
 <script>
 $(function () {
 
-    $('#complaintsTable').DataTable({
+    const table = $('#complaintsTable').DataTable({
         order: [],
-        pageLength: 5,      // better for mobile
+        pageLength: 5,
         stateSave: true,
-        responsive: false, // we handle with CSS
-        autoWidth: false
+        responsive: false,
+        autoWidth: false,
+        columnDefs: [
+            { targets: [2], visible: false, searchable: true } 
+            // IMPORTANT: Update index based on where you placed TypeId column
+        ]
     });
 
+    // ⚠️ Adjust this index:
+    // Member=0, Type=1, TypeId=2, Component=3, Description=4, Status=5, Tracking=6
+    const typeIdColIndex = 2;
+
+    $('#applyFilter').on('click', function () {
+        const val = $('#filterType').val(); // "" or "1".."9"
+        if (val === "") {
+            table.column(typeIdColIndex).search("").draw();
+        } else {
+            table.column(typeIdColIndex).search("^" + val + "$", true, false).draw();
+        }
+    });
+
+    $('#resetFilter').on('click', function () {
+        $('#filterType').val("");
+        table.column(typeIdColIndex).search("").draw();
+    });
 
     $(document).on('click', '.desc-toggle', function () {
         const cell = $(this).closest('.desc');
         cell.find('.desc-short, .desc-more').toggle();
         $(this).text($(this).text() === 'Show More' ? 'Show Less' : 'Show More');
     });
+
 });
+
 
 function view(id, type) {
     $('#dialog').dialog({
