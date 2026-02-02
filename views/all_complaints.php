@@ -1099,36 +1099,43 @@ select {
   }
 
 
-  function check(j, complaintDateStr, lastDateStr) {
-    const closedDate = new Date($("#c_date" + j).val());
-    const complaintDate = new Date(complaintDateStr);
-    const lastTrackingDate = lastDateStr ? new Date(lastDateStr) : null;
+ function check(j, complaintDateStr, lastDateStr) {
     const status = $("#complanit_status" + j).val();
+    const dateVal = $("#c_date" + j).val();
 
-    // Only validate date if NOT closed
-      if (status != 2 && $("#c_date" + j).is(":visible")) {
-      if (!$("#c_date" + j).val()) {
+    // Only validate when date field is visible & not Closed
+    if (status != 2 && $("#c_date" + j).is(":visible")) {
+
+      if (!dateVal) {
         alert("Please enter 'Date'");
         $("#c_date" + j).focus();
         return false;
       }
 
-      if (lastTrackingDate) {
-        if (closedDate < lastTrackingDate) {
-          alert("'Date' must be >= 'Last Tracking date'");
-          $("#c_date" + j).focus();
-          return false;
-        }
-      } else {
-        if (closedDate < complaintDate) {
-          alert("'Date' must be >= 'Complaint date'");
-          $("#c_date" + j).focus();
-          return false;
-        }
+      // Normalize dates (ignore time)
+      const selectedDate = new Date(dateVal + " 00:00:00");
+
+      const complaintDate = new Date(complaintDateStr);
+      complaintDate.setHours(0,0,0,0);
+
+      let compareDate = complaintDate;
+
+      if (lastDateStr) {
+        compareDate = new Date(lastDateStr);
+        compareDate.setHours(0,0,0,0);
+      }
+
+      // ❌ block only if earlier date
+      if (selectedDate < compareDate) {
+        alert("'Date' must be same or after complaint / last tracking date");
+        $("#c_date" + j).focus();
+        return false;
       }
     }
+
     return true;
   }
+
 </script>
 <script>
 $(document).on("click", ".view-children-btn", function () {
