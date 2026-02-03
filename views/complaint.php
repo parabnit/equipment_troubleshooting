@@ -1014,7 +1014,7 @@ function loadAllocatedMembers(type) {
   // HELPERS
   // =========================
 function enableFormFields() {
-  const ids = ["tools_name", "description", "file", "submit", "category"];
+  const ids = ["tools_name", "description", "file", "submit", "category","anti_contamination_develop","process_develop"];
   ids.forEach(id => {
     const el = document.getElementById(id);
     if (el) el.disabled = false;
@@ -1074,9 +1074,14 @@ function enableFormFields() {
   }
 
     // 🔁 Auto-show Process fields on transfer
-  <?php if ($is_existing_complaint && $type == 4): ?>
-    setProcessFieldsVisibility(4);
-  <?php endif; ?>
+<?php if ($is_existing_complaint && $type == 4): ?>
+  setProcessFieldsVisibility(4);
+
+  // ✅ SIMPLE FIX: lock them again (like description)
+  processInput.disabled = true;
+  antiInput.disabled = true;
+<?php endif; ?>
+
 
 
   // safe b64 for text
