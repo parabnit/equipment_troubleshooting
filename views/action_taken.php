@@ -802,13 +802,45 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
 
                               <p class="mb-2">
                                 <strong>🩺 Diagnosis:</strong><br>
-                                <span class="text-dark"><?= nl2br(htmlspecialchars_decode($details[$i]['diagnosis'])) ?></span>
+                                <span class="text-dark">
+                                  <?php
+                                    $diag = $details[$i]['diagnosis'] ?? '';
+
+                                    // 1️⃣ Remove literal \r\n, \n, \r
+                                    $diag = str_replace(['\\r\\n', '\\n', '\\r'], "\n", $diag);
+
+                                    // 2️⃣ Remove escaped quotes and slashes
+                                    $diag = str_replace(["\\'", '\\"', '\\\\'], ["'", '"', "\\"], $diag);
+
+                                    // 3️⃣ Final safety
+                                    $diag = stripslashes($diag);
+
+                                    echo nl2br(htmlspecialchars_decode($diag));
+                                  ?>
+                                </span>
                               </p>
 
-                              <p class="mb-2">
-                                <strong>⚙️ Action Taken:</strong><br>
-                                <span class="text-dark"><?= nl2br(htmlspecialchars_decode($details[$i]['action_taken'])) ?></span>
-                              </p>
+
+                             <p class="mb-2">
+                            <strong>⚙️ Action Taken:</strong><br>
+                            <span class="text-dark">
+                              <?php
+                                $act = $details[$i]['action_taken'] ?? '';
+
+                                // 1️⃣ Remove literal \r\n, \n, \r
+                                $act = str_replace(['\\r\\n', '\\n', '\\r'], "\n", $act);
+
+                                // 2️⃣ Remove escaped quotes and slashes
+                                $act = str_replace(["\\'", '\\"', '\\\\'], ["'", '"', "\\"], $act);
+
+                                // 3️⃣ Final safety
+                                $act = stripslashes($act);
+
+                                echo nl2br(htmlspecialchars_decode($act));
+                              ?>
+                            </span>
+                          </p>
+
 
                               <?php if (!empty($details[$i]['action_plan'])): ?>
                                 <p class="mb-2">
