@@ -155,8 +155,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
 
     // ✅ If success → redirect
     $type = esc($db_slot, 'type');
-    header("Location: all_complaints.php?type={$type}&status=pending&importance=all");
+    $return_to = $_POST['return_to'] ?? 'all_complaints.php';
+
+    if ($return_to == 'daily_tasks.php') {
+        header("Location: daily_tasks.php");
+    } else {
+        header("Location: all_complaints.php?type={$type}&status=pending&importance=all");
+    }
     exit;
+
   } catch (Exception $e) {
     error_log("DB Insert Error " . $e->getMessage());
    // $message = "Special characters are not allowed. Please remove them and try again.";

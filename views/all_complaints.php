@@ -647,6 +647,7 @@ select {
 
       <?php if (in_array($status, ['pending', 'inprocess', 'onhold'])): ?>
       <form method="get" class="row g-3 align-items-center mb-3">
+        <input type="hidden" name="return_to" value="all_complaints.php">
 
         <input type="hidden" name="type" value="<?= htmlspecialchars($type) ?>">
 

@@ -508,7 +508,7 @@ input:checked + .slider:before {
 
 <!-- Filters -->
 <form method="post" class="filter-card row g-3 align-items-end mb-4">
-
+<input type="hidden" name="return_to" value="daily_tasks.php">
   <!-- Tool filter -->
   <div class="col-md-4">
     <label class="form-label fw-semibold">Tool &amp; Category</label>
