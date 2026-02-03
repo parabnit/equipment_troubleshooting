@@ -20,6 +20,16 @@ if (empty($_SESSION['login'])) {
     exit;
 }
 
+// ✅ Store return_url ONLY when coming from another page (not self)
+if (!empty($_SERVER['HTTP_REFERER'])) {
+    $current = basename($_SERVER['PHP_SELF']);
+    $referer = basename(parse_url($_SERVER['HTTP_REFERER'], PHP_URL_PATH));
+
+    if ($referer !== $current) {
+        $_SESSION['return_url'] = $_SERVER['HTTP_REFERER'];
+    }
+}
+
 // ===========================
 // Input Parameters
 // ===========================
@@ -675,6 +685,8 @@ if ($ec !== '') {
 <td data-label="Allocation / Track" style="text-align:center;">
    <?php if ($d['status'] != '2'): ?>
                     <form action="action_taken.php" method="post" enctype="multipart/form-data" style="display:inline; ">
+    <input type="hidden" name="return_to" value="daily_tasks">
+
                       <input type="hidden" name="complaint_id" value="<?= $d['complaint_id'] ?>">
                       <input type="hidden" name="member_id" value="<?= $member_id ?>">
                       <input type="hidden" name="type" value="<?= $type ?>">

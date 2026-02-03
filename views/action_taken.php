@@ -6,6 +6,13 @@ require_once("../includes/header.php");
 require_once("../config/connect.php");
 require_once("../includes/common.php");
 
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_POST['submit'])) {
+    if (!empty($_SERVER['HTTP_REFERER'])) {
+        $_SESSION['return_url'] = $_SERVER['HTTP_REFERER'];
+    }
+}
+
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
@@ -20,6 +27,8 @@ if (!isset($_POST['complaint_id'], $_POST['member_id'], $_POST['type'])) {
   header("Location: complaint.php");
   exit;
 }
+
+
 
 
 $complaint_id = mysqli_real_escape_string($db_slot, $_POST['complaint_id']);
@@ -155,14 +164,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
 
     // ✅ If success → redirect
     $type = esc($db_slot, 'type');
-    $return_to = $_POST['return_to'] ?? 'all_complaints.php';
-
-    if ($return_to == 'daily_tasks.php') {
-        header("Location: daily_tasks.php");
+    // ✅ Redirect back to original page
+    if (!empty($_SESSION['return_url'])) {
+        $redirect = $_SESSION['return_url'];
+        unset($_SESSION['return_url']);
+        header("Location: $redirect");
     } else {
         header("Location: all_complaints.php?type={$type}&status=pending&importance=all");
     }
     exit;
+
 
   } catch (Exception $e) {
     error_log("DB Insert Error " . $e->getMessage());
