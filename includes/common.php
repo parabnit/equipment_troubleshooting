@@ -2275,7 +2275,7 @@ function makeLinksClickable($text) {
 
 function getTxtCategories($type) {
     // Base path for category files
-    $basePath = $_SERVER['DOCUMENT_ROOT'] . '/equipment_troubleshooting/views/complaint_categories/';
+    $basePath = __DIR__ . '/../views/complaint_categories/';
 
     // Map type to specific text files
     $map = [

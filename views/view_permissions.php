@@ -136,14 +136,18 @@ foreach ($teams as $t => $vals) {
             <div class="team-card">
                 <div class="team-card-header">
                     <i class="fa-solid fa-users"></i>
-                    <?= htmlspecialchars($team) ?> Team
+                    <?php
+                    $displayTeam = ($team === 'Lab') ? 'Lab Manager' : $team . ' Team';
+                    ?>
+                    <?= htmlspecialchars($displayTeam) ?>
+
                 </div>
 
                 <div class="team-card-body">
                     <div class="team-section">
                         <div class="team-section-title">
                             <i class="fa-solid fa-user-tie text-blue-600"></i>
-                            Heads
+                            Head
                         </div>
                         <?php if (empty($grp['heads'])): ?>
                             <span class="text-muted">None</span>
