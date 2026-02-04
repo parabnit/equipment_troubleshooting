@@ -55,6 +55,7 @@ $user_role = null;
 if (is_LabManager($member_id) || is_AssistLabManager($member_id)) {
   $user_role = 'all';
   $details = all_complaint($head, $type, 0, $tools_name,$tabledata); 
+  $permission_key = check_permission('LA', $member_id); 
 }
 // 2) For everyone else: allow only their own type
 else {
@@ -65,12 +66,16 @@ else {
         $user_role = 'eqp_head'; 
         $head = 1; 
         $details = all_complaint($head, $type, 0, $tools_name, $tabledata); 
+
+$permission_key = check_permission($type, $member_id); 
         
       }
       elseif (is_EquipmentTeam($member_id)) 
       { 
         $user_role = 'eqp_team'; 
         $details = my_allocated_complaint($member_id, $type, 0, $tools_name, $tabledata);
+
+$permission_key = check_permission($type, $member_id); 
         
       }
       break;
@@ -81,12 +86,16 @@ else {
         $user_role = 'facility_head'; 
         $head = 1;
         $details = all_complaint($head, $type, 0, $tools_name, $tabledata); 
+
+$permission_key = check_permission($type, $member_id); 
          
       }
       elseif (is_FacilityTeam($member_id)) 
         { 
           $user_role = 'facility_team'; 
           $details = my_allocated_complaint($member_id, $type, 0, $tools_name, $tabledata);
+
+$permission_key = check_permission($type, $member_id); 
           
         }
       break;
@@ -97,12 +106,16 @@ else {
         $user_role = 'safety_head'; 
         $head = 1; 
         $details = all_complaint($head, $type, 0, $tools_name, $tabledata);
+
+$permission_key = check_permission($type, $member_id); 
         
       }
       elseif (is_SafetyTeam($member_id)) 
       { 
         $user_role = 'safety_team';
         $details = my_allocated_complaint($member_id, $type, 0, $tools_name, $tabledata);
+
+$permission_key = check_permission($type, $member_id); 
         
       }
       break;
@@ -113,12 +126,16 @@ else {
         $user_role = 'process_head'; 
         $head = 1; 
         $details = all_complaint($head, $type, 0, $tools_name, $tabledata); 
+
+$permission_key = check_permission($type, $member_id); 
         
       }
       elseif (is_ProcessTeam($member_id)) 
       { 
         $user_role = 'process_team'; 
         $details = my_allocated_complaint($member_id, $type, 0, $tools_name, $tabledata);
+
+$permission_key = check_permission($type, $member_id); 
         
       }
       break;
@@ -129,12 +146,16 @@ else {
         $user_role = 'hr_head'; 
         $head = 1;
         $details = all_complaint($head, $type, 0, $tools_name, $tabledata);
+
+$permission_key = check_permission($type, $member_id); 
         
       }
       elseif (is_HRTeam($member_id)) 
       { 
         $user_role = 'hr_team';
         $details = my_allocated_complaint($member_id, $type, 0, $tools_name, $tabledata);
+
+$permission_key = check_permission($type, $member_id); 
         
       }
       break;
@@ -145,12 +166,16 @@ else {
           $user_role = 'it_head'; 
           $head = 1; 
           $details = all_complaint($head, $type, 0, $tools_name, $tabledata);
+
+$permission_key = check_permission($type, $member_id); 
           
         }
       elseif (is_ITTeam($member_id)) 
       { 
         $user_role = 'it_team';
         $details = my_allocated_complaint($member_id, $type, 0, $tools_name, $tabledata);
+
+$permission_key = check_permission($type, $member_id); 
          
       }
       break;
@@ -161,12 +186,16 @@ else {
         $user_role = 'purchase_head'; 
         $head = 1; 
         $details = all_complaint($head, $type, 0, $tools_name, $tabledata);
+
+$permission_key = check_permission($type, $member_id); 
         
       }
       elseif (is_PurchaseTeam($member_id)) 
       { 
         $user_role = 'purchase_team';
         $details = my_allocated_complaint($member_id, $type, 0, $tools_name, $tabledata);
+
+$permission_key = check_permission($type, $member_id); 
         
       }
       break;
@@ -177,12 +206,16 @@ else {
         $user_role = 'training_head'; 
         $head = 1; 
         $details = all_complaint($head, $type, 0, $tools_name, $tabledata);
+
+$permission_key = check_permission($type, $member_id); 
         
       }
       elseif (is_TrainingTeam($member_id)) 
       {  
         $user_role = 'training_team'; 
         $details = my_allocated_complaint($member_id, $type, 0, $tools_name, $tabledata);
+
+$permission_key = check_permission($type, $member_id); 
         
       }
       break;
@@ -193,12 +226,16 @@ else {
           $user_role = 'inventory_head'; 
           $head = 1; 
           $details = all_complaint($head, $type, 0, $tools_name, $tabledata);
+
+$permission_key = check_permission($type, $member_id); 
           
         }
       elseif (is_InventoryTeam($member_id)) 
         { 
           $user_role = 'inventory_team'; 
           $details = my_allocated_complaint($member_id, $type, 0, $tools_name,  $tabledata);
+          
+$permission_key = check_permission($type, $member_id); 
           
         }
       break;
@@ -217,7 +254,6 @@ if ($user_role === null) {
   exit;
 }
 
-$permission_key = check_permission($type, $member_id); 
 
 //1 = Equipment Head
 //2 = Facility Head

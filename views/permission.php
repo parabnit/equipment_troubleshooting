@@ -138,7 +138,7 @@ $users=[];
 while($r=mysqli_fetch_assoc($q))
     $users[]=['id'=>$r['memberid'],'name'=>getName($r['memberid'])];
 
-usort($users,fn($a,$b)=>strcasecmp($a['name'],$b['name']));
+usort($users, fn($a, $b) => strcasecmp((string)($a['name'] ?? ''), (string)($b['name'] ?? '')));
 $i=0;
 
 foreach($users as $u):
