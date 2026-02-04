@@ -15,35 +15,45 @@ function scheduler_complaint_submit(array $input)
 
     $process = !empty($input['process_develop'])
         ? base64_decode($input['process_develop'])
-        : 'NULL';
+        : null;
 
     $anti = !empty($input['anti_contamination_develop'])
         ? base64_decode($input['anti_contamination_develop'])
-        : 'NULL';
+        : null;
 
     $desc      = base64_decode($input['description'] ?? '') ?: '';
     $type      = $input['type'] ?? 0;
-    $allocated = $input['allocated_to'] ?? NULL;
+    $allocated = $input['allocated_to'] ?? null;
+
+    // ✅ Daily task defaults
+    $parent_id   = 0;
+    $original_id = 0;
+    $scheduler   = 1;   // or whatever flag you use for scheduler (0/1)
 
     if ($member_id === '' || $machine_id === '') {
         throw new Exception("memberid & tools_name are required");
     }
 
     /* =======================
-       ORIGINAL INSERT LOGIC
+       CORRECT INSERT CALL
        ======================= */
-    insert_complaint(
+    $new_id = insert_complaint(
         $member_id,
         $machine_id,
         $process,
         $anti,
         $desc,
         $type,
-        $allocated
+        $allocated,     // team_head
+        $parent_id,     // 0
+        $original_id,   // 0
+        $scheduler
     );
 
     return [
         "status"  => "success",
-        "message" => "Complaint submitted successfully"
+        "message" => "Complaint submitted successfully",
+        "id"      => $new_id
     ];
 }
+
