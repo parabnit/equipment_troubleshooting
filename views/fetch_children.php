@@ -94,6 +94,7 @@ while ($r = mysqli_fetch_assoc($res)) {
     } else {
         $r['tool_name'] = '';
     }
+        $r['has_track'] = count(trouble_track($r['complaint_id'], '')) > 0 ? 1 : 0;
 
 
     $rows[] = $r;

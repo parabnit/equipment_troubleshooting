@@ -1271,7 +1271,7 @@ else {
         let cleanDesc = r.complaint_description || "";
         cleanDesc = cleanDesc.replace(/\\'/g, "'").replace(/\\"/g, '"').replace(/\\\\/g, "\\");
         cleanDesc = cleanDesc.replace(/\\n/g, "\n").replace(/\\nn/g, "\n\n");
-
+        console.log(r.has_track);
         html += `
           <tr class="child-row child-of-${originalId}">
             <td class="child-indent" data-label="Member">
@@ -1300,15 +1300,17 @@ else {
                 </form>
               ` : '<span class="text-muted">Closed</span>'}
               <br><br>
- <?php if (count(trouble_track($d['complaint_id'], '')) > 0): ?>
-		   <a href="#"
-                    style="color:#0d6efd !important; font-weight:600; text-decoration:underline;"
-                    onclick="return viewTrack(<?= $d['complaint_id'] ?>, <?= $type ?>);">
-                    Track
-                  </a>
-                  <?php else: ?>
-                    No Data
-                  <?php endif; ?>
+ <br><br>
+${r.has_track == 1 ? `
+  <a href="#"
+     style="color:#0d6efd !important; font-weight:600; text-decoration:underline;"
+     onclick="return viewTrack(${r.complaint_id}, ${type});">
+     Track
+  </a>
+` : `
+  No Data
+`}
+
             </td>
            <td style="text-align:center;" data-label="Transfer / History">
               ${canTransfer ? `
