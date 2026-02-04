@@ -2334,7 +2334,7 @@ function renderExpandableText($text, $limit = 200) {
     $short = mb_substr($text, 0, $limit);
 
     return '
-      <span class="short-text">'.nl2br(htmlspecialchars($short)).'...</span>
+      <span class="short-text">'.nl2br(htmlspecialchars($short)).'</span>
       <span class="full-text d-none">'.nl2br(htmlspecialchars($text)).'</span>
       <a href="#" class="toggle-desc ms-1">Show more</a>
     ';

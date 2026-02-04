@@ -1195,7 +1195,11 @@ $(document).on("click", ".view-children-btn", function () {
                 extra="";
         }
 
-
+const statusText =
+          r.status == 0 ? "Pending" :
+          r.status == 1 ? "In process" :
+          r.status == 2 ? "Closed" :
+          r.status == 3 ? "On Hold" : "";
 
         let typeName = "";
         let roleKey = "";
@@ -1235,7 +1239,10 @@ else if (canUpdateStatus) {
         class="form-select form-select-sm mb-2">
         <option value="0" ${r.status == 0 ? 'selected' : ''}>Pending</option>
         <option value="1" ${r.status == 1 ? 'selected' : ''}>In Process</option>
+        <option value="2" ${r.status == 2 ? 'selected' : ''}>Closed</option>
         <option value="3" ${r.status == 3 ? 'selected' : ''}>On Hold</option>
+
+
       </select>
 
       <input type="text"
@@ -1252,18 +1259,15 @@ else if (canUpdateStatus) {
 }
 else {
   status_extra = `
-    <span class="badge bg-secondary">View Only</span><br>
-    <small class="text-muted">Not your department</small>
+    <span class="badge bg-secondary">
+      ${statusText}
+    </span>
   `;
 }
 
 
 
-        const statusText =
-          r.status == 0 ? "Pending" :
-          r.status == 1 ? "In process" :
-          r.status == 2 ? "Closed" :
-          r.status == 3 ? "On Hold" : "";
+        
 
 
 
@@ -1289,7 +1293,7 @@ else {
               ${extra}
             </td>
             <td style="text-align:center;" data-label="Action / Track">
-              ${r.status != 2 ? `
+              ${canTransfer  ? `
                 <form action="action_taken.php" method="post" style="display:inline;">
                   <input type="hidden" name="complaint_id" value="${r.complaint_id}">
                   <input type="hidden" name="member_id" value="<?= $member_id ?>">
@@ -1298,7 +1302,7 @@ else {
                     <img src="../assets/images/action_taken.png" style="width:24px;height:24px;">
                   </button>
                 </form>
-              ` : '<span class="text-muted">Closed</span>'}
+              ` : '<span class="text-muted">NA</span>'}
               <br><br>
  <br><br>
 ${r.has_track == 1 ? `
@@ -1393,7 +1397,7 @@ function renderExpandableTextJS(text, limit = 200) {
     const shortText = txt.substring(0, limit);
 
     return `
-        <span class="short-text">${shortText}...</span>
+        <span class="short-text">${shortText}</span>
         <span class="full-text d-none">${txt.replace(/\n/g, "<br>")}</span>
         <a href="#" class="toggle-desc ms-1">Show more</a>
     `;
