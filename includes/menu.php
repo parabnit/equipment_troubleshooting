@@ -338,7 +338,8 @@ $canViewTasksAndComplaints = (
 
         </div>
         <?php endif; ?>
-<?php if (is_Admin($_SESSION['memberid']) == 1 || is_ITadmin($_SESSION['memberid']) == 1): ?>
+        <?php if (is_Admin($_SESSION['memberid']) == 1 || is_ITadmin($_SESSION['memberid']) == 1 ||
+            is_LabManager($_SESSION['memberid'])): ?>
         <!-- Periodic Checks -->
         <a href="../views/periodic_checks.php" class="list-group-item list-group-item-action">
             Periodic Checks
