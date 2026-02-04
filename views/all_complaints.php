@@ -1028,17 +1028,17 @@ select {
 
         $dateInput.val(formatted).hide();  // hide calendar
     } 
-    else if (status == 1) {  // ONLY In Process
-        // Show DATE picker
-        $dateInput.val("").show();
+      else if (status == 1) {  // In Process → Auto set current date, hide calendar
+      const now = new Date();
 
-        $dateInput.datetimepicker({
-            timepicker: false,     // ❌ no time
-            format: 'Y-m-d'        // ✅ date only
-        });
+      const formatted =
+          now.getFullYear() + "-" +
+          String(now.getMonth() + 1).padStart(2, '0') + "-" +
+          String(now.getDate()).padStart(2, '0');
 
-        $dateInput.focus();
-    } 
+      $dateInput.val(formatted).hide();   // ✅ auto date, ❌ no calendar
+  }
+
     else {
         $dateInput.hide();  // hide for Pending or On Hold
     }
@@ -1218,38 +1218,45 @@ $(document).on("click", ".view-children-btn", function () {
   // IMPORTANT: form must submit to THIS page (so status_update works)
   let status_extra = "";
 
-  if (canUpdateStatus) {
-    status_extra = `
-      <form method="post" onsubmit="return check(${r.complaint_id}, '${escapeJs(r.time_of_complaint || "")}', '')">
-        <input type="hidden" name="complaint_id" value="${r.complaint_id}">
+// ✅ FRONTEND ONLY: If child is CLOSED → show text only
+if (r.status == 2) {
+  status_extra = `
+    <span class="badge bg-success">Closed</span>
+  `;
+}
+else if (canUpdateStatus) {
+  status_extra = `
+    <form method="post" onsubmit="return check(${r.complaint_id}, '${escapeJs(r.time_of_complaint || "")}', '')">
+      <input type="hidden" name="complaint_id" value="${r.complaint_id}">
 
-        <select name="status"
-          id="complanit_status${r.complaint_id}"
-          onchange="timeshow(${r.complaint_id});"
-          class="form-select form-select-sm mb-2">
-          <option value="0" ${r.status == 0 ? 'selected' : ''}>Pending</option>
-          <option value="1" ${r.status == 1 ? 'selected' : ''}>In Process</option>
-          <option value="2" ${r.status == 2 ? 'selected' : ''}>Closed</option>
-          <option value="3" ${r.status == 3 ? 'selected' : ''}>On Hold</option>
-        </select>
+      <select name="status"
+        id="complanit_status${r.complaint_id}"
+        onchange="timeshow(${r.complaint_id});"
+        class="form-select form-select-sm mb-2">
+        <option value="0" ${r.status == 0 ? 'selected' : ''}>Pending</option>
+        <option value="1" ${r.status == 1 ? 'selected' : ''}>In Process</option>
+        <option value="3" ${r.status == 3 ? 'selected' : ''}>On Hold</option>
+      </select>
 
-        <input type="text"
-          id="c_date${r.complaint_id}"
-          name="c_date"
-          class="form-control form-control-sm mb-2"
-          style="display:none;" />
+      <input type="text"
+        id="c_date${r.complaint_id}"
+        name="c_date"
+        class="form-control form-control-sm mb-2"
+        style="display:none;" />
 
-        <button type="submit" name="status_update" class="btn btn-sm btn-primary w-100">
-          Submit
-        </button>
-      </form>
-    `;
-  } else {
-    status_extra = `
-      <span class="badge bg-secondary">View Only</span><br>
-      <small class="text-muted">Not your department</small>
-    `;
-  }
+      <button type="submit" name="status_update" class="btn btn-sm btn-primary w-100">
+        Submit
+      </button>
+    </form>
+  `;
+}
+else {
+  status_extra = `
+    <span class="badge bg-secondary">View Only</span><br>
+    <small class="text-muted">Not your department</small>
+  `;
+}
+
 
 
         const statusText =
