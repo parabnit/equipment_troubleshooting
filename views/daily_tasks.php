@@ -169,7 +169,7 @@ if ($tools_name !== '') {
     } else {
 
         $details = array_filter($details, function ($r) use ($tools_name) {
-            return (string)($r['category_id'] ?? '') === (string)$tools_name;
+            return (string)($r['machine_id'] ?? '') === (string)$tools_name;
         });
     }
 }
