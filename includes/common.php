@@ -934,7 +934,7 @@ function all_complaint($head, $type, $scheduler, $tools_name ,$is_critical)
                 ON o.complaint_id = ec.original_id
                 WHERE ec.type = ?
                 AND (ec.scheduler = 0 OR ec.scheduler IS NULL)
-                AND ec.status != 2
+                AND ec.status != 2           
                 AND (
                         (ec.parent_id = 0 AND ec.original_id = 0)
 
@@ -966,7 +966,6 @@ function all_complaint($head, $type, $scheduler, $tools_name ,$is_critical)
               ON o.complaint_id = ec.original_id
             WHERE ec.type = ?
               AND ec.scheduler = ?
-              AND ec.status != 2
               AND (
                     (ec.parent_id = 0 AND ec.original_id = 0)
                     OR

@@ -205,24 +205,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['status_update'])) {
 
     $complaint_id = (int)($_POST['complaint_id'] ?? 0);
     $status_db    = (int)($_POST['status'] ?? -1);
-    $c_date       = trim($_POST['c_date'] ?? '');
+    // $c_date       = trim($_POST['c_date'] ?? '');
+    date_default_timezone_set('Asia/Kolkata'); // keep consistent
+$c_date = date('Y-m-d H:i:s');            // e.g. 2026-01-14 14:34:00
+
     $updated_by   = (int)($_SESSION['memberid'] ?? 0);
 
     // Keep allocated_to (hidden) - required by your update_complaint signature
     $allocated_to = (int)($_POST['allocated_to'] ?? 0);
 
-    if ($complaint_id <= 0 || $status_db < 0 || $allocated_to <= 0) {
+    if ($complaint_id <= 0 || $status_db < 0) {
         $_SESSION['flash_message'] = "<div class='alert alert-danger'>Please fill all required fields.</div>";
         header("Location: " . $_SERVER['REQUEST_URI']);
         exit;
     }
 
-    // If status is In Process (1) or Closed (2), ensure date exists
-    if (in_array($status_db, [1,2], true) && $c_date === '') {
-        $_SESSION['flash_message'] = "<div class='alert alert-danger'>Please select Date.</div>";
-        header("Location: " . $_SERVER['REQUEST_URI']);
-        exit;
-    }
+    // // If status is In Process (1) or Closed (2), ensure date exists
+    // if (in_array($status_db, [1,2], true) && $c_date === '') {
+    //     $_SESSION['flash_message'] = "<div class='alert alert-danger'>Please select Date.</div>";
+    //     header("Location: " . $_SERVER['REQUEST_URI']);
+    //     exit;
+    // }
     // ===========================
 // 🔒 Permission enforcement
 // ===========================
@@ -236,13 +239,6 @@ if (!$head) {
     }
 }
 
-// Head must select allocation
-if ($head && $allocated_to <= 0) {
-    $_SESSION['flash_message'] =
-        "<div class='alert alert-danger'>Please allocate the task to a team member.</div>";
-    header("Location: " . $_SERVER['REQUEST_URI']);
-    exit;
-}
 
 
     $result = update_complaint($complaint_id, $status_db, $c_date, $allocated_to, $updated_by);
@@ -492,8 +488,7 @@ input:checked + .slider:before {
 
 
 </style>
-<script type="text/javascript" src="../assets/js/datetimepicker.js"></script>
-<link rel="stylesheet" href="../assets/css/datetimepicker.css" type="text/css" />
+
 
 <div class="container-fluid">
 <div class="row">
@@ -795,64 +790,20 @@ if ($ec !== '') {
     <input type="hidden" name="show_closed" value="<?= htmlspecialchars($show_closed, ENT_QUOTES, 'UTF-8') ?>">
 
     <input type="hidden" name="complaint_id" value="<?= (int)$d['complaint_id'] ?>">
-    <?php if ($head): ?>
-
-  <select name="allocated_to" class="form-select form-select-sm">
-    <option value="">-- Allocate To --</option>
-    <?php
-     // get team members for this type
-      $teamMap = [
-        1 => 'equipment',
-        2 => 'facility',
-        3 => 'safety',
-        4 => 'process',
-        5 => 'hr',
-        6 => 'it',
-        7 => 'purchase',
-        8 => 'training',
-        9 => 'inventory'
-      ];
-
-      $teamKey  = $teamMap[$type] ?? '';
-      $team_ids = $teamKey ? getTeamMembers($teamKey) : [];
-
-
-      foreach ($team_ids as $tid) {
-        $tid = (int)$tid;
-        $selected = ((int)($d['allocated_to'] ?? 0) === $tid) ? 'selected' : '';
-        echo "<option value='{$tid}' {$selected}>"
-            . htmlspecialchars(getName($tid)) .
-            "</option>";
-      }
-    ?>
-  </select>
-
-<?php else: ?>
+   
 
   <input type="hidden" name="allocated_to" value="<?= (int)($d['allocated_to'] ?? $member_id) ?>">
 
-<?php endif; ?>
 
+<select name="status" id="complaint_status<?= (int)$d['complaint_id'] ?>" class="form-select form-select-sm">
 
-    <select
-      name="status"
-      id="complaint_status<?= (int)$d['complaint_id'] ?>"
-      class="form-select form-select-sm"
-      onchange="timeshow(<?= (int)$d['complaint_id'] ?>)"
-    >
       <option value="0" <?= ($st === 0) ? 'selected' : '' ?>>Pending</option>
       <option value="1" <?= ($st === 1) ? 'selected' : '' ?>>In Process</option>
       <option value="3" <?= ($st === 3) ? 'selected' : '' ?>>On Hold</option>
       <option value="2">Closed</option>
     </select>
 
-    <input
-      type="text"
-      name="c_date"
-      id="c_date<?= (int)$d['complaint_id'] ?>"
-      class="form-control form-control-sm"
-      style="display:none; min-width:160px;"
-    />
+  
 
     <button type="submit" name="status_update" class="btn btn-sm btn-primary">
       Submit
@@ -887,26 +838,7 @@ $(document).ready(function(){
 
 });
 
-function timeshow(id) {
-  const status = $("#complaint_status" + id).val();
-  const $date = $("#c_date" + id);
 
-  if (status == "1" || status == "2") {
-
-    $date.show();
-
-    // ✅ init datetimepicker ONLY once & ONLY on change
-    if (!$date.data("dtp-init")) {
-      $date.datetimepicker();
-      $date.data("dtp-init", true);
-    }
-
-    $date.focus();
-
-  } else {
-    $date.hide().val("");
-  }
-}
 
   function viewTrack(complaintId, type) {
     const dialog = document.createElement('div');

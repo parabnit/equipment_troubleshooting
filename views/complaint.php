@@ -320,8 +320,8 @@ switch ($type) {
 //$complaint_id = mysqli_insert_id($db_equip);
     $success = true;
     $from = get_email_user($memberid);
-    //$cc = "deepti.rukade@gmail.com";
-    $cc = "rohansghumare@gmail.com";
+    $cc = "deepti.rukade@gmail.com";
+    //$cc = "rohansghumare@gmail.com";
     $members = getTeamMembers($team);
     
     // echo "<pre>".print_r($members)."</pre>";
@@ -342,8 +342,7 @@ switch ($type) {
     }
     }
     $subject = "New Task/Complaint - $team Submitted";
-    $member_email = ['30004916@iitb.ac.in','parabnitin51@gmail.com','30005869@iitb.ac.in','30005964@iitb.ac.in','pateltausif78@gmail.com','p15430@iitb.ac.in'];
-    $subject = "New Task/Complaint - $team Submitted";
+    //$member_email = ['30004916@iitb.ac.in','parabnitin51@gmail.com','30005869@iitb.ac.in','30005964@iitb.ac.in','pateltausif78@gmail.com','p15430@iitb.ac.in'];
 $desc = $description;
 
 // if description contains literal "\n"
@@ -392,7 +391,7 @@ $body = '<table width="100%" cellpadding="0" cellspacing="0" border="0" role="pr
 </table>';
 
         $member_email = implode(",", $member_email);
-    sendEmailCC($member_email,$cc,$from,$subject, $body);
+    // sendEmailCC($member_email,$cc,$from,$subject, $body);
     echo json_encode(["status" => "success", "message" => "Complaint submitted successfully"]);
 
 } catch (Exception $e) {
@@ -668,7 +667,10 @@ if ($is_existing_complaint) {
 
             <?php if ($isAnyHead) { ?>
                                 <div class="col-md-6" id="allocate_block" style="display:none;">
-                            <label class="form-label">Allocated To</label>
+                            <label class="form-label">
+  Allocated To <span id="allocated_star" class="text-danger" style="display:none;">*</span>
+</label>
+
                             <select name="allocated_to" id="allocated_to" class="form-select" disabled>
                                 <option value="">--- Select ---</option>
                             </select>
@@ -931,6 +933,33 @@ document.addEventListener("DOMContentLoaded", function () {
   const timerContainer= document.getElementById("timer_input_container"); // may not exist
   const allocatedToEl = document.getElementById("allocated_to"); // may not exist
   
+  const allocatedStar = document.getElementById("allocated_star");
+
+function setAllocatedMandatory(isMandatory) {
+  if (!allocatedToEl) return;
+
+  // required + star
+  allocatedToEl.required = !!isMandatory;
+  if (allocatedStar) allocatedStar.style.display = isMandatory ? "inline" : "none";
+
+  // if mandatory, show the block (only if user can see it)
+  if (allocateBlock && isMandatory) allocateBlock.style.display = "block";
+
+  // if turning off mandatory, clear selection (optional)
+  if (!isMandatory) {
+    // allocatedToEl.value = "";
+  }
+}
+
+// Trigger on scheduler change
+if (timerSelect) {
+  timerSelect.addEventListener("change", function () {
+    const hasScheduler = timerSelect.value !== "" && timerSelect.value !== null;
+
+    // Make allocated mandatory only when scheduler is chosen
+    setAllocatedMandatory(hasScheduler);
+  });
+}
 
   
   // =========================
@@ -1415,6 +1444,17 @@ window.loading_tools_4 = function () {
         return false;
       }
     }
+
+    // allocated mandatory if scheduler selected
+const schedulerSelected = (timerSelect && !timerSelect.disabled && timerSelect.value !== "");
+if (schedulerSelected) {
+  if (!allocatedToEl || allocatedToEl.disabled || !allocatedToEl.value) {
+    msgBox.textContent = "Please select Allocated To (required for Scheduler).";
+    allocatedToEl?.focus();
+    return false;
+  }
+}
+
 
     return true;
   };
