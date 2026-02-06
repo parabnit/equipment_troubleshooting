@@ -285,26 +285,34 @@ switch ($type) {
         $toolName = ($tools_name == 0) ? 'Miscellaneous' : getToolName($tools_name);
         break;
     case 5:
-        $team = "hr";
-        $toolName = "";
-        break;
+      $team = "hr";
+      $cats = getTxtCategories(5);
+      $toolName = $cats[$tools_name] ?? 'N/A';
+      break;
+
     case 6:
         $team = "it";
-        $toolName = "";
+        $cats = getTxtCategories(6);
+        $toolName = $cats[$tools_name] ?? 'N/A';
         break;
+
     case 7:
         $team = "purchase";
-        $toolName = "";
+        $cats = getTxtCategories(7);
+        $toolName = $cats[$tools_name] ?? 'N/A';
         break;
+
     case 8:
-    $team = "training";
-    $toolName = "";
-    break;
+        $team = "training";
+        $cats = getTxtCategories(8);
+        $toolName = $cats[$tools_name] ?? 'N/A';
+        break;
 
     case 9:
-    $team = "inventory";
-    $toolName = "";
-    break;
+        $team = "inventory";
+        $cats = getTxtCategories(9);
+        $toolName = $cats[$tools_name] ?? 'N/A';
+        break;
 
     default:
         $team = "";
