@@ -1,38 +1,167 @@
 <?php
-// views/action_taken.php
+session_start();
 
-require_once("../includes/auth_check.php");
-require_once("../includes/header.php");
 require_once("../config/connect.php");
 require_once("../includes/common.php");
 
+/**
+ * ======================================================
+ * ✅ FORM DATA HANDLER (FormData + File Upload)
+ * ======================================================
+ */
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_POST['submit'])) {
-    if (!empty($_SERVER['HTTP_REFERER'])) {
-        $_SESSION['return_url'] = $_SERVER['HTTP_REFERER'];
-    }
+
+ if (empty($_SESSION['csrf_token'])) {
+  $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+}
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && $_POST['submit'] === '1') {
+
+  ob_clean();
+  header("Content-Type: application/json");
+
+  try {
+
+      if (empty($_SESSION['login'])) {
+          throw new Exception("Session expired");
+      }
+
+      if (
+          empty($_POST['csrf_token']) ||
+          $_POST['csrf_token'] !== ($_SESSION['csrf_token'] ?? '')
+      ) {
+          throw new Exception("Invalid CSRF token");
+      }
+
+      $complaint_id = (int)($_POST['complaint_id'] ?? 0);
+      $member_id    = (int)($_POST['member_id'] ?? 0);
+
+      if (!$complaint_id || !$member_id) {
+          throw new Exception("Invalid request");
+      }
+
+      function b64($v) {
+          return $v ? base64_decode($v, true) ?: '' : '';
+      }
+
+      // decode fields
+      $diagnosis = b64($_POST['diagnosis'] ?? '');
+      $action_taken = b64($_POST['action_taken'] ?? '');
+
+      // FILE
+      $uploaded_file = '';
+      if (!empty($_FILES['file']['name'])) {
+          $nos = count(trouble_track($complaint_id, ''));
+          $ext = strtolower(pathinfo($_FILES['file']['name'], PATHINFO_EXTENSION));
+          $uploaded_file = "uploads/{$complaint_id}_{$nos}.{$ext}";
+
+          if (!move_uploaded_file($_FILES['file']['tmp_name'], $uploaded_file)) {
+              throw new Exception("File upload failed");
+          }
+      }
+
+      // ✅ Convert Expected Completion Date to MySQL format
+      $expected_date = b64($_POST['expected_completion_date'] ?? '');
+
+      if (!empty($expected_date)) {
+          $dt = DateTime::createFromFormat("d-m-Y", $expected_date);
+          if ($dt) {
+              $expected_date = $dt->format("Y-m-d");
+          }
+      }
+
+      $ok = insert_trouble_track(
+          $complaint_id,
+          $member_id,
+          b64($_POST['working_team'] ?? ''),
+          $diagnosis,
+          $action_taken,
+          b64($_POST['work_done_by'] ?? ''),
+          b64($_POST['spare_parts'] ?? ''),
+          b64($_POST['cost_spare_parts'] ?? ''),
+          b64($_POST['procurement_time_spares'] ?? ''),
+          b64($_POST['comments'] ?? ''),
+          $expected_date,
+          b64($_POST['action_plan'] ?? ''),
+          b64($_POST['vendor_select'] ?? ''),
+          b64($_POST['vendor_contact'] ?? ''),
+          b64($_POST['interaction'] ?? ''),
+          b64($_POST['feedback'] ?? ''),
+          b64($_POST['action_item_owner'] ?? ''),
+          $uploaded_file
+      );
+
+      if (!$ok) {
+          throw new Exception("Insert failed");
+      }
+
+      // ✅ STEP 2: Update complaint status in equipment_complaint table
+
+      $status = (int)($_POST['status'] ?? 0);
+      $c_date = ($status == 2) ? date("Y-m-d H:i:s") : NULL;
+
+
+      $update = mysqli_query($db_equip, "
+          UPDATE equipment_complaint 
+          SET status = '$status',
+              status_timestamp = NOW(),
+              status_updated_by = '$member_id'
+          WHERE complaint_id = '$complaint_id'
+      ");
+
+      if (!$update) {
+          throw new Exception("Status update failed");
+      }
+
+
+      echo json_encode([
+          "status" => "success",
+          "message" => "Action saved successfully"
+      ]);
+      exit;
+
+  } catch (Throwable $e) {
+      error_log($e->getMessage());
+      echo json_encode([
+          "status" => "error",
+          "message" => $e->getMessage()
+      ]);
+      exit;
+  }
 }
 
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
 
-if (empty($_SESSION['login'])) {
-  header("Location: ../logout.php");
-  exit;
-}
 
-// Validate POST params
-if (!isset($_POST['complaint_id'], $_POST['member_id'], $_POST['type'])) {
-  header("Location: complaint.php");
-  exit;
-}
+/**
+ * ======================================================
+ * ⬇️ UI FLOW STARTS HERE (GET REQUEST)
+ * ======================================================
+ */
+require_once("../includes/auth_check.php");
+require_once("../includes/header.php");
 
 
 
 
-$complaint_id = mysqli_real_escape_string($db_slot, $_POST['complaint_id']);
-$member_id    = mysqli_real_escape_string($db_slot, $_POST['member_id']);
+// if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_POST['submit'])) {
+//     if (!empty($_SERVER['HTTP_REFERER'])) {
+//         $_SESSION['return_url'] = $_SERVER['HTTP_REFERER'];
+//     }
+// }
+
+// if (empty($_SESSION['login'])) {
+//   header("Location: ../logout.php");
+//   exit;
+// }
+
+// // Validate POST params
+// if (!isset($_POST['complaint_id'], $_POST['member_id'], $_POST['type'])) {
+//   header("Location: complaint.php");
+//   exit;
+// }
+
+
+$complaint_id =  $_POST['complaint_id'];
+$member_id    = $_POST['member_id'];
 $type         = check_number($_POST['type']);
 
 // Fetch complaint
@@ -111,26 +240,26 @@ $desc = str_replace("\\", "", $desc);
 $desc = trim($desc);
 $shortDesc = shortDesc($desc);
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
-  function esc($db, $key)
-  {
-    return mysqli_real_escape_string($db, trim($_POST[$key] ?? ''));
-  }
+// if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
+//   function esc($db, $key)
+//   {
+//     return mysqli_real_escape_string($db, trim($_POST[$key] ?? ''));
+//   }
 
-  $complaint_id = esc($db_slot, 'complaint_id');
-  $member_id    = esc($db_slot, 'member_id');
+//   $complaint_id = esc($db_slot, 'complaint_id');
+//   $member_id    = esc($db_slot, 'member_id');
 
-  // Vendor fields only if Yes
-  $vendor_name = $vendor_contact = $vendor_interaction = $vendor_comments = '';
-  if ((trim($_POST['vendor_interaction'] ?? '') === 'Yes')) {
-    $vendor_name        = esc($db_slot, 'vendor_name') ?: esc($db_slot, 'vendor_select');
-    $vendor_contact     = esc($db_slot, 'vendor_contact');
-    $vendor_interaction = esc($db_slot, 'interaction');
-    $vendor_comments    = esc($db_slot, 'feedback');
-  }
+//   // Vendor fields only if Yes
+//   $vendor_name = $vendor_contact = $vendor_interaction = $vendor_comments = '';
+//   if ((trim($_POST['vendor_interaction'] ?? '') === 'Yes')) {
+//     $vendor_name        = esc($db_slot, 'vendor_name') ?: esc($db_slot, 'vendor_select');
+//     $vendor_contact     = esc($db_slot, 'vendor_contact');
+//     $vendor_interaction = esc($db_slot, 'interaction');
+//     $vendor_comments    = esc($db_slot, 'feedback');
+//   }
 
-  // Handle file upload
-  $uploaded_file = '';
+//   // Handle file upload
+//   $uploaded_file = '';
   if (!empty($_FILES['file']['name'])) {
     $nos = count(trouble_track($complaint_id, ''));
     $ext = strtolower(pathinfo($_FILES['file']['name'], PATHINFO_EXTENSION));
@@ -140,49 +269,47 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
     }
   }
 
-  try {
-    $message = insert_trouble_track(
-      $complaint_id,
-      $member_id,
-      esc($db_slot, 'working_team'),
-      esc($db_slot, 'diagnosis'),
-      esc($db_slot, 'action_taken'),
-      esc($db_slot, 'work_done_by'),
-      esc($db_slot, 'spare_parts'),
-      esc($db_slot, 'cost_spare_parts'),
-      esc($db_slot, 'procurement_time_spares'),
-      esc($db_slot, 'comments'),
-      esc($db_slot, 'expected_completion_date'),
-      esc($db_slot, 'action_plan'),
-      $vendor_name,
-      $vendor_contact,
-      $vendor_interaction,
-      $vendor_comments,
-      esc($db_slot, 'action_item_owner'),
-      $uploaded_file
-    );
+//   try {
+//     $message = insert_trouble_track(
+//       $complaint_id,
+//       $member_id,
+//       esc($db_slot, 'working_team'),
+//       esc($db_slot, 'diagnosis'),
+//       esc($db_slot, 'action_taken'),
+//       esc($db_slot, 'work_done_by'),
+//       esc($db_slot, 'spare_parts'),
+//       esc($db_slot, 'cost_spare_parts'),
+//       esc($db_slot, 'procurement_time_spares'),
+//       esc($db_slot, 'comments'),
+//       esc($db_slot, 'expected_completion_date'),
+//       esc($db_slot, 'action_plan'),
+//       $vendor_name,
+//       $vendor_contact,
+//       $vendor_interaction,
+//       $vendor_comments,
+//       esc($db_slot, 'action_item_owner'),
+//       $uploaded_file
+//     );
 
-    // ✅ If success → redirect
-    $type = esc($db_slot, 'type');
-    // ✅ Redirect back to original page
-    if (!empty($_SESSION['return_url'])) {
-        $redirect = $_SESSION['return_url'];
-        unset($_SESSION['return_url']);
-        header("Location: $redirect");
-    } else {
-        header("Location: all_complaints.php?type={$type}&status=pending&importance=all");
-    }
-    exit;
-
-
-  } catch (Exception $e) {
-    error_log("DB Insert Error " . $e->getMessage());
-   // $message = "Special characters are not allowed. Please remove them and try again.";
-   $message = "DB Insert Error " . $e->getMessage();
-    // $message = "Special characters are not allowed. Please remove them and try again.";
- echo "<script>alert(" . json_encode($message) . ");</script>";
-  }
-}
+//     // ✅ If success → redirect
+//     $type = esc($db_slot, 'type');
+//  // ✅ Redirect back to original page
+//     if (!empty($_SESSION['return_url'])) {
+//         $redirect = $_SESSION['return_url'];
+//         unset($_SESSION['return_url']);
+//         // header("Location: $redirect");
+//     } else {
+//         // header("Location: all_complaints.php?type={$type}&status=pending&importance=all");
+//     }
+//     exit;
+//   } catch (Exception $e) {
+//     error_log("DB Insert Error " . $e->getMessage());
+//    // $message = "Special characters are not allowed. Please remove them and try again.";
+//    $message = "DB Insert Error " . $e->getMessage();
+//     // $message = "Special characters are not allowed. Please remove them and try again.";
+//  echo "<script>alert(" . json_encode($message) . ");</script>";
+//   }
+// }
 
 ?>
 <style>
@@ -511,9 +638,42 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
   line-height: 1.2;
 }
 
+/* Extra compact status tile */
+.tile-status {
+  background: linear-gradient(135deg, #ef4444, #f97316);
+  padding: 6px 8px !important;
+}
+
+.complaint-tile.tile-status .value {
+  font-size: 13px !important;
+  font-weight: 800;
+}
+
+.complaint-tile.tile-status .label {
+  font-size: 9px !important;
+}
+
+/* Premium compact status box */
+.status-box {
+  background: linear-gradient(135deg, #f8fafc, #eef2ff);
+  border: 1px solid #e2e8f0;
+}
+
+.status-select {
+  border-radius: 10px;
+  letter-spacing: 0.3px;
+}
+
+/* Color hint based on selected value (optional visual boost) */
+.status-select option[value="0"] { color: #f59e0b; } /* Pending */
+.status-select option[value="1"] { color: #2563eb; } /* In Process */
+.status-select option[value="2"] { color: #16a34a; } /* Closed */
+.status-select option[value="3"] { color: #7c3aed; } /* On Hold */
+
 
 </style>
 
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <div class="container mt-4">
   <div class="row">
@@ -532,7 +692,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
           <!-- Complaint Meta Info -->
           <!-- ===== Ultra Colorful Complaint Info ===== -->
           <div class="row g-2 mb-3">
-
             <div class="col-md-3">
               <div class="complaint-tile tile-type">
                 <div class="label">Complaint Type</div>
@@ -601,7 +760,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
                   <div id="msg" class="text-danger mb-3"></div>
 
 
-                  <form action="" name="action_taken" method="post" enctype="multipart/form-data" onsubmit="return verification();">
+                  <form name="action_taken" method="post" enctype="multipart/form-data" onsubmit="return verification();">
+                      <!-- added by sowjanya on 22/10/2025 -->
+                      <input type="hidden" name="csrf_token" value="<?php echo $_SESSION['csrf_token']; ?>" />
                     <input type="hidden" name="complaint_id" value="<?= $_POST['complaint_id'] ?>">
                     <input type="hidden" name="type" value="<?= $_POST['type'] ?? '' ?>">
                     <input type="hidden" name="member_id" value="<?= $_POST['member_id'] ?>">
@@ -617,7 +778,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
 
                     </div>
 
-<div style="position: relative; margin-bottom: 36px;">
+                    <div style="position: relative; margin-bottom: 36px;">
                        <label class="form-label">Diagnosis/Observations <span class="text-danger">*</span></label>
                       <textarea class="form-control" name="diagnosis" id="diagnosis" rows="3" maxlength="3000" onkeyup="countDX()"
                            style="font-size:15px;padding:10px 12px;border:1px solid #b5c7e7;border-radius:6px;line-height:1.5;"></textarea>
@@ -628,7 +789,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
                                style="color:#555; font-size:14px; position:absolute; bottom:-24px; right:0;">
                               </div>
                            </div>
-  <div  style="position: relative; margin-bottom: 36px;">
+                            <div  style="position: relative; margin-bottom: 36px;">
                          <label class="form-label">Action Taken <span class="text-danger">*</span></label>
                        <textarea class="form-control" name="action_taken" id="action_taken" rows="3" onkeyup="countAT()"
                           style="font-size:15px;padding:10px 12px;border:1px solid #b5c7e7;border-radius:6px;line-height:1.5;"></textarea>
@@ -766,6 +927,35 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
                       <label class="form-label">Additional Comments</label>
                       <textarea class="form-control" name="comments" id="comments" rows="3" maxlength="499"></textarea>
                     </div>
+                    
+                      <!-- ======================================= -->
+                    <!-- ✅ STATUS DROPDOWN (MANDATORY) -->
+                    <!-- ======================================= -->
+
+                  <div class="mb-2 p-2 rounded-3 shadow-sm status-box">
+                    <label class="form-label fw-bold small mb-1 text-uppercase text-muted">
+                      Complaint Status
+                    </label>
+
+                    <select name="status"
+                            id="complaint_status"
+                            class="form-select form-select-sm fw-bold status-select"
+                            required>
+
+                      <option value="">-- Select --</option>
+                      <option value="0" <?= $complaint['status']==0 ? "selected" : "" ?>>🕒 Pending</option>
+                      <option value="1" <?= $complaint['status']==1 ? "selected" : "" ?>>⚙️ In Process</option>
+                      <option value="2" <?= $complaint['status']==2 ? "selected" : "" ?>>✅ Closed</option>
+                      <option value="3" <?= $complaint['status']==3 ? "selected" : "" ?>>⏸️ On Hold</option>
+
+                    </select>
+                  </div>
+
+
+                    <!-- Hidden close date -->
+                    <input type="hidden" name="c_date" id="c_date">
+
+
 
                     <div class="text-end">
                       <input type="submit" class="btn btn-primary" name="submit" value="Submit">
@@ -810,55 +1000,60 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
                                   </small>
                                 </div>
                               </div>
+                                <p class="mb-2">
+                                  <strong>🩺 Diagnosis:</strong><br>
+                                  <span class="text-dark">
+                                    <?php
+                                      $diag = $details[$i]['diagnosis'] ?? '';
 
-                              <p class="mb-2">
-                                <strong>🩺 Diagnosis:</strong><br>
+                                      // 1️⃣ Remove literal \r\n, \n, \r
+                                      $diag = str_replace(['\\r\\n', '\\n', '\\r'], "\n", $diag);
+
+                                      // 2️⃣ Remove escaped quotes and slashes
+                                      $diag = str_replace(["\\'", '\\"', '\\\\'], ["'", '"', "\\"], $diag);
+
+                                      // 3️⃣ Final safety
+                                      $diag = stripslashes($diag);
+
+                                      echo nl2br(htmlspecialchars_decode($diag));
+                                    ?>
+                                  </span>
+                                </p>
+                               <p class="mb-2">
+                                <strong>⚙️ Action Taken:</strong><br>
                                 <span class="text-dark">
                                   <?php
-                                    $diag = $details[$i]['diagnosis'] ?? '';
+                                    $act = $details[$i]['action_taken'] ?? '';
 
                                     // 1️⃣ Remove literal \r\n, \n, \r
-                                    $diag = str_replace(['\\r\\n', '\\n', '\\r'], "\n", $diag);
+                                    $act = str_replace(['\\r\\n', '\\n', '\\r'], "\n", $act);
 
                                     // 2️⃣ Remove escaped quotes and slashes
-                                    $diag = str_replace(["\\'", '\\"', '\\\\'], ["'", '"', "\\"], $diag);
+                                    $act = str_replace(["\\'", '\\"', '\\\\'], ["'", '"', "\\"], $act);
 
                                     // 3️⃣ Final safety
-                                    $diag = stripslashes($diag);
+                                    $act = stripslashes($act);
 
-                                    echo nl2br(htmlspecialchars_decode($diag));
+                                    echo nl2br(htmlspecialchars_decode($act));
                                   ?>
                                 </span>
                               </p>
-
-
-                             <p class="mb-2">
-                            <strong>⚙️ Action Taken:</strong><br>
-                            <span class="text-dark">
-                              <?php
-                                $act = $details[$i]['action_taken'] ?? '';
-
-                                // 1️⃣ Remove literal \r\n, \n, \r
-                                $act = str_replace(['\\r\\n', '\\n', '\\r'], "\n", $act);
-
-                                // 2️⃣ Remove escaped quotes and slashes
-                                $act = str_replace(["\\'", '\\"', '\\\\'], ["'", '"', "\\"], $act);
-
-                                // 3️⃣ Final safety
-                                $act = stripslashes($act);
-
-                                echo nl2br(htmlspecialchars_decode($act));
-                              ?>
-                            </span>
-                          </p>
-
-
                               <?php if (!empty($details[$i]['action_plan'])): ?>
                                 <p class="mb-2">
                                   <strong>📋 Action Plan:</strong><br>
                                   <span class="text-dark"><?= nl2br(htmlspecialchars_decode($details[$i]['action_plan'])) ?></span>
                                 </p>
                               <?php endif; ?>
+
+                             <?php if (!empty($details[$i]['expected_completion_date'])): ?>
+                                <p class="mb-2">
+                                  <strong>📅 Expected Completion:</strong><br>
+                                  <span class="text-primary fw-semibold">
+                                    <?= date("d-m-Y", strtotime($details[$i]['expected_completion_date'])) ?>
+                                  </span>
+                                </p>
+                              <?php endif; ?>
+
 
                               <?php if (!empty($details[$i]['comments'])): ?>
                                 <p class="mb-0">
@@ -872,8 +1067,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
                         <?php endfor; ?>
 
                       </div>
-
-
                     <?php else: ?>
                       <p class="text-muted">No previous actions found.</p>
                     <?php endif; ?>
@@ -1104,6 +1297,20 @@ if (at.length < 100) {
       }
     }
 
+    // ✅ Status must be selected
+    let status = document.getElementById("complaint_status").value;
+
+    if (status === "") {
+        Swal.fire({
+          icon: 'warning',
+          title: 'Status Required',
+          text: 'Please select complaint status.'
+        });
+
+        document.getElementById("complaint_status").focus();
+        return false;
+    }
+
     // Final successful exit
     return true;
   }
@@ -1129,6 +1336,197 @@ function countAT() {
         document.getElementById("char_count").innerHTML = "(" + len + "/100)";
     }
 }
+
+// =======================================
+// ✅ Prevent Status Change Until Mandatory Fields Filled
+// =======================================
+const statusSelect = document.getElementById("complaint_status");
+let lastStatus = statusSelect.value; // store initial
+
+statusSelect.addEventListener("change", async function () {
+  const newStatus = this.value;
+
+  let diagnosis = document.getElementById("diagnosis").value.trim();
+  let actionTaken = document.getElementById("action_taken").value.trim();
+
+  // ❌ Block if mandatory fields missing
+  if (diagnosis.length < 100) {
+    await Swal.fire({
+      icon: 'warning',
+      title: 'Diagnosis Required',
+      text: 'Please fill Diagnosis (minimum 100 characters) before changing status.'
+    });
+    this.value = lastStatus;
+    document.getElementById("diagnosis").focus();
+    return;
+  }
+
+  if (actionTaken.length < 100) {
+    await Swal.fire({
+      icon: 'warning',
+      title: 'Action Taken Required',
+      text: 'Please fill Action Taken (minimum 100 characters) before changing status.'
+    });
+    this.value = lastStatus;
+    document.getElementById("action_taken").focus();
+    return;
+  }
+
+  // ✅ Confirmation dialog
+  const result = await Swal.fire({
+    title: 'Confirm Status Change',
+    text: 'Are you sure you want to change the complaint status?',
+    icon: 'question',
+    showCancelButton: true,
+    confirmButtonText: 'Yes, change it',
+    cancelButtonText: 'Cancel'
+  });
+
+  if (!result.isConfirmed) {
+    this.value = lastStatus;
+    return;
+  }
+
+  // ✅ Auto set close date if Closed
+  if (newStatus == "2") {
+    let now = new Date();
+    let formatted =
+      now.getFullYear() + "-" +
+      String(now.getMonth() + 1).padStart(2, '0') + "-" +
+      String(now.getDate()).padStart(2, '0') + " " +
+      String(now.getHours()).padStart(2, '0') + ":" +
+      String(now.getMinutes()).padStart(2, '0') + ":" +
+      String(now.getSeconds()).padStart(2, '0');
+
+    document.getElementById("c_date").value = formatted;
+  } else {
+    document.getElementById("c_date").value = "";
+  }
+
+  lastStatus = newStatus; // update stored value
+});
+
+
+
+
+function b64encode(str) {
+  return btoa(unescape(encodeURIComponent(str || "")));
+}
+/**
+ * Robust Base64 Decoding
+ * Handles UTF-8 strings and avoids firewall inspection
+ */
+function b64($v) {
+    if (empty($v)) return '';
+    // Decode the base64 string
+    $decoded = base64_decode($v, true);
+    if ($decoded === false) {
+        // If it wasn't actually base64, return the original (fallback)
+        return $v; 
+    }
+    return $decoded;
+}
+
+
+document.addEventListener("DOMContentLoaded", function () {
+  const form = document.querySelector('form[name="action_taken"]');
+  if (!form) return;
+
+  form.addEventListener("submit", async function (e) {
+    e.preventDefault();
+
+    // Run your validation first
+    if (!verification()) return;
+
+    const formData = new FormData();
+    
+    // 1. Core Logic Flags
+    formData.append("submit", "1");
+    formData.append("csrf_token", document.querySelector('input[name="csrf_token"]').value);
+    formData.append("complaint_id", document.querySelector('input[name="complaint_id"]').value);
+    formData.append("member_id", document.querySelector('input[name="member_id"]').value);
+
+    formData.append("status", document.getElementById("complaint_status").value);
+    formData.append("c_date", document.getElementById("c_date").value);
+
+
+    // 2. Encode ALL Text Fields (This hides them from the IITB Firewall)
+    const textFields = [
+      "working_team", "diagnosis", "action_taken", "work_done_by",
+      "spare_parts", "cost_spare_parts", "procurement_time_spares",
+      "comments",
+
+      "expected_completion_date",   // ✅ ADD THIS LINE
+
+      "action_plan", "action_item_owner"
+    ];
+
+
+    textFields.forEach(id => {
+      const el = document.getElementById(id);
+      if (el) {
+        // btoa(unescape(encodeURIComponent())) handles special characters safely
+        const encodedVal = btoa(unescape(encodeURIComponent(el.value)));
+        formData.append(id, encodedVal);
+      }
+    });
+
+    // 3. Handle Vendor Interaction (Logic check)
+    const vendorActive = document.querySelector('input[name="vendor_interaction"]:checked')?.value;
+    if (vendorActive === "Yes") {
+        formData.append("vendor_interaction", "Yes");
+        formData.append("vendor_select", btoa(unescape(encodeURIComponent(document.getElementById("vendor_select").value))));
+        formData.append("vendor_contact", btoa(unescape(encodeURIComponent(document.getElementById("vendor_contact").value))));
+        formData.append("feedback", btoa(unescape(encodeURIComponent(document.getElementById("feedback").value))));
+        
+        const quality = document.querySelector('input[name="interaction"]:checked')?.value;
+        if (quality) formData.append("interaction", btoa(unescape(encodeURIComponent(quality))));
+    }
+
+    // 4. File Handling
+    const fileInput = document.getElementById("file");
+    if (fileInput.files.length > 0) {
+      formData.append("file", fileInput.files[0]);
+    }
+
+    try {
+      // Use current path to avoid "Object Not Found" redirection issues
+      const response = await fetch("action_taken.php", {
+        method: "POST",
+        body: formData
+      });
+
+      if (!response.ok) throw new Error("Network response was not ok (Firewall Block)");
+
+      const result = await response.json();
+      if (result.status === "success") {
+        Swal.fire({
+        icon: 'success',
+        title: 'Saved!',
+        text: 'Action saved successfully.',
+        timer: 1500,
+        showConfirmButton: false
+      }).then(() => {
+        location.reload();
+      });
+      } else {
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: result.message
+        });
+      }
+    } catch (err) {
+      console.error(err);
+      Swal.fire({
+        icon: 'error',
+        title: 'Submission Failed',
+        text: 'Request was blocked or failed. Please try again.'
+      });
+
+    }
+  });
+});
 
 </script>
 

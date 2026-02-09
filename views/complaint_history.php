@@ -1,4 +1,4 @@
-\<?php
+<?php
 include("../includes/auth_check.php");
 include("../config/connect.php");
 include("../includes/common.php");

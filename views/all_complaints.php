@@ -384,113 +384,155 @@ if (!empty($_SESSION['flash_message'])) {
 <link rel="stylesheet" href="../assets/css/datetimepicker.css" type="text/css" />
 
 <style>
-/* -----------------------------
-   Existing styles (keep)
------------------------------- */
-.no-border {
-  border: 1px solid transparent !important;
-}
-.no-border:hover {
-  border-color: #198754 !important;
+/* ==========================================================
+   ✅ FINAL PROFESSIONAL DATATABLE UI FIX (Aligned + Clean)
+   ========================================================== */
+
+/* Wrapper */
+.table-responsive {
+  padding: 20px;
+  border-radius: 18px;
+  background: #ffffff;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.08);
 }
 
-.table td, .table th {
-  padding: 15px 10px;
+/* DataTable controls */
+.dataTables_wrapper .dataTables_filter input,
+.dataTables_wrapper .dataTables_length select {
+  border-radius: 10px !important;
+  border: 1px solid #dce3ec !important;
+  padding: 7px 12px !important;
+  font-size: 13px;
 }
 
-/* Complaint Description wrap */
+/* Table base */
+#allComplaints {
+  width: 100%;
+  border-collapse: collapse !important;
+  margin-top: 15px;
+}
+
+/* ==========================================================
+   HEADER FIX (No Pills, Clean Bar)
+   ========================================================== */
+#allComplaints thead th {
+  background: linear-gradient(90deg, #2563eb, #4f46e5);
+  color: white !important;
+  font-size: 13px;
+  font-weight: 700;
+  padding: 14px 12px !important;
+  text-transform: uppercase;
+  border: none !important;
+  text-align: left;
+}
+
+#allComplaints thead th:first-child {
+  border-radius: 12px 0 0 12px;
+}
+#allComplaints thead th:last-child {
+  border-radius: 0 12px 12px 0;
+}
+
+/* ==========================================================
+   ROW FIX (Proper Alignment)
+   ========================================================== */
+#allComplaints tbody tr {
+  background: #fff;
+  border-bottom: 1px solid #eef2f7;
+  transition: 0.25s ease;
+}
+
+#allComplaints tbody tr:hover {
+  background: #f9fbff;
+}
+
+/* Cells */
+#allComplaints td {
+  padding: 14px 12px !important;
+  font-size: 14px;
+  vertical-align: middle;
+  border: none !important;
+}
+
+/* Description wrap */
 #allComplaints td:nth-child(3) {
+  max-width: 380px;
   white-space: normal !important;
   word-break: break-word;
-  overflow-wrap: break-word;
-  max-width: 350px;
 }
 
-/* Remove horizontal scrollbar */
-.table-responsive {
-  overflow-x: hidden !important;
+/* ==========================================================
+   PARENT + CHILD DIFFERENCE
+   ========================================================== */
+#allComplaints tbody tr.parent-row {
+  background: #f1f5ff !important;
+  border-left: 5px solid #2563eb;
 }
 
-select {
-  max-width: 200px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-/* -----------------------------
-   ✅ FINAL Parent/Child Theme
-   Parent = Grey | Child = White
------------------------------- */
-
-/* Parent row (original complaint) */
-#allComplaints tbody tr.parent-row > td {
-  background: #e9ecef !important;
-  color: #111 !important;
-  border-color: #cfd4da !important;
-}
-
-#allComplaints tbody tr.parent-row a,
-#allComplaints tbody tr.parent-row small {
-  color: #111 !important;
-}
-
-/* Child rows */
-#allComplaints tbody tr.child-row > td {
+#allComplaints tbody tr.child-row {
   background: #ffffff !important;
-  color: #111 !important;
-  border-color: #dee2e6 !important;
+  border-left: 5px solid #94a3b8;
 }
 
-/* Child nesting indicator */
 #allComplaints tbody tr.child-row td:first-child {
-  padding-left: 28px !important;
-  border-left: 6px solid #adb5bd !important;
+  padding-left: 30px !important;
   position: relative;
 }
 
 #allComplaints tbody tr.child-row td:first-child::before {
   content: "↳";
   position: absolute;
-  left: 10px;
-  top: 16px;
+  left: 12px;
+  top: 14px;
   font-weight: bold;
-  color: #6c757d;
+  color: #64748b;
 }
 
-/* Optional: nicer "View Children" button */
+/* Hide child rows */
+#allComplaints tbody tr.child-row.d-none {
+  display: none !important;
+}
+
+/* ==========================================================
+   BUTTON FIX (View History inside properly)
+   ========================================================== */
+#allComplaints .btn {
+  border-radius: 10px !important;
+  font-size: 13px;
+  padding: 6px 12px;
+  font-weight: 600;
+}
+
+/* Expand children button */
 .view-children-btn {
-  background: #f8f9fa !important;
-  border: 1px solid #adb5bd !important;
-  color: #111 !important;
+  background: #2563eb !important;
+  border: none !important;
+  color: white !important;
 }
+
 .view-children-btn:hover {
-  background: #e2e6ea !important;
+  background: #1e40af !important;
 }
 
-/* FORCE blue Track link in parent rows */
-#allComplaints tbody tr.parent-row a.track-link {
-  color: #0d6efd !important;
-  text-decoration: underline;
-  font-weight: 600;
+/* ==========================================================
+   PAGINATION FIX
+   ========================================================== */
+.dataTables_paginate .paginate_button {
+  border-radius: 8px !important;
+  padding: 6px 12px !important;
+  margin: 2px;
+  border: none !important;
+  background: #f1f5ff !important;
 }
 
-#allComplaints tbody tr.parent-row a.track-link:hover {
-  color: #084298 !important;
+.dataTables_paginate .paginate_button.current {
+  background: #2563eb !important;
+  color: white !important;
 }
 
-.short-text, .full-text {
-  white-space: normal;
-  word-break: break-word;
-}
-.toggle-desc {
-  font-weight: 600;
-  cursor: pointer;
-}
-
-/* =================================
-   MOBILE VIEW — Main Complaints Page (ENHANCED)
-   ================================= */
+/* ==========================================================
+   MOBILE VIEW CLEAN
+   ========================================================== */
 @media (max-width: 768px) {
 
   #allComplaints thead {
@@ -506,163 +548,33 @@ select {
   }
 
   #allComplaints tr {
-    margin-bottom: 18px;
-    background: #ffffff;
-    border-radius: 16px;
-    box-shadow: 0 6px 16px rgba(0,0,0,0.12);
-    padding: 12px 10px;
+    margin-bottom: 15px;
+    border-radius: 14px;
+    padding: 12px;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.08);
   }
 
   #allComplaints td {
-    border: none !important;
-    padding: 10px 8px !important;
+    padding: 10px !important;
   }
 
   #allComplaints td::before {
     content: attr(data-label);
-    display: block;
     font-size: 11px;
     font-weight: 700;
-    color: #6c757d;
+    color: #64748b;
+    display: block;
     margin-bottom: 4px;
     text-transform: uppercase;
-    letter-spacing: .4px;
   }
 
-  .table-responsive {
-    overflow-x: visible !important;
-  }
-
-  /* Buttons full width on mobile */
   #allComplaints .btn {
     width: 100%;
-    margin-bottom: 8px;
-    border-radius: 12px;
-    font-weight: 700;
-  }
-
-  /* Center icons reset */
-  #allComplaints td[style*="text-align:center"] {
-    text-align: left !important;
-  }
-
-  /* Child row indent reset for mobile */
-  #allComplaints tbody tr.child-row td:first-child {
-    padding-left: 10px !important;
-    border-left: none !important;
+    margin-top: 8px;
   }
 }
-
-@media (max-width: 768px) {
-  .d-flex.align-items-center.gap-3 {
-    flex-direction: column;
-    align-items: stretch !important;
-  }
-}
-
-/* Ensure child rows show on mobile */
-@media (max-width: 768px) {
-
-  #allComplaints tbody tr.child-row {
-    display: block !important;
-  }
-
-  #allComplaints tbody tr.child-row td {
-    display: block !important;
-    background: #f8f9fa !important;
-    margin-bottom: 8px;
-    border-radius: 10px;
-    box-shadow: inset 0 0 0 1px #e5e9f2;
-  }
-
-  #allComplaints tbody tr.child-row td::before {
-    color: #495057;
-  }
-}
-
-/* ================================
-   MOBILE — Better Child Complaint UI (ENHANCED)
-   ================================ */
-@media (max-width: 768px) {
-
-  /* Parent card stronger */
-  #allComplaints tr.parent-row {
-    border-left: 6px solid #6c757d;
-    background: #ffffff;
-    border-radius: 18px;
-  }
-
-  /* Child row as premium nested card */
-  #allComplaints tr.child-row {
-    margin-left: 14px;
-    border-left: 4px solid #adb5bd;
-    background: #f8f9fa !important;
-    border-radius: 16px;
-    position: relative;
-    box-shadow: 0 8px 22px rgba(0,0,0,0.10);
-  }
-
-  /* Visual "Child" ribbon */
-  #allComplaints tr.child-row::before {
-    content: "Child Complaint";
-    position: absolute;
-    top: -10px;
-    left: 12px;
-    background: linear-gradient(135deg,#adb5bd,#6c757d);
-    color: #fff;
-    font-size: 10px;
-    font-weight: 700;
-    padding: 3px 8px;
-    border-radius: 999px;
-    box-shadow: 0 4px 10px rgba(0,0,0,.25);
-  }
-
-  /* Tighter but cleaner spacing */
-  #allComplaints tr.child-row td {
-    padding: 8px 8px !important;
-    background: #f8f9fa !important;
-  }
-
-  /* Slight indent for child labels */
-  #allComplaints tr.child-row td::before {
-    color: #495057;
-  }
-
-  /* Make child action buttons smaller but tappable */
-  #allComplaints tr.child-row .btn {
-    font-size: 12px;
-    padding: 6px 8px;
-    border-radius: 10px;
-  }
-
-  /* Parent Expand button full width */
-  .view-children-btn {
-    width: 100%;
-    font-size: 13px;
-    border-radius: 12px;
-    font-weight: 700;
-  }
-
-  /* Separate parent & children visually */
-  #allComplaints tr.parent-row {
-    margin-bottom: 8px;
-  }
-
-  #allComplaints tr.child-row {
-    margin-bottom: 14px;
-  }
-}
-
-/* ================================
-   FIX: Allow child rows to hide on mobile
-   ================================ */
-#allComplaints tbody tr.child-row.d-none {
-  display: none !important;
-}
-
-
-
 </style>
+
 
 <div class="container-fluid">
   <div class="row">
@@ -797,8 +709,9 @@ select {
               elseif($head==0){  ?>
                 <th class="no-sort">View History</th>
               <?php } ?>
+              <?php if($user_role=="all" || $head==1): ?>
               <th class="no-sort">Status</th>
-
+              <?php endif; ?>
               <!-- <?php if ($status == 'pending' && $permission_key == 1): ?><th>Submit</th><?php endif; ?> -->
               <!-- <th>Expected completion date</th> -->
           
@@ -992,7 +905,7 @@ select {
                   ?>
                 </td>
 
-
+<?php if($user_role=="all" || $head==1): ?>
                   <!-- Status -->
                   <td data-label="Status">
                     <input type="hidden" name="complaint_id" value="<?= $d["complaint_id"]; ?>">
@@ -1019,6 +932,7 @@ select {
                       Submit
                     </button>
                   </td>
+                  <?php endif; ?>
 
                 </form>
 
