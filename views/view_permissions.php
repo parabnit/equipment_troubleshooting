@@ -54,70 +54,216 @@ foreach ($teams as $t => $vals) {
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
 
 <style>
+/* ============================================
+   🚀 ULTRA PREMIUM TEAM PERMISSION UI (2026)
+   Pure CSS • No Layout Change • SaaS Level
+   ============================================ */
+
+/* Main Card */
 .team-card {
-    background: #ffffff;
-    border-radius: 14px;
-    border: 1px solid #e5e7eb;
-    margin-bottom: 22px;
-    box-shadow: 0 10px 25px rgba(0,0,0,0.08);
-    transition: all 0.35s ease;
-    animation: fadeUp 0.6s ease both;
-}
-.team-card:hover {
-    transform: translateY(-6px);
-    box-shadow: 0 18px 40px rgba(37,99,235,0.25);
-}
-.team-card-header {
-    background: linear-gradient(135deg, #2563eb, #1e40af);
-    color: #fff;
-    padding: 14px 18px;
-    font-size: 18px;
-    font-weight: 700;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-.team-card-body {
-    padding: 18px;
-    font-size: 14px;
-}
-.team-section {
-    margin-bottom: 14px;
-}
-.team-section-title {
-    font-weight: 700;
-    margin-bottom: 6px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    color: #111827;
-}
-.name-pill {
-    display: inline-block;
-    background: #eff6ff;
-    color: #1e3a8a;
-    padding: 6px 12px;
-    border-radius: 999px;
-    font-size: 13px;
-    margin: 4px 6px 4px 0;
-    transition: all 0.25s ease;
-}
-.name-pill:hover {
-    background: #2563eb;
-    color: #fff;
-    transform: scale(1.05);
+  background: rgba(255, 255, 255, 0.65);
+  backdrop-filter: blur(22px);
+  border-radius: 28px;
+  margin-bottom: 28px;
+  overflow: hidden;
+  position: relative;
+
+  border: 1px solid rgba(255, 255, 255, 0.40);
+  box-shadow: 0 25px 70px rgba(0, 0, 0, 0.14);
+
+  transition: all 0.45s cubic-bezier(0.25, 1, 0.3, 1);
 }
 
-@keyframes fadeUp {
-    from {
-        opacity: 0;
-        transform: translateY(20px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
+/* Animated Gradient Border Glow */
+.team-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  padding: 2px;
+  border-radius: 28px;
+
+  background: linear-gradient(
+    120deg,
+    #3b82f6,
+    #9333ea,
+    #22c55e,
+    #f97316
+  );
+
+  background-size: 300% 300%;
+  animation: borderFlow 6s infinite linear;
+
+  -webkit-mask: linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+
+  opacity: 0.55;
+  pointer-events: none;
 }
+
+/* Border Animation */
+@keyframes borderFlow {
+  0% {
+    background-position: 0% 50%;
+  }
+  100% {
+    background-position: 100% 50%;
+  }
+}
+
+/* Hover Lift */
+.team-card:hover {
+  transform: translateY(-12px) scale(1.02);
+  box-shadow: 0 35px 90px rgba(99, 102, 241, 0.35);
+}
+
+/* ===============================
+   HEADER (Ultra Modern Gradient)
+   =============================== */
+.team-card-header {
+  padding: 20px 24px;
+  font-size: 19px;
+  font-weight: 950;
+  color: #fff;
+
+  background: linear-gradient(
+    135deg,
+    rgba(59, 130, 246, 0.95),
+    rgba(99, 102, 241, 0.95),
+    rgba(147, 51, 234, 0.95)
+  );
+
+  display: flex;
+  align-items: center;
+  gap: 12px;
+
+  position: relative;
+  overflow: hidden;
+}
+
+/* Header Shine Sweep */
+.team-card-header::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -120%;
+  width: 120%;
+  height: 100%;
+  background: linear-gradient(
+    120deg,
+    transparent,
+    rgba(255, 255, 255, 0.45),
+    transparent
+  );
+  animation: shineMove 4s infinite;
+}
+
+@keyframes shineMove {
+  0% {
+    left: -120%;
+  }
+  100% {
+    left: 120%;
+  }
+}
+
+/* ===============================
+   BODY CONTENT
+   =============================== */
+.team-card-body {
+  padding: 24px;
+  font-size: 14px;
+  color: #111827;
+  line-height: 1.85;
+}
+
+/* Section */
+.team-section {
+  margin-bottom: 20px;
+}
+
+/* Title */
+.team-section-title {
+  font-weight: 950;
+  font-size: 14px;
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  color: #1f2937;
+}
+
+/* ===============================
+   PERMISSION PILLS (Neon Chips)
+   =============================== */
+.name-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 10px 18px;
+  border-radius: 999px;
+
+  background: rgba(99, 102, 241, 0.12);
+  border: 1px solid rgba(99, 102, 241, 0.20);
+
+  color: #4338ca;
+  font-weight: 900;
+  font-size: 13px;
+
+  margin: 7px 9px 7px 0;
+  cursor: pointer;
+
+  transition: all 0.35s ease;
+  position: relative;
+}
+
+/* Soft Pulse Glow */
+.name-pill::after {
+  content: "";
+  position: absolute;
+  inset: -6px;
+  border-radius: 999px;
+  background: rgba(147, 51, 234, 0.25);
+  filter: blur(14px);
+  opacity: 0;
+  transition: 0.35s;
+}
+
+/* Hover Neon Effect */
+.name-pill:hover {
+  background: linear-gradient(135deg, #3b82f6, #9333ea);
+  color: #fff;
+  transform: translateY(-4px) scale(1.12);
+  box-shadow: 0 18px 40px rgba(147, 51, 234, 0.30);
+}
+
+.name-pill:hover::after {
+  opacity: 1;
+}
+
+/* ===============================
+   ENTRY ANIMATION
+   =============================== */
+.team-card {
+  animation: fadeSlide 0.8s ease both;
+}
+
+@keyframes fadeSlide {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+    filter: blur(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+    filter: blur(0);
+  }
+}
+
 </style>
 
 <main class="container py-4">
