@@ -419,163 +419,270 @@ include("../includes/header.php");
 <?php } ?>
 
 <style>
+/* ===============================
+   🌟 PREMIUM COMPLAINT FORM UI
+   (CSS ONLY — No HTML Change Needed)
+   =============================== */
+
+body {
+  background: linear-gradient(to right, #f8fafc, #eef2ff);
+  font-family: "Inter", sans-serif;
+}
+
+/* Main Card */
+.card {
+  border: none !important;
+  border-radius: 22px !important;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.96);
+  backdrop-filter: blur(14px);
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.12);
+}
+
+/* Header */
+.card-header {
+  font-size: 18px;
+  font-weight: 700;
+  padding: 18px 22px;
+  background: linear-gradient(135deg, #2563eb, #1e40af);
+  color: white;
+  letter-spacing: 0.4px;
+}
+
+/* Labels */
+.form-label {
+  font-size: 13px;
+  font-weight: 600;
+  color: #374151;
+  margin-bottom: 6px;
+}
+
+/* Inputs + Select */
+.form-control,
+.form-select {
+  border-radius: 14px !important;
+  padding: 12px 14px;
+  border: 1px solid #e5e7eb !important;
+  font-size: 14px;
+  transition: all 0.25s ease;
+}
+
+/* Focus Glow */
+.form-control:focus,
+.form-select:focus {
+  border-color: #2563eb !important;
+  box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.25);
+}
+
+/* Textarea */
+textarea.form-control {
+  min-height: 140px;
+  resize: none;
+  line-height: 1.6;
+}
+
+/* Upload Box */
+input[type="file"] {
+  border: 2px dashed #cbd5e1;
+  padding: 14px;
+  border-radius: 16px;
+  background: #f8fafc;
+  cursor: pointer;
+  transition: 0.25s;
+}
+
+input[type="file"]:hover {
+  border-color: #2563eb;
+  background: rgba(37, 99, 235, 0.05);
+}
+
+/* Buttons */
+.btn-success {
+  background: linear-gradient(135deg, #22c55e, #15803d);
+  border: none !important;
+  border-radius: 14px !important;
+  padding: 12px 22px;
+  font-weight: 700;
+  transition: all 0.25s ease;
+}
+
+.btn-success:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 22px rgba(34, 197, 94, 0.35);
+}
+
+.btn-secondary {
+  border-radius: 14px !important;
+  padding: 12px 18px;
+  font-weight: 600;
+}
+
+.btn-dark {
+  border-radius: 14px !important;
+}
+
+/* Radio Buttons Upgrade (CSS Only) */
+.form-check-input {
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+}
+
+.form-check-input:checked {
+  background-color: #2563eb;
+  border-color: #2563eb;
+}
+
+.form-check-label {
+  font-size: 13px;
+  font-weight: 600;
+  margin-left: 6px;
+  color: #374151;
+}
+
+/* Helper Text */
+small {
+  font-size: 12px;
+  color: #6b7280;
+}
+
+/* ===============================
+   🌟 MODERN COMPLAINT HISTORY UI
+   =============================== */
+
 /* Scroll */
 .history-scroll {
   max-height: 600px;
   overflow-y: auto;
-  padding-right: 6px;
+  padding-right: 10px;
 }
 
-/* Smooth scrollbar */
+/* Premium scrollbar */
 .history-scroll::-webkit-scrollbar {
-  width: 6px;
+  width: 7px;
 }
 .history-scroll::-webkit-scrollbar-thumb {
-  background: #cfd4da;
-  border-radius: 4px;
+  background: linear-gradient(180deg, #93c5fd, #2563eb);
+  border-radius: 12px;
 }
 .history-scroll::-webkit-scrollbar-track {
-  background: #f1f3f5;
+  background: #f8fafc;
 }
 
-/* History card */
+/* History Card */
 .history-item {
-  background: #f9fafb;
-  border: 1px solid #e5e7eb;
-  border-radius: 8px;
-  padding: 12px 14px;
-  margin-bottom: 12px;
-  transition: box-shadow 0.2s ease;
+  background: rgba(255, 255, 255, 0.95);
+  border: 1px solid rgba(226, 232, 240, 0.9);
+  border-radius: 16px;
+  padding: 16px 18px;
+  margin-bottom: 16px;
+  transition: all 0.25s ease;
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.06);
 }
 
 .history-item:hover {
-  box-shadow: 0 3px 8px rgba(0,0,0,0.08);
+  transform: translateY(-3px);
+  box-shadow: 0 14px 28px rgba(37, 99, 235, 0.18);
 }
 
-/* Assigned to */
+/* Assigned To Pill */
 .assigned-to {
-  font-size: 13px;
-  color: #0d6efd;
+  font-size: 12px;
   font-weight: 600;
+  color: #2563eb;
+  background: rgba(37, 99, 235, 0.10);
+  padding: 5px 12px;
+  border-radius: 999px;
+  display: inline-block;
+  cursor: default;
 }
 
 /* Description */
 .history-desc {
-  font-size: 14px;
-  color: #374151;
-  line-height: 1.5;
-}
-
-/* Status badges */
-.status-badge {
-  padding: 3px 10px;
-  border-radius: 20px;
-  font-size: 12px;
-  font-weight: 600;
-  text-transform: capitalize;
-}
-
-.status-pending {
-  background: #fff3cd;
-  color: #856404;
-}
-
-.status-inprocess {
-  background: #d1fae5;
-  color: #065f46;
-}
-
-.status-onhold {
-  background: #dbeafe;
-  color: #1e40af;
-}
-
-.status-closed {
-  background: #e5e7eb;
-  color: #111827;
-}
-
-/* Attachment */
-.attachment-link {
   font-size: 13px;
-  color: #0d6efd;
-  text-decoration: none;
-}
-
-.attachment-link i {
-  margin-right: 4px;
-}
-
-/* Common badge style – SAME AS PENDING */
-.status-badge {
-  display: inline-block;
-  padding: 4px 12px;
-  border-radius: 20px;
-  font-size: 12px;
-  font-weight: 600;
-  line-height: 1;
-  white-space: nowrap;
-}
-
-/* Pending – Yellow (already correct) */
-.status-pending {
-  background-color: #fff3cd;
-  color: #856404;
-}
-
-/* In Process – Green */
-.status-inprocess {
-  background-color: #d1e7dd;
-  color: #0f5132;
-}
-
-/* On Hold – Orange */
-.status-onhold {
-  background-color: #ffe5b4;
-  color: #9a3412;
-}
-
-/* Closed – Dark Green */
-.status-closed {
-  background-color: #198754;
-  color: #ffffff;
-}
-
-
-
-.status-badge {
-  font-size: 0.75rem;
-  padding: 4px 10px;
-  border-radius: 20px;
-}
-
-.assigned-to {
-  cursor: 
-  default;
-}
-
-.history-desc {
+  color: #374151;
+  line-height: 1.6;
+  margin-top: 6px;
   white-space: pre-wrap !important;
   word-break: break-word;
   overflow: visible !important;
   max-height: none !important;
-  height: auto !important;
 }
 
-.history-desc {
-  font-size: 13px;        /* 👈 text छोटा */
-  line-height: 1.4;       /* 👈 readable spacing */
-  white-space: pre-wrap;
-  word-break: break-word;
-}
-
+/* Complaint Title */
 .complaint-history .fw-bold {
   font-size: 14px;
+  font-weight: 700;
+  color: #111827;
 }
 
-.complaint-history small,
-.complaint-history .assigned-to {
+/* Small Text */
+.complaint-history small {
   font-size: 12px;
+  color: #6b7280;
+}
+
+/* Status Badge Common */
+.status-badge {
+  display: inline-block;
+  padding: 6px 14px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: capitalize;
+  letter-spacing: 0.3px;
+  white-space: nowrap;
+}
+
+/* Status Colors */
+.status-pending {
+  background: rgba(245, 158, 11, 0.18);
+  color: #92400e;
+}
+
+.status-inprocess {
+  background: rgba(34, 197, 94, 0.18);
+  color: #166534;
+}
+
+.status-onhold {
+  background: rgba(251, 146, 60, 0.20);
+  color: #9a3412;
+}
+
+.status-closed {
+  background: rgba(16, 185, 129, 0.90);
+  color: #ffffff;
+}
+
+/* Attachment Link */
+.attachment-link {
+  font-size: 13px;
+  font-weight: 600;
+  color: #2563eb;
+  text-decoration: none;
+  transition: 0.2s;
+}
+
+.attachment-link:hover {
+  text-decoration: underline;
+  color: #1e40af;
+}
+
+.attachment-link i {
+  margin-right: 6px;
+}
+
+/* Eye Icon */
+.fa-eye {
+  font-size: 18px;
+  color: #2563eb;
+  transition: 0.25s ease;
+}
+
+.fa-eye:hover {
+  color: #1e40af;
+  transform: scale(1.25);
 }
 
 
