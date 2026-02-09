@@ -265,76 +265,228 @@ if (!empty($_SESSION['flash_message'])) {
      Styles
 =========================== -->
 <style>
-.page-header {
-  background: linear-gradient(135deg,#0d6efd,#0b5ed7);
-  color:#fff;
-  padding:15px 25px;
-  border-radius:10px;
-  margin-bottom:20px;
-}
-.filter-card {
-  background:#f8f9fa;
-  border-radius:12px;
-  padding:15px;
-  box-shadow:0 4px 12px rgba(0,0,0,.08);
-}
-.table thead {
-  background:#0d6efd;
-  color:white;
-}
-.table tbody tr:hover {
-  background:#f1f5ff;
-}
-.badge-pending {
-  background:#ffc107;
-  color:#000;
-}
-.badge-closed {
-  background:#198754;
-}
-.switch {
-  position: relative;
-  width: 55px;
-  height: 30px;
-}
-.switch input { display:none; }
-.slider {
-  position:absolute;
-  inset:0;
-  background:#adb5bd;
-  border-radius:20px;
-  cursor:pointer;
-  transition:.4s;
-}
-.slider:before {
-  content:"";
-  position:absolute;
-  width:22px;
-  height:22px;
-  left:4px;
-  bottom:4px;
-  background:white;
-  border-radius:50%;
-  transition:.4s;
-}
-input:checked + .slider {
-  background:#198754;
-}
-input:checked + .slider:before {
-  transform:translateX(24px);
-}
-.desc-cell {
-  max-width:350px;
-  white-space:normal;
-  word-break:break-word;
+/* ============================================
+   🌟 ULTRA MODERN PREMIUM DATATABLE DESIGN 2026
+   Inspired by Stripe • Notion • Apple UI
+   ============================================ */
+
+body {
+  font-family: "Inter", "Poppins", sans-serif;
+  background: radial-gradient(circle at top, #eef4ff, #f9fbff);
+  color: #111827;
 }
 
-/* =========================
-   MOBILE VIEW — Daily Tasks
-   ========================= */
-/* =========================
-   PREMIUM Mobile UI — Daily Tasks
-   ========================= */
+/* ===============================
+   HEADER (Modern Gradient Glass)
+   =============================== */
+.page-header {
+  background: linear-gradient(135deg, #3b82f6, #6366f1, #9333ea);
+  padding: 22px 30px;
+  border-radius: 26px;
+  color: #fff;
+  font-size: 22px;
+  font-weight: 900;
+  letter-spacing: 0.4px;
+  box-shadow: 0 18px 45px rgba(99, 102, 241, 0.35);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Glow Overlay */
+.page-header::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle, rgba(255,255,255,0.35), transparent);
+  opacity: 0.35;
+}
+
+/* ===============================
+   FILTER CARD (Glassmorphism)
+   =============================== */
+.filter-card {
+  background: rgba(255, 255, 255, 0.55);
+  backdrop-filter: blur(18px);
+  border-radius: 24px;
+  padding: 22px;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.08);
+}
+
+/* Inputs Modern */
+.filter-card input,
+.filter-card select {
+  width: 100%;
+  border-radius: 18px;
+  padding: 12px 16px;
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  background: rgba(255,255,255,0.85);
+  font-weight: 600;
+  transition: 0.25s;
+}
+
+.filter-card input:focus,
+.filter-card select:focus {
+  outline: none;
+  border-color: #6366f1;
+  box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.25);
+}
+
+/* ===============================
+   DATATABLE MAIN TABLE (Floating)
+   =============================== */
+.table {
+  width: 100%;
+  border-radius: 26px;
+  overflow: hidden;
+  background: rgba(255,255,255,0.75);
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(255,255,255,0.35);
+  box-shadow: 0 22px 50px rgba(0, 0, 0, 0.10);
+}
+
+/* Table Head */
+.table thead {
+  background: rgba(99, 102, 241, 0.95);
+  color: white;
+  font-size: 13px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+}
+
+.table th {
+  padding: 18px;
+  border: none !important;
+}
+
+/* Table Body */
+.table tbody td {
+  padding: 16px;
+  font-size: 14px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.04);
+  font-weight: 500;
+}
+
+/* Row Hover = Premium Lift */
+.table tbody tr {
+  transition: all 0.28s ease;
+}
+
+.table tbody tr:hover {
+  background: rgba(99, 102, 241, 0.06);
+  transform: translateY(-4px) scale(1.01);
+  box-shadow: 0 12px 25px rgba(99, 102, 241, 0.12);
+}
+
+/* ===============================
+   DESCRIPTION CELL
+   =============================== */
+.desc-cell {
+  max-width: 420px;
+  padding: 14px;
+  border-radius: 18px;
+  background: rgba(243, 244, 255, 0.75);
+  box-shadow: inset 0 0 0 1px rgba(99, 102, 241, 0.15);
+  line-height: 1.75;
+}
+
+/* ===============================
+   BADGES (Pill Modern)
+   =============================== */
+.badge {
+  padding: 8px 18px;
+  border-radius: 999px;
+  font-weight: 800;
+  font-size: 12px;
+  letter-spacing: 0.4px;
+}
+
+.badge-pending {
+  background: linear-gradient(135deg, #fbbf24, #f97316);
+  color: #111;
+}
+
+.badge-closed {
+  background: linear-gradient(135deg, #22c55e, #16a34a);
+  color: white;
+}
+
+/* ===============================
+   BUTTONS (Modern Soft UI)
+   =============================== */
+.btn {
+  border-radius: 18px !important;
+  padding: 11px 16px;
+  font-weight: 800;
+  border: none;
+  transition: 0.3s ease;
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, #3b82f6, #6366f1);
+  color: white;
+}
+
+.btn-primary:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 14px 28px rgba(99, 102, 241, 0.35);
+}
+
+/* Track Button */
+.track-btn {
+  display: inline-block;
+  padding: 11px 18px;
+  border-radius: 18px;
+  background: linear-gradient(135deg, #6366f1, #9333ea);
+  font-weight: 900;
+  color: white !important;
+  text-decoration: none;
+  box-shadow: 0 14px 28px rgba(147, 51, 234, 0.30);
+}
+
+/* ===============================
+   DATATABLE SEARCH MODERN
+   =============================== */
+.dataTables_filter input {
+  border-radius: 18px;
+  padding: 12px 16px;
+  border: 1px solid rgba(0,0,0,0.12);
+  background: rgba(255,255,255,0.85);
+}
+
+.dataTables_filter input:focus {
+  outline: none;
+  border-color: #6366f1;
+  box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.25);
+}
+
+/* ===============================
+   PAGINATION (Modern Pills)
+   =============================== */
+.dataTables_paginate .paginate_button {
+  border-radius: 999px !important;
+  padding: 8px 16px !important;
+  margin: 4px;
+  border: none !important;
+  background: rgba(99, 102, 241, 0.10) !important;
+  font-weight: 800;
+  transition: 0.3s;
+}
+
+.dataTables_paginate .paginate_button:hover {
+  background: linear-gradient(135deg, #3b82f6, #6366f1) !important;
+  color: white !important;
+}
+
+.dataTables_paginate .paginate_button.current {
+  background: linear-gradient(135deg, #6366f1, #9333ea) !important;
+  color: white !important;
+}
+
+/* ===============================
+   📱 MOBILE VIEW (Premium Cards)
+   =============================== */
 @media (max-width: 768px) {
 
   #DailytaskComplaints thead {
@@ -349,143 +501,55 @@ input:checked + .slider:before {
     width: 100%;
   }
 
+  /* Row Card */
   #DailytaskComplaints tr {
     margin-bottom: 22px;
-    background: linear-gradient(180deg, #ffffff, #f8faff);
-    border-radius: 18px;
-    box-shadow: 0 10px 28px rgba(13,110,253,0.10);
-    padding: 16px 14px 14px 18px;
-    border: 1px solid #e3ebff;
+    padding: 20px;
+    border-radius: 26px;
+    background: rgba(255,255,255,0.65);
+    backdrop-filter: blur(18px);
+    box-shadow: 0 18px 40px rgba(0,0,0,0.12);
+    border: 1px solid rgba(255,255,255,0.35);
     position: relative;
     overflow: hidden;
   }
 
-  /* Accent gradient strip */
+  /* Accent Strip */
   #DailytaskComplaints tr::before {
     content: "";
     position: absolute;
     left: 0;
     top: 0;
     bottom: 0;
-    width: 6px;
-    background: linear-gradient(180deg, #0d6efd, #6610f2);
-    border-radius: 18px 0 0 18px;
+    width: 8px;
+    background: linear-gradient(180deg, #3b82f6, #9333ea);
+    border-radius: 26px 0 0 26px;
   }
 
   #DailytaskComplaints td {
     border: none !important;
-    padding: 10px 8px;
-    background: transparent;
-    position: relative;
-    z-index: 1;
+    padding: 10px 6px;
   }
 
   #DailytaskComplaints td::before {
     content: attr(data-label);
-    display: block;
     font-size: 11px;
-    font-weight: 800;
-    color: #6c757d;
-    margin-bottom: 4px;
+    font-weight: 900;
+    color: #6b7280;
     text-transform: uppercase;
-    letter-spacing: .6px;
+    margin-bottom: 5px;
+    letter-spacing: 0.7px;
   }
 
-  /* Member section */
-  td[data-label="Member"] strong {
-    font-size: 16px;
-    font-weight: 800;
-    color: #0d6efd;
-  }
-
-  /* Tool & dates */
-  td[data-label="Tool & Cat"] {
-    font-size: 14px;
-    font-weight: 600;
-    color: #212529;
-  }
-
-  td[data-label="Tool & Cat"] small {
-    display: block;
-    margin-top: 4px;
-    color: #6c757d;
-  }
-
-  /* Description as inner card */
-  .desc-cell {
-    font-size: 14px;
-    line-height: 1.75;
-    background: #ffffff;
-    border-radius: 14px;
-    padding: 12px 14px;
-    box-shadow: inset 0 0 0 1px #eef2ff;
-  }
-
-  .show-more-link {
-    display: inline-block;
-    margin-top: 10px;
-    padding: 6px 14px;
-    border-radius: 50px;
-    background: linear-gradient(135deg,#e7f1ff,#f1eaff);
-    font-size: 12px;
-    font-weight: 800;
-    color: #0d6efd !important;
-    text-transform: uppercase;
-    letter-spacing: .5px;
-    box-shadow: 0 4px 12px rgba(13,110,253,0.15);
-  }
-
-  /* Action button (Take Action) */
-  #DailytaskComplaints .btn-outline-success {
-    border-radius: 12px;
-    padding: 10px;
-    box-shadow: 0 4px 12px rgba(25,135,84,0.2);
-  }
-
-  /* Track link as button */
-  #DailytaskComplaints a[href*="Track"],
-  #DailytaskComplaints a[onclick*="viewTrack"] {
-    display: inline-block;
-    margin-top: 8px;
-    padding: 8px 16px;
-    border-radius: 12px;
-    background: linear-gradient(135deg,#0d6efd,#6610f2);
-    color: #fff !important;
-    font-weight: 700;
-    text-decoration: none;
-    box-shadow: 0 6px 16px rgba(102,16,242,0.25);
-  }
-
-  /* Status badge */
-  #DailytaskComplaints .badge {
-    font-size: 12px;
-    padding: 8px 14px;
-    border-radius: 50px;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.08);
-  }
-
-  /* Status form controls full width */
-  #DailytaskComplaints select,
-  #DailytaskComplaints input[type="text"],
-  #DailytaskComplaints .btn-primary {
+  /* Full Width Buttons */
+  .btn,
+  .track-btn {
     width: 100%;
-    border-radius: 12px;
+    display: block;
+    margin-top: 10px;
+    text-align: center;
   }
-
-  #DailytaskComplaints .btn-primary {
-    font-weight: 700;
-    box-shadow: 0 6px 16px rgba(13,110,253,0.25);
-  }
-
-  /* Reopen button */
-  #DailytaskComplaints .btn-outline-danger {
-    border-radius: 12px;
-    font-weight: 700;
-    box-shadow: 0 4px 12px rgba(220,53,69,0.2);
-  }
-
 }
-
 
 </style>
 
