@@ -517,8 +517,31 @@ input[type="file"]:hover {
   font-weight: 600;
 }
 
+/* Premium Back Button */
 .btn-dark {
+  background: linear-gradient(135deg, #111827, #374151) !important;
+  border: none !important;
   border-radius: 14px !important;
+  padding: 12px 22px !important;
+  font-weight: 700;
+  font-size: 14px;
+  color: #fff !important;
+  transition: all 0.25s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* Hover Effect */
+.btn-dark:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 22px rgba(17, 24, 39, 0.35);
+  background: linear-gradient(135deg, #1f2937, #4b5563) !important;
+}
+
+/* Active Click */
+.btn-dark:active {
+  transform: scale(0.97);
 }
 
 /* Radio Buttons Upgrade (CSS Only) */
