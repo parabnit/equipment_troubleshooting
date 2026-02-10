@@ -1,13 +1,29 @@
-upload/
-uploads/
-config/connect.php
-connect.php
-.env
+# =========================
+# Runtime / User uploads
+# =========================
+views/uploads/
 
+# =========================
+# Sensitive config
+# =========================
+config/connect.php
+
+# =========================
+# Assets (css, js, bootstrap)
+# =========================
+assets/
+
+# =========================
+# Environment & temp
+# =========================
+.env
 *.log
 tmp/
 .cache/
 
+# =========================
+# OS / Editor junk
+# =========================
 .vscode/
 .idea/
 .DS_Store
