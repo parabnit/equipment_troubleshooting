@@ -1,0 +1,14 @@
+upload/
+uploads/
+config/connect.php
+connect.php
+.env
+
+*.log
+tmp/
+.cache/
+
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
