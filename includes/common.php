@@ -216,7 +216,7 @@ function getTeamHead($type)
             break;
 
         case "all":
-            $sql = "SELECT memberid FROM role WHERE role IN (1,2,3,4)";
+            $sql = "SELECT memberid FROM role WHERE role IN (1,2,3,4,12,13,14,18,19)";
             break;
 
         default:
