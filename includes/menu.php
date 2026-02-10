@@ -274,6 +274,11 @@ $canViewTasksAndComplaints = (
             Dashboard
         </a>
         <?php } ?>
+        <a href="../views/productivity_dashboard.php" 
+        class="list-group-item list-group-item-action <?php echo ($currentPage == 'productivity_dashboard.php') ? 'active' : ''; ?>">
+            Productivity Dashboard
+        </a>
+
         <a href="../views/complaint.php" class="list-group-item list-group-item-action">
             Complaint Form
         </a>
