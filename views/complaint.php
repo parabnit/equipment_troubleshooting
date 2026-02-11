@@ -390,9 +390,6 @@ $body = '<table width="100%" cellpadding="0" cellspacing="0" border="0" role="pr
           <td width="120" valign="top" style="padding:4px 8px 4px 0; font-weight:bold;">Submitted at:</td>
           <td valign="top" style="padding:4px 0;">'.date("F j, Y, g:i a").'</td>
         </tr>
-         <tr>
-          <td colspan="2" style="padding-top:12px; color:red; font-weight:bold;">This is a testing mail</td>
-        </tr>
       </table>
     </td>
   </tr>

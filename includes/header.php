@@ -7,7 +7,7 @@ if (session_status() === PHP_SESSION_NONE) session_start();
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Equipment Troubleshooting</title>
+  <title>IITBNF Troubleshooting</title>
 
   <!-- Bootstrap 5 CSS -->
  <!-- Bootstrap 5 CSS -->
@@ -60,7 +60,7 @@ if (session_status() === PHP_SESSION_NONE) session_start();
     <!-- Right: Date + Version (hidden on mobile) -->
     <div class="position-absolute top-0 end-0 text-end pe-3 d-none d-md-block">
       <div class="small"><?php echo date("l, d M Y h:i A"); ?></div>
-      <small>Released on May 20, 2021 | Version 2025.08.13</small>
+      <small>Released on Feb 16, 2026 | Version 2026.02.16</small>
     </div>
   </div>
 </header>
