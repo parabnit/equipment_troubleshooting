@@ -670,12 +670,22 @@ $shortDesc = shortDesc($desc);
 .status-select option[value="2"] { color: #16a34a; } /* Closed */
 .status-select option[value="3"] { color: #7c3aed; } /* On Hold */
 
+.complaint-info-panel {
+  overflow: hidden;
+  max-height: 0;
+  transition: max-height 0.5s ease;
+}
+
+.complaint-info-panel.open {
+  max-height: 3000px;
+}
+
 
 </style>
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-<div class="container mt-4">
+<div class="container-fluid">
   <div class="row">
     <div class="col-md-2">
       <?php include("../includes/menu.php"); ?>
@@ -684,174 +694,194 @@ $shortDesc = shortDesc($desc);
     <div class="col-md-10">
 
       <!-- Complaint Info Header -->
-      <div class="card mb-3 shadow-sm">
-        <div class="card-header bg-info text-white">
-          <h5 class="mb-0">Complaint Information</h5>
+     <!-- ================= Complaint Information (Collapsible Card) ================= -->
+<div class="card mb-3 shadow-sm">
+
+  <!-- Header with Toggle -->
+  <div class="card-header bg-info text-white d-flex justify-content-between align-items-center"
+       style="cursor:pointer;"
+       onclick="toggleComplaintInfo()">
+
+    <h5 class="mb-0">
+      🗂️ Complaint Information
+      <small class="ms-2 opacity-75">(Click to show / hide)</small>
+    </h5>
+
+    <button type="button"
+            id="complaintToggleBtn"
+            class="btn btn-sm btn-light"
+            onclick="event.stopPropagation(); toggleComplaintInfo();">
+      👁 Show
+    </button>
+  </div>
+
+  <!-- Sliding Body -->
+  <div id="complaintInfoPanel" class="complaint-info-panel">
+
+    <div class="card-body">
+
+      <!-- ===== Ultra Colorful Complaint Info ===== -->
+      <div class="row g-3 mb-4">
+
+        <div class="col-md-3">
+          <div class="complaint-tile tile-type">
+            <div class="label">Complaint Type</div>
+            <div class="value">🏷️ <?= htmlspecialchars($complaint_type_text) ?></div>
+          </div>
         </div>
-        <div class="card-body">
-          <!-- Complaint Meta Info -->
-          <!-- ===== Ultra Colorful Complaint Info ===== -->
-          <div class="row g-2 mb-3">
-            <div class="col-md-3">
-              <div class="complaint-tile tile-type">
-                <div class="label">Complaint Type</div>
-                <div class="value">🏷️ <?= htmlspecialchars($complaint_type_text) ?></div>
-              </div>
-            </div>
 
-            <div class="col-md-3">
-              <div class="complaint-tile tile-user">
-                <div class="label">Complaint By</div>
-                <div class="value">👤 <?= htmlspecialchars($memberName) ?></div>
-              </div>
-            </div>
-
-            <div class="col-md-3">
-              <div class="complaint-tile tile-tool">
-                <div class="label">Tool / Category</div>
-                <div class="value">🛠️ <?= htmlspecialchars($toolName) ?></div>
-              </div>
-            </div>
-
-            <div class="col-md-3">
-              <div class="complaint-tile tile-status">
-                <div class="label">Status</div>
-                <div class="value">🚦 <?= htmlspecialchars($status_text) ?></div>
-              </div>
-            </div>
-
-            <div class="col-md-3">
-              <div class="complaint-tile tile-time">
-                <div class="label">Complaint Time</div>
-                <div class="value">🕒 <?= htmlspecialchars($timeOfComplaint) ?></div>
-              </div>
-            </div>
-
-            <?php if ($allocatedTo): ?>
-            <div class="col-md-3">
-              <div class="complaint-tile tile-allocated">
-                <div class="label">Allocated To</div>
-                <div class="value">👨‍🔧 <?= htmlspecialchars($allocatedTo) ?></div>
-              </div>
-            </div>
-            <?php endif; ?>
-
+        <div class="col-md-3">
+          <div class="complaint-tile tile-user">
+            <div class="label">Complaint By</div>
+            <div class="value">👤 <?= htmlspecialchars($memberName) ?></div>
           </div>
-          <!-- ===== End Ultra Colorful Complaint Info ===== -->
+        </div>
 
-
-
-          <!-- Complaint Description -->
-          <div class="desc-box mb-4">
-            <div class="fw-bold mb-2">📝 Complaint Description</div>
-            <?= nl2br(htmlspecialchars_decode($shortDesc)) ?>
+        <div class="col-md-3">
+          <div class="complaint-tile tile-tool">
+            <div class="label">Tool / Category</div>
+            <div class="value">🛠️ <?= htmlspecialchars($toolName) ?></div>
           </div>
+        </div>
+
+        <div class="col-md-3">
+          <div class="complaint-tile tile-status">
+            <div class="label">Status</div>
+            <div class="value">🚦 <?= htmlspecialchars($status_text) ?></div>
+          </div>
+        </div>
+
+        <div class="col-md-3">
+          <div class="complaint-tile tile-time">
+            <div class="label">Complaint Time</div>
+            <div class="value">🕒 <?= htmlspecialchars($timeOfComplaint) ?></div>
+          </div>
+        </div>
+
+        <?php if ($allocatedTo): ?>
+        <div class="col-md-3">
+          <div class="complaint-tile tile-allocated">
+            <div class="label">Allocated To</div>
+            <div class="value">👨‍🔧 <?= htmlspecialchars($allocatedTo) ?></div>
+          </div>
+        </div>
+        <?php endif; ?>
+
+      </div>
+      <!-- ===== End Ultra Colorful Complaint Info ===== -->
+
+      <!-- Complaint Description -->
+      <div class="desc-box mb-2 p-3 rounded-3"
+           style="background: linear-gradient(135deg, #0f172a, #1e293b); color:#fff;">
+
+        <div class="fw-bold mb-2">📝 Complaint Description</div>
+
+        <div style="line-height:1.6;">
+          <?= nl2br(htmlspecialchars_decode($shortDesc)) ?>
+        </div>
+
+      </div>
+
+    </div> <!-- /.card-body -->
+  </div> <!-- /#complaintInfoPanel -->
+
+</div>
+<!-- ================= End Complaint Information ================= -->
+
 
           <!-- Action + Previous Side-by-Side -->
           <div class="row">
             <!-- Action Taken -->
-            <div class="col-md-6 mb-3">
-              <div class="card h-100 shadow-sm">
-                <div class="card-header bg-primary text-white">
-                  <h6 class="mb-0">Action Taken</h6>
-                </div>
-                <div class="card-body">
+           <div class="col-md-6 mb-3">
+            <div class="card h-100 shadow-sm">
+              <div class="card-header bg-primary text-white">
+                <h6 class="mb-0">Action Taken</h6>
+              </div>
+              <div class="card-body">
 
-                  <div id="msg" class="text-danger mb-3"></div>
+                <div id="msg" class="text-danger mb-3"></div>
 
+                <form name="action_taken" method="post" enctype="multipart/form-data" onsubmit="return verification();">
+                  <input type="hidden" name="csrf_token" value="<?php echo $_SESSION['csrf_token']; ?>" />
+                  <input type="hidden" name="complaint_id" value="<?= $_POST['complaint_id'] ?>">
+                  <input type="hidden" name="type" value="<?= $_POST['type'] ?? '' ?>">
+                  <input type="hidden" name="member_id" value="<?= $_POST['member_id'] ?>">
 
-                  <form name="action_taken" method="post" enctype="multipart/form-data" onsubmit="return verification();">
-                      <!-- added by sowjanya on 22/10/2025 -->
-                      <input type="hidden" name="csrf_token" value="<?php echo $_SESSION['csrf_token']; ?>" />
-                    <input type="hidden" name="complaint_id" value="<?= $_POST['complaint_id'] ?>">
-                    <input type="hidden" name="type" value="<?= $_POST['type'] ?? '' ?>">
-                    <input type="hidden" name="member_id" value="<?= $_POST['member_id'] ?>">
+                  <div class="row">
 
-                    <div class="mb-3">
-                      <label class="form-label">Action marked by</label>
-                      <input type="text" readonly class="form-control" value="<?= getName($_POST['member_id']) ?>">
-                    </div>
+                    <!-- ================= LEFT COLUMN ================= -->
+                    <div class="col-md-6">
 
-                    <div class="mb-3">
-                      <label class="form-label">Working Team</label>
-                      <input type="text" class="form-control" name="working_team" id="working_team" maxlength="29">
+                      <div class="mb-3">
+                        <label class="form-label">Action marked by</label>
+                        <input type="text" readonly class="form-control" value="<?= getName($_POST['member_id']) ?>">
+                      </div>
 
-                    </div>
+                      <div class="mb-3">
+                        <label class="form-label">Working Team</label>
+                        <input type="text" class="form-control" name="working_team" id="working_team" maxlength="29">
+                      </div>
 
-                    <div style="position: relative; margin-bottom: 36px;">
-                       <label class="form-label">Diagnosis/Observations <span class="text-danger">*</span></label>
-                      <textarea class="form-control" name="diagnosis" id="diagnosis" rows="3" maxlength="3000" onkeyup="countDX()"
-                           style="font-size:15px;padding:10px 12px;border:1px solid #b5c7e7;border-radius:6px;line-height:1.5;"></textarea>
-                          <div id="diagnosis_error"
-                             style="color:#d9534f; font-size:14px; position:absolute; bottom:-24px; left:0;">
-                            </div>
-                           <div id="dx_count"
-                               style="color:#555; font-size:14px; position:absolute; bottom:-24px; right:0;">
-                              </div>
-                           </div>
-                            <div  style="position: relative; margin-bottom: 36px;">
-                         <label class="form-label">Action Taken <span class="text-danger">*</span></label>
-                       <textarea class="form-control" name="action_taken" id="action_taken" rows="3" onkeyup="countAT()"
+                      <div style="position: relative; margin-bottom: 36px;">
+                        <label class="form-label">Diagnosis/Observations <span class="text-danger">*</span></label>
+                        <textarea class="form-control" name="diagnosis" id="diagnosis" rows="3" maxlength="3000" onkeyup="countDX()"
                           style="font-size:15px;padding:10px 12px;border:1px solid #b5c7e7;border-radius:6px;line-height:1.5;"></textarea>
-                     <div id="action_taken_error"
-                             style="color:#d9534f; font-size:14px; position:absolute; bottom:-24px; left:0;margin-top:5px">
-                       </div>
-                            <div id="char_count"
-                                    style="color:#555; font-size:14px; position:absolute; bottom:-24px; right:0;">
-                                </div>
-                              </div>
-                    <div class="mb-3">
-                      <label class="form-label">Work done by</label>
-                      <input type="text" class="form-control" name="work_done_by" id="work_done_by" maxlength="99">
-                    </div>
+                        <div id="diagnosis_error"
+                          style="color:#d9534f; font-size:14px; position:absolute; bottom:-24px; left:0;"></div>
+                        <div id="dx_count"
+                          style="color:#555; font-size:14px; position:absolute; bottom:-24px; right:0;"></div>
+                      </div>
 
-                   <!-- ===== Vendor Interaction (Compact Premium UI) ===== -->
+                      <div style="position: relative; margin-bottom: 36px;">
+                        <label class="form-label">Action Taken <span class="text-danger">*</span></label>
+                        <textarea class="form-control" name="action_taken" id="action_taken" rows="3" onkeyup="countAT()"
+                          style="font-size:15px;padding:10px 12px;border:1px solid #b5c7e7;border-radius:6px;line-height:1.5;"></textarea>
+                        <div id="action_taken_error"
+                          style="color:#d9534f; font-size:14px; position:absolute; bottom:-24px; left:0;margin-top:5px"></div>
+                        <div id="char_count"
+                          style="color:#555; font-size:14px; position:absolute; bottom:-24px; right:0;"></div>
+                      </div>
+
+                      <div class="mb-3">
+                        <label class="form-label">Work done by</label>
+                        <input type="text" class="form-control" name="work_done_by" id="work_done_by" maxlength="99">
+                      </div>
+
+                      <!-- Vendor Interaction -->
                       <div class="vendor-box mb-3">
 
                         <div class="vendor-header">
                           🤝 Vendor Interaction
                         </div>
 
-                        <!-- Yes / No -->
                         <div class="vendor-toggle">
                           <label class="vendor-radio">
                             <input type="radio" name="vendor_interaction" value="Yes"
-                                  onclick="display_vendor_interaction('Yes')">
+                              onclick="display_vendor_interaction('Yes')">
                             <span>Yes</span>
                           </label>
 
-                         <label class="vendor-radio">
-                          <input type="radio" name="vendor_interaction" value="No"
-                                onclick="display_vendor_interaction('No')" checked>
-                          <span>No</span>
-                        </label>
-
+                          <label class="vendor-radio">
+                            <input type="radio" name="vendor_interaction" value="No"
+                              onclick="display_vendor_interaction('No')" checked>
+                            <span>No</span>
+                          </label>
                         </div>
 
-                        <!-- Vendor Name -->
                         <div class="form-group-compact">
                           <label>Vendor Name <span class="text-danger">*</span></label>
-                          <input type="text"
-                                class="form-control"
-                                id="vendor_select"
-                                name="vendor_select"
-                                placeholder="Enter Vendor Name"
-                                maxlength="80">
+                          <input type="text" class="form-control" id="vendor_select" name="vendor_select"
+                            placeholder="Enter Vendor Name" maxlength="80">
                           <div id="alt_vendor_select" class="text-danger small"></div>
                         </div>
 
-                        <!-- Vendor Contact -->
                         <div class="form-group-compact">
                           <label>Vendor Contact <span class="text-danger">*</span></label>
-                          <textarea class="form-control"
-                                    name="vendor_contact"
-                                    id="vendor_contact"
-                                    rows="2"
-                                    placeholder="Phone / Email"></textarea>
+                          <textarea class="form-control" name="vendor_contact" id="vendor_contact" rows="2"
+                            placeholder="Phone / Email"></textarea>
                           <div id="alt_vendor_contact" class="text-danger small"></div>
                         </div>
 
-                        <!-- Interaction Quality -->
                         <div class="form-group-compact">
                           <label>Interaction Quality <span class="text-danger">*</span></label>
                           <div class="vendor-quality">
@@ -869,101 +899,88 @@ $shortDesc = shortDesc($desc);
                           <div id="alt_interaction" class="text-danger small"></div>
                         </div>
 
-                        <!-- Vendor Comments -->
                         <div class="form-group-compact">
                           <label>Comments <span class="text-danger">*</span></label>
-                          <textarea class="form-control"
-                                    name="feedback"
-                                    id="feedback"
-                                    rows="2"
-                                    maxlength="499"
-                                    placeholder="Short feedback"></textarea>
+                          <textarea class="form-control" name="feedback" id="feedback" rows="2" maxlength="499"
+                            placeholder="Short feedback"></textarea>
                           <div id="alt_feedback" class="text-danger small"></div>
                         </div>
 
                       </div>
-                      <!-- ===== End Vendor Interaction ===== -->
-
-
-                    <div class="mb-3">
-                      <label class="form-label">Spare Parts</label>
-                      <input type="text" class="form-control" name="spare_parts" id="spare_parts" maxlength="149">
                     </div>
 
-                    <div class="mb-3">
-                      <label class="form-label">Cost of Spare Parts</label>
-                      <input type="text" class="form-control" name="cost_spare_parts" id="cost_spare_parts" maxlength="29">
+                    <!-- ================= RIGHT COLUMN ================= -->
+                    <div class="col-md-6">
+
+                      <div class="mb-3">
+                        <label class="form-label">Spare Parts</label>
+                        <input type="text" class="form-control" name="spare_parts" id="spare_parts" maxlength="149">
+                      </div>
+
+                      <div class="mb-3">
+                        <label class="form-label">Cost of Spare Parts</label>
+                        <input type="text" class="form-control" name="cost_spare_parts" id="cost_spare_parts" maxlength="29">
+                      </div>
+
+                      <div class="mb-3">
+                        <label class="form-label">Procurement Time of Spares</label>
+                        <input type="text" class="form-control" name="procurement_time_spares" id="procurement_time_spares" maxlength="99">
+                      </div>
+
+                      <div class="mb-3">
+                        <label class="form-label">Expected Completion Date</label>
+                        <input type="text" class="form-control" name="expected_completion_date" id="expected_completion_date" placeholder="dd-mm-yyyy">
+                      </div>
+
+                      <div class="mb-3">
+                        <label class="form-label">Action Plan</label>
+                        <textarea class="form-control" name="action_plan" id="action_plan" rows="3" maxlength="199"></textarea>
+                      </div>
+
+                      <div class="mb-3">
+                        <label class="form-label">Action Item Owner</label>
+                        <input type="text" class="form-control" name="action_item_owner" id="action_item_owner" maxlength="99">
+                      </div>
+
+                      <div class="mb-3">
+                        <label class="form-label">Upload File</label>
+                        <input type="file" class="form-control" name="file" id="file">
+                        <div id="alt_file" class="text-danger small"></div>
+                      </div>
+
+                      <div class="mb-3">
+                        <label class="form-label">Additional Comments</label>
+                        <textarea class="form-control" name="comments" id="comments" rows="3" maxlength="499"></textarea>
+                      </div>
+
+                      <div class="mb-2 p-2 rounded-3 shadow-sm status-box">
+                        <label class="form-label fw-bold small mb-1 text-uppercase text-muted">
+                          Complaint Status
+                        </label>
+
+                        <select name="status" id="complaint_status"
+                          class="form-select form-select-sm fw-bold status-select" required>
+                          <option value="">-- Select --</option>
+                          <option value="0" <?= $complaint['status']==0 ? "selected" : "" ?>>🕒 Pending</option>
+                          <option value="1" <?= $complaint['status']==1 ? "selected" : "" ?>>⚙️ In Process</option>
+                          <option value="2" <?= $complaint['status']==2 ? "selected" : "" ?>>✅ Closed</option>
+                          <option value="3" <?= $complaint['status']==3 ? "selected" : "" ?>>⏸️ On Hold</option>
+                        </select>
+                      </div>
+
+                      <input type="hidden" name="c_date" id="c_date">
+
+                      <div class="text-end">
+                        <input type="submit" class="btn btn-primary" name="submit" value="Submit">
+                      </div>
+
                     </div>
-
-                    <div class="mb-3">
-                      <label class="form-label">Procurement Time of Spares</label>
-                      <input type="text" class="form-control" name="procurement_time_spares" id="procurement_time_spares" maxlength="99">
-                    </div>
-
-
-                    <div class="mb-3">
-                      <label class="form-label">Expected Completion Date</label>
-                      <input type="text" class="form-control" name="expected_completion_date" id="expected_completion_date" placeholder="dd-mm-yyyy">
-                      <!-- <input type="date" class="form-control" name="expected_completion_date" id="expected_completion_date" lang="en-GB"> -->
-                    </div>
-
-                    <div class="mb-3">
-                      <label class="form-label">Action Plan</label>
-                      <textarea class="form-control" name="action_plan" id="action_plan" rows="3" maxlength="199"></textarea>
-                    </div>
-
-                    <div class="mb-3">
-                      <label class="form-label">Action Item Owner</label>
-                      <input type="text" class="form-control" name="action_item_owner" id="action_item_owner" maxlength="99">
-                    </div>
-
-                    <div class="mb-3">
-                      <label class="form-label">Upload File</label>
-                      <input type="file" class="form-control" name="file" id="file">
-                       <div id="alt_file" class="text-danger small"></div>
-                    </div>
-
-                    <div class="mb-3">
-                      <label class="form-label">Additional Comments</label>
-                      <textarea class="form-control" name="comments" id="comments" rows="3" maxlength="499"></textarea>
-                    </div>
-                    
-                      <!-- ======================================= -->
-                    <!-- ✅ STATUS DROPDOWN (MANDATORY) -->
-                    <!-- ======================================= -->
-
-                  <div class="mb-2 p-2 rounded-3 shadow-sm status-box">
-                    <label class="form-label fw-bold small mb-1 text-uppercase text-muted">
-                      Complaint Status
-                    </label>
-
-                    <select name="status"
-                            id="complaint_status"
-                            class="form-select form-select-sm fw-bold status-select"
-                            required>
-
-                      <option value="">-- Select --</option>
-                      <option value="0" <?= $complaint['status']==0 ? "selected" : "" ?>>🕒 Pending</option>
-                      <option value="1" <?= $complaint['status']==1 ? "selected" : "" ?>>⚙️ In Process</option>
-                      <option value="2" <?= $complaint['status']==2 ? "selected" : "" ?>>✅ Closed</option>
-                      <option value="3" <?= $complaint['status']==3 ? "selected" : "" ?>>⏸️ On Hold</option>
-
-                    </select>
                   </div>
-
-
-                    <!-- Hidden close date -->
-                    <input type="hidden" name="c_date" id="c_date">
-
-
-
-                    <div class="text-end">
-                      <input type="submit" class="btn btn-primary" name="submit" value="Submit">
-                    </div>
-                  </form>
-                </div>
+                </form>
               </div>
             </div>
+          </div>
+
 
 
             <!-- Previous Actions -->
@@ -1529,5 +1546,22 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 </script>
+<script>
+function toggleComplaintInfo() {
+  const panel = document.getElementById('complaintInfoPanel');
+  const btn   = document.getElementById('complaintToggleBtn');
+
+  const isOpen = panel.classList.contains('open');
+
+  if (isOpen) {
+    panel.classList.remove('open');
+    btn.innerHTML = '👁 Show';
+  } else {
+    panel.classList.add('open');
+    btn.innerHTML = '✖ Hide';
+  }
+}
+</script>
+
 
 <?php include("../includes/footer.php"); ?>

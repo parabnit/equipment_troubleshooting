@@ -1,6 +1,45 @@
 <?php
 if (session_status() === PHP_SESSION_NONE) session_start();
 ?>
+<style>
+/* =========================
+   MODERN HEADER STYLES
+========================= */
+.modern-header {
+  background: linear-gradient(135deg, #0d6efd, #6610f2);
+  height: 90px;
+  position: relative;
+  box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+}
+
+.header-glass {
+  background: rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(8px);
+  border-radius: 16px;
+  padding: 10px 20px;
+  height: 70px;
+}
+
+.header-title {
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
+
+.header-meta {
+  font-size: 0.75rem;
+  opacity: 0.85;
+}
+
+.header-logo {
+  height: 55px;
+}
+
+.header-icon {
+  font-size: 1.4rem;
+  opacity: 0.9;
+}
+</style>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -44,23 +83,43 @@ if (session_status() === PHP_SESSION_NONE) session_start();
 
 <body>
 
-<header class="bg-primary text-white mb-4 shadow-sm position-relative" style="height:80px;">
-  <div class="container-fluid position-relative h-100 d-flex justify-content-center align-items-center">
+<header class="modern-header mb-4">
+  <div class="container-fluid h-100 d-flex align-items-center">
     
-    <!-- Left: Logo (hidden on mobile) -->
-    <div class="position-absolute top-0 start-0 h-100 d-none d-md-flex align-items-center ps-2">
-      <img src="../assets/images/mainlogo.png" alt="Logo" class="h-100 w-auto">
-    </div>
-    
-    <!-- Centered Title -->
-    <h1 class="text-center fs-5 fs-md-4 m-0">
-      IITBNF Troubleshooting
-    </h1>
-    
-    <!-- Right: Date + Version (hidden on mobile) -->
-    <div class="position-absolute top-0 end-0 text-end pe-3 d-none d-md-block">
-      <div class="small"><?php echo date("l, d M Y h:i A"); ?></div>
-      <small>Released on May 20, 2021 | Version 2025.08.13</small>
+    <div class="w-100 header-glass d-flex align-items-center justify-content-between shadow">
+
+      <!-- Left: Logo + App Name -->
+      <div class="d-flex align-items-center gap-3">
+        <img src="../assets/images/mainlogo.png" 
+             alt="Logo" 
+             class="header-logo d-none d-md-block">
+
+        <div class="text-white">
+          <div class="d-flex align-items-center gap-2">
+            <i class="bi bi-tools header-icon"></i>
+            <h1 class="m-0 fs-5 fs-md-4 header-title">
+              IITBNF Troubleshooting
+            </h1>
+          </div>
+          <div class="header-meta">
+            Smart Equipment Support System
+          </div>
+        </div>
+      </div>
+
+      <!-- Right: Date + Version -->
+      <div class="text-end text-white d-none d-md-block">
+        <div class="small">
+          <i class="bi bi-clock-history me-1"></i>
+          <?php echo date("l, d M Y h:i A"); ?>
+        </div>
+        <div class="header-meta">
+          <i class="bi bi-info-circle me-1"></i>
+          Released May 20, 2021 | Version 2025.08.13
+        </div>
+      </div>
+
     </div>
   </div>
 </header>
+
