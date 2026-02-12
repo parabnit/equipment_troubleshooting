@@ -573,6 +573,12 @@ if (!empty($_SESSION['flash_message'])) {
     margin-top: 8px;
   }
 }
+
+.complaint-meta {
+    color: maroon !important;
+    font-weight: 600;
+}
+
 </style>
 
 
@@ -732,7 +738,17 @@ if (!empty($_SESSION['flash_message'])) {
     <td data-label="Member">
   <?= getName($d['allocated_to']) ?>
   <br><small><?= display_date($d['time_of_complaint']) ?></small>
-  <br><small class="text-muted">Complaint ID: <?= (int)$d['complaint_id'] ?></small><br><small class="text-muted">Created by: <?= getName($d['member_id']) ?></small>
+  <br>
+  <small class="complaint-meta">
+      Complaint ID: <?= (int)$d['complaint_id'] ?>
+  </small>
+
+  <br>
+
+  <small class="complaint-meta">
+      Created by: <?= getName($d['member_id']) ?>
+  </small>
+
   <!-- <small class="text-muted">Head: <?= ['1'=>'Equipment','2'=>'Facility','3'=>'Safety','4'=>'Process'][$type] ?? '' ?></small> -->
 <?php if($user_role == "all" || $head==1){ ?>
   <div class="mt-2">

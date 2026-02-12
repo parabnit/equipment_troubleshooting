@@ -654,7 +654,9 @@ body {
     <th>Anti Contamination</th>
   <?php endif; ?>
   <th>Allocation / Track</th>
+  <?php if($user_role=="all" || $head==1): ?>
   <th>Status</th>
+  <?php endif; ?>
 </tr>
 </thead>
 
@@ -768,7 +770,7 @@ if ($ec !== '') {
 
 
 </td>
-
+  <?php if($user_role=="all" || $head==1): ?>
 <td data-label="Status">
 <?php
   // normalize status safely
@@ -876,7 +878,7 @@ if ($ec !== '') {
 
 <?php endif; ?>
 </td>
-
+<?php endif; ?>
 
 
 </tr>
