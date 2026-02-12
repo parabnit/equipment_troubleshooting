@@ -283,9 +283,25 @@ function send_complaint_closed_email($complaint_id)
         case 4:
             $team = "process";
             break;
+        case 5:
+            $team = "hr";
+            break;
+        case 6:
+            $team = "it";
+            break;
+        case 7:
+            $team = "purchase";
+            break;
+        case 8:
+            $team = "training";
+            break;
+        case 9:
+            $team = "inventory";
+            break;
         default:
             return "";
     }
+
 
     // --- Normalize description ---
     // 1) convert escaped "\n" to real newlines

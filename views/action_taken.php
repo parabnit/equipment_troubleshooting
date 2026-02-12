@@ -817,10 +817,7 @@ $shortDesc = shortDesc($desc);
                         <input type="text" readonly class="form-control" value="<?= getName($_POST['member_id']) ?>">
                       </div>
 
-                      <div class="mb-3">
-                        <label class="form-label">Working Team</label>
-                        <input type="text" class="form-control" name="working_team" id="working_team" maxlength="29">
-                      </div>
+                 
 
                       <div style="position: relative; margin-bottom: 36px;">
                         <label class="form-label">Diagnosis/Observations <span class="text-danger">*</span></label>
@@ -832,19 +829,15 @@ $shortDesc = shortDesc($desc);
                           style="color:#555; font-size:14px; position:absolute; bottom:-24px; right:0;"></div>
                       </div>
 
-                      <div style="position: relative; margin-bottom: 36px;">
-                        <label class="form-label">Action Taken <span class="text-danger">*</span></label>
-                        <textarea class="form-control" name="action_taken" id="action_taken" rows="3" onkeyup="countAT()"
-                          style="font-size:15px;padding:10px 12px;border:1px solid #b5c7e7;border-radius:6px;line-height:1.5;"></textarea>
-                        <div id="action_taken_error"
-                          style="color:#d9534f; font-size:14px; position:absolute; bottom:-24px; left:0;margin-top:5px"></div>
-                        <div id="char_count"
-                          style="color:#555; font-size:14px; position:absolute; bottom:-24px; right:0;"></div>
-                      </div>
 
                       <div class="mb-3">
                         <label class="form-label">Work done by</label>
                         <input type="text" class="form-control" name="work_done_by" id="work_done_by" maxlength="99">
+                      </div>
+
+                       <div class="mb-3">
+                        <label class="form-label">Action Plan</label>
+                        <textarea class="form-control" name="action_plan" id="action_plan" rows="3" maxlength="199"></textarea>
                       </div>
 
                       <!-- Vendor Interaction -->
@@ -913,6 +906,21 @@ $shortDesc = shortDesc($desc);
                     <div class="col-md-6">
 
                       <div class="mb-3">
+                        <label class="form-label">Working Team</label>
+                        <input type="text" class="form-control" name="working_team" id="working_team" maxlength="29">
+                      </div>
+
+                       <div style="position: relative; margin-bottom: 36px;">
+                          <label class="form-label">Action Taken <span class="text-danger">*</span></label>
+                          <textarea class="form-control" name="action_taken" id="action_taken" rows="3" onkeyup="countAT()"
+                            style="font-size:15px;padding:10px 12px;border:1px solid #b5c7e7;border-radius:6px;line-height:1.5;"></textarea>
+                          <div id="action_taken_error"
+                            style="color:#d9534f; font-size:14px; position:absolute; bottom:-24px; left:0;margin-top:5px"></div>
+                          <div id="char_count"
+                            style="color:#555; font-size:14px; position:absolute; bottom:-24px; right:0;"></div>
+                        </div>
+
+                      <div class="mb-3">
                         <label class="form-label">Spare Parts</label>
                         <input type="text" class="form-control" name="spare_parts" id="spare_parts" maxlength="149">
                       </div>
@@ -932,10 +940,7 @@ $shortDesc = shortDesc($desc);
                         <input type="text" class="form-control" name="expected_completion_date" id="expected_completion_date" placeholder="dd-mm-yyyy">
                       </div>
 
-                      <div class="mb-3">
-                        <label class="form-label">Action Plan</label>
-                        <textarea class="form-control" name="action_plan" id="action_plan" rows="3" maxlength="199"></textarea>
-                      </div>
+                     
 
                       <div class="mb-3">
                         <label class="form-label">Action Item Owner</label>
