@@ -49,50 +49,15 @@ $types = [
 /* ================================
    CARD THEMES (Different Colors)
 ================================ */
-.theme-equipment {
-  --card-main: #3b82f6;
-  --card-light: #dbeafe;
-}
-
-.theme-facility {
-  --card-main: #10b981;
-  --card-light: #d1fae5;
-}
-
-.theme-safety {
-  --card-main: #ef4444;
-  --card-light: #fee2e2;
-}
-
-.theme-process {
-  --card-main: #8b5cf6;
-  --card-light: #ede9fe;
-}
-
-.theme-hr {
-  --card-main: #f59e0b;
-  --card-light: #fef3c7;
-}
-
-.theme-it {
-  --card-main: #0ea5e9;
-  --card-light: #cffafe;
-}
-
-.theme-purchase {
-  --card-main: #ec4899;
-  --card-light: #fce7f3;
-}
-
-.theme-training {
-  --card-main: #14b8a6;
-  --card-light: #ccfbf1;
-}
-
-.theme-inventory {
-  --card-main: #64748b;
-  --card-light: #e2e8f0;
-}
+.theme-equipment { --card-main: #3b82f6; --card-light: #dbeafe; }
+.theme-facility  { --card-main: #10b981; --card-light: #d1fae5; }
+.theme-safety    { --card-main: #ef4444; --card-light: #fee2e2; }
+.theme-process   { --card-main: #8b5cf6; --card-light: #ede9fe; }
+.theme-hr        { --card-main: #f59e0b; --card-light: #fef3c7; }
+.theme-it        { --card-main: #0ea5e9; --card-light: #cffafe; }
+.theme-purchase  { --card-main: #ec4899; --card-light: #fce7f3; }
+.theme-training  { --card-main: #14b8a6; --card-light: #ccfbf1; }
+.theme-inventory { --card-main: #64748b; --card-light: #e2e8f0; }
 
 /* ================================
    DASHBOARD GRID
@@ -104,25 +69,26 @@ $types = [
 }
 
 /* ================================
-   CARD DESIGN
+   CARD DESIGN (Premium SaaS Style)
 ================================ */
 .square-card {
-  border-radius: 18px;
+  border-radius: 20px;
   background: #fff;
   border: 1px solid #e5e7eb;
-  box-shadow: 0 10px 25px rgba(0,0,0,0.08);
   overflow: hidden;
-  transition: all 0.3s ease;
+  position: relative;
+  transition: all 0.35s ease;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.08);
 }
 
 .square-card:hover {
-  transform: translateY(-6px);
-  border: 1px solid var(--card-main);
-  box-shadow: 0 18px 40px rgba(0,0,0,0.15);
+  transform: translateY(-7px);
+  border-color: var(--card-main);
+  box-shadow: 0 18px 45px rgba(0,0,0,0.16);
 }
 
 /* ================================
-   CARD HEADER (THEME BASED)
+   CARD HEADER (Modern Glow Look)
 ================================ */
 .square-card-header {
   background: linear-gradient(
@@ -130,35 +96,76 @@ $types = [
     var(--card-main),
     #111827
   );
-  padding: 14px 18px !important;
+  padding: 16px 20px !important;
   color: #fff;
   font-size: 18px;
   font-weight: 700;
+
   display: flex;
   justify-content: space-between;
   align-items: center;
+
+  position: relative;
+  overflow: hidden;
 }
 
+/* Glow Overlay */
+.square-card-header::after {
+  content: "";
+  position: absolute;
+  top: -50%;
+  left: -40%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle, rgba(255,255,255,0.18), transparent 70%);
+  transform: rotate(20deg);
+}
+
+/* Icon Bubble */
 .square-card-header::before {
   content: attr(data-icon);
-  font-size: 22px;
-  margin-right: 10px;
-  opacity: 0.9;
+  width: 44px;
+  height: 44px;
+  border-radius: 14px;
+  background: rgba(255,255,255,0.18);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  margin-right: 12px;
+  box-shadow: 0 6px 14px rgba(0,0,0,0.18);
+  z-index: 2;
 }
 
-/* Dropdowns */
+/* Header Title */
+.square-card-header span {
+  z-index: 2;
+  letter-spacing: 0.3px;
+}
+
+/* Controls Wrapper */
+.square-card-header .controls {
+  display: flex;
+  gap: 10px;
+  z-index: 2;
+}
+
+/* Dropdown Premium Look */
 .square-card-header select {
   background: rgba(255,255,255,0.95);
   border: none;
-  border-radius: 10px;
-  padding: 6px 10px;
+  border-radius: 12px;
+  padding: 7px 12px;
   font-size: 12px;
   font-weight: 600;
   cursor: pointer;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.12);
+  transition: 0.25s;
 }
 
 .square-card-header select:hover {
-  box-shadow: 0 0 0 2px rgba(255,255,255,0.6);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 14px rgba(0,0,0,0.18);
 }
 
 /* ================================
@@ -167,7 +174,7 @@ $types = [
 .square-card-body {
   max-height: 480px;
   overflow-y: auto;
-  padding: 15px;
+  padding: 16px;
 }
 
 /* Scrollbar */
@@ -180,24 +187,28 @@ $types = [
 }
 
 /* ================================
-   TABLE STYLING
+   TABLE STYLING (Cleaner + Theme)
 ================================ */
 table.dataTable {
   width: 100% !important;
-  border-radius: 12px;
+  border-radius: 14px;
   overflow: hidden;
+  border-collapse: separate !important;
+  border-spacing: 0;
 }
 
 /* Table Head */
 .table thead th {
-  background: #f3f4f6 !important;
+  background: #f8fafc !important;
   font-size: 11px;
-  font-weight: 700;
+  font-weight: 800;
   text-transform: uppercase;
-  padding: 10px;
+  padding: 11px;
+  color: #334155;
+  border-bottom: 1px solid #e2e8f0;
 }
 
-/* Theme highlight for Days Pending header */
+/* Days Pending Header Highlight */
 .square-card thead th:last-child {
   background: var(--card-light) !important;
   color: var(--card-main);
@@ -206,39 +217,47 @@ table.dataTable {
 
 /* Body Cells */
 .table tbody td {
-  padding: 10px;
+  padding: 11px;
   font-size: 13px;
   border-bottom: 1px solid #f1f5f9;
+  color: #1e293b;
 }
 
 /* Hover Row */
 table.dataTable tbody tr:hover {
-  background: rgba(0,0,0,0.03) !important;
+  background: rgba(0,0,0,0.035) !important;
   cursor: pointer;
 }
 
-/* Days Pending Column */
+/* Days Pending Badge Style */
 .table tbody td:last-child {
-  font-weight: 800;
+  font-weight: 900;
   text-align: center;
   color: var(--card-main);
-  background: rgba(0,0,0,0.02);
+  background: var(--card-light);
+  border-radius: 10px;
 }
 
 /* ================================
    PAGINATION BUTTONS
 ================================ */
 .dataTables_wrapper .paginate_button {
-  padding: 6px 12px !important;
-  border-radius: 10px !important;
+  padding: 7px 14px !important;
+  border-radius: 12px !important;
   border: none !important;
   background: #f3f4f6 !important;
   font-weight: 600;
+  transition: 0.2s;
+}
+
+.dataTables_wrapper .paginate_button:hover {
+  background: #e2e8f0 !important;
 }
 
 .dataTables_wrapper .paginate_button.current {
   background: var(--card-main) !important;
   color: white !important;
+  box-shadow: 0 5px 14px rgba(0,0,0,0.2);
 }
 
 /* ================================
@@ -255,12 +274,18 @@ table.dataTable tbody tr:hover {
     gap: 10px;
   }
 
+  .square-card-header .controls {
+    width: 100%;
+    flex-direction: column;
+  }
+
   .square-card-header select {
     width: 100%;
   }
 }
 
 </style>
+
 
 
 <script src="../assets/js/jquery-3.7.1.min.js"></script>
