@@ -302,7 +302,6 @@ function send_complaint_closed_email($complaint_id)
             return "";
     }
 
-
     // --- Normalize description ---
     // 1) convert escaped "\n" to real newlines
     $plain_description = str_replace("\\n", "\n", $description);

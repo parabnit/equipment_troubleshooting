@@ -106,19 +106,14 @@ try {
                
                 $to = get_email_user($row['allocated_to']);
                 $from = get_email_user($row['created_by']);
-                $cc = $from;
+                
                 $team = match ($row['type']) {
-                        1  => "Equipment",
-                        2  => "Facility",
-                        3  => "Safety",
-                        4  => "Process",
-                        5  => "HR",
-                        6  => "IT",
-                        7  => "Purchase",
-                        8  => "Training",
-                        9  => "Inventory",
-                        default => "General"
-                    };
+                    1 => "Equipment",
+                    2 => "Facility",
+                    3 => "Safety",
+                    4 => "Process",
+                    default => "General"
+                };
 
                 $toolName = ($row['machine_id'] == 0)
                     ? "Miscellaneous"

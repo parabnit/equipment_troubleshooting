@@ -328,7 +328,8 @@ switch ($type) {
 //$complaint_id = mysqli_insert_id($db_equip);
     $success = true;
     $from = get_email_user($memberid);
-    $cc = "deepti.rukade@gmail.com";
+    // $cc = "deepti.rukade@gmail.com";
+    $cc = "parabnitin51@gmail.com";
     //$cc = "rohansghumare@gmail.com";
     $members = getTeamMembers($team);
     
@@ -390,16 +391,13 @@ $body = '<table width="100%" cellpadding="0" cellspacing="0" border="0" role="pr
           <td width="120" valign="top" style="padding:4px 8px 4px 0; font-weight:bold;">Submitted at:</td>
           <td valign="top" style="padding:4px 0;">'.date("F j, Y, g:i a").'</td>
         </tr>
-         <tr>
-          <td colspan="2" style="padding-top:12px; color:red; font-weight:bold;">This is a testing mail</td>
-        </tr>
       </table>
     </td>
   </tr>
 </table>';
 
         $member_email = implode(",", $member_email);
-    // sendEmailCC($member_email,$cc,$from,$subject, $body);
+     sendEmailCC($member_email,$cc,$from,$subject, $body);
     echo json_encode(["status" => "success", "message" => "Complaint submitted successfully"]);
 
 } catch (Exception $e) {
