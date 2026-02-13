@@ -241,13 +241,20 @@ if (!$head) {
 
 
 
-    $result = update_complaint($complaint_id, $status_db, $c_date, $allocated_to, $updated_by);
+$result = update_complaint($complaint_id, $status_db, $c_date, $allocated_to, $updated_by);
 
-    if ($result > 0) {
-        $_SESSION['flash_message'] = "<div class='alert alert-success'>Status updated successfully.</div>";
-    } else {
-        $_SESSION['flash_message'] = "<div class='alert alert-warning'>No changes were made.</div>";
+if ($result > 0) {
+    $_SESSION['flash_message'] = "<div class='alert alert-success'>Status updated successfully.</div>";
+
+    // Send email only after successful update
+    if ($status_db === 2) {
+        send_complaint_closed_email($complaint_id);
     }
+
+} else {
+    $_SESSION['flash_message'] = "<div class='alert alert-warning'>No changes were made.</div>";
+}
+
 
     header("Location: " . $_SERVER['REQUEST_URI']);
     exit;

@@ -112,6 +112,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $_POST['submit'] === '1') {
           throw new Exception("Status update failed");
       }
 
+      /* ADD THIS */
+      if ($status === 2) {
+          send_complaint_closed_email($complaint_id);
+      }
+
 
       echo json_encode([
           "status" => "success",
