@@ -61,6 +61,11 @@ elseif (is_InventoryHead($member_id)) {
     $user_role = 'head';
     $head = 1;
 }
+elseif (is_AdminHead($member_id)) {
+    $user_role = 'head';
+    $head = 1;
+}
+
 elseif (is_EquipmentTeam($member_id)) {
     $user_role = 'team';
 }
@@ -88,6 +93,12 @@ elseif (is_TrainingTeam($member_id)) {
 elseif (is_InventoryTeam($member_id)) {
    $user_role = 'team';
 }
+
+elseif (is_AdminTeam($member_id)) {
+    $user_role = 'team';
+
+}
+
 else {
     echo json_encode(["error" => "Access denied"]);
     exit;

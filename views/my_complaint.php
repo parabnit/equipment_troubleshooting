@@ -17,7 +17,9 @@ $typeMap = [
     6 => ['IT', 'badge-it'],                  // Dark
     7 => ['Purchase', 'badge-purchase'],      // Green
     8 => ['Training', 'badge-training'],      // Purple
-    9 => ['Inventory', 'badge-inventory']     // Cyan (DIFFERENT from Facility)
+    9 => ['Inventory', 'badge-inventory'],
+    10 => ['Admin', 'badge-admin']     // Cyan (DIFFERENT from Facility)
+
 ];
 
 
@@ -241,7 +243,10 @@ $statusMap = [
 }
 
 
-
+.badge-admin { 
+    background: #7952b3; 
+    color: #fff; 
+}
 
 </style>
 

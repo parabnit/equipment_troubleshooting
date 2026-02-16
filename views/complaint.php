@@ -139,6 +139,7 @@ $isITHead   = in_array($_SESSION['memberid'], getTeamHead(6));
 $isPurchaseHead   = in_array($_SESSION['memberid'], getTeamHead(7));
 $isTrainingHead  = in_array($_SESSION['memberid'], getTeamHead(8));
 $isInventoryHead = in_array($_SESSION['memberid'], getTeamHead(9));
+$isAdminHead = in_array($_SESSION['memberid'], getTeamHead(10));
 
 
 
@@ -146,7 +147,7 @@ $isInventoryHead = in_array($_SESSION['memberid'], getTeamHead(9));
 
 
 $isAnyHead = ($isEquipmentHead || $isFacilityHead || $isSafetyHead || $isProcessHead || $isHRHead || $isITHead || $isPurchaseHead || $isTrainingHead ||
-$isInventoryHead);
+$isInventoryHead|| $isAdminHead);
 
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
   header("Content-Type: application/json");
@@ -314,6 +315,14 @@ switch ($type) {
         $toolName = $cats[$tools_name] ?? 'N/A';
         break;
 
+
+    case 10:
+    $team = "admin";
+    $cats = getTxtCategories(10);
+    $toolName = $cats[$tools_name] ?? 'N/A';
+    break;
+
+
     default:
         $team = "";
         // or throw an exception if invalid:
@@ -397,7 +406,7 @@ $body = '<table width="100%" cellpadding="0" cellspacing="0" border="0" role="pr
 </table>';
 
         $member_email = implode(",", $member_email);
-     sendEmailCC($member_email,$cc,$from,$subject, $body);
+    //  sendEmailCC($member_email,$cc,$from,$subject, $body);
     echo json_encode(["status" => "success", "message" => "Complaint submitted successfully"]);
 
 } catch (Exception $e) {
@@ -753,7 +762,7 @@ if ($is_existing_complaint) {
                           <label class="form-label">Complaint Type <span class="text-danger">*</span></label><br>
                           <?php
                           $types = [1 => "Equipment",2 => "Facility",3 => "Safety",4 => "Process",5 => "HR",6 => "IT",7 => "Purchase",8 => "Training",
-                                    9 => "Inventory"];
+                                    9 => "Inventory",10 => "Admin"];
 
                           foreach ($types as $val => $label): ?>
                             <div class="form-check form-check-inline">
@@ -1145,6 +1154,7 @@ function canSeeAllocate(type) {
   if (type === 7) return isPurchaseHead;
   if (type === 8) return isTrainingHead;
   if (type === 9) return isInventoryHead;
+  if (type === 10) return isAdminHead;
 
   return false;
 }
@@ -1334,6 +1344,8 @@ function enableFormFields() {
   const isPurchaseHead   = window.isPurchaseHead   ?? <?= $isPurchaseHead   ? 'true' : 'false' ?>;
   const isTrainingHead   = window.isTrainingHead   ?? <?= $isTrainingHead   ? 'true' : 'false' ?>;
   const isInventoryHead   = window.isInventoryHead   ?? <?= $isInventoryHead   ? 'true' : 'false' ?>;
+  const isAdminHead = window.isAdminHead ?? <?= $isAdminHead ? 'true' : 'false' ?>;
+
 
   document.querySelectorAll('input[name="type"]').forEach(radio => {
     radio.addEventListener("change", function () {
@@ -1379,7 +1391,11 @@ if (type === 1 || type === 2 || type === 3 || type === 4) {
       } else if (type === 9 && isInventoryHead) {
         if (timerBlock) timerBlock.style.display = "block";
         if (allocateBlock) allocateBlock.style.display = "block";
-      } 
+      } else if (type === 10 && isAdminHead) {
+          if (timerBlock) timerBlock.style.display = "block";
+          if (allocateBlock) allocateBlock.style.display = "block";
+      }
+ 
       // enable common fields
       enableFormFields();
     });
@@ -1534,6 +1550,14 @@ window.loading_tools_4 = function () {
     loadAllocatedMembers(9);
   };
 
+  window.loading_tools_10 = function () {
+  hideToolShowCategory();
+  enableFormFields();
+  loadCategoryFromTxt("admin.txt");   
+  loadAllocatedMembers(10);           
+};
+
+
 
   // =========================
   // VALIDATION (fix tool/category requirement)
@@ -1567,7 +1591,7 @@ window.loading_tools_4 = function () {
     }
 
     // tool vs category check
-    if (type === "5" || type === "6" || type === "7" || type === "8" || type === "9") {
+    if (type === "5" || type === "6" || type === "7" || type === "8" || type === "9"|| type === "10") {
       if (!categorySelect || !categorySelect.value) {
         msgBox.textContent = "Please select a category.";
         categorySelect?.focus();
@@ -1668,7 +1692,7 @@ if (schedulerSelected) {
 
       const payload = {
         type: type,
-        tools_name:(type === "5" || type === "6" || type === "7" || type === "8" || type === "9") ? category : toolsName,
+        tools_name:(type === "5" || type === "6" || type === "7" || type === "8" || type === "9"|| type === "10") ? category : toolsName,
 
         process_develop: b64encode(processDevelop),
         anti_contamination_develop: b64encode(antiContamination),

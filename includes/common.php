@@ -105,7 +105,7 @@ function getComplaintComponentName($row) {
     }
 
     // HR, IT, Purchase, Training, Inventory (category-based)
-    if (in_array($type, [5,6,7,8,9])) {
+    if (in_array($type, [5,6,7,8,9,10])) {
 
         $categories = getTxtCategories($type);
 
@@ -155,6 +155,10 @@ function getTeamMembers($type)
 		case "inventory":
 			$sql = "SELECT DISTINCT memberid FROM role WHERE role IN (19,21)";
 			break;
+
+        case "admin":
+        $sql = "SELECT DISTINCT memberid FROM role WHERE role IN (22,23)";
+        break;
 
         default:
             return [];
@@ -215,8 +219,12 @@ function getTeamHead($type)
             $sql = "SELECT memberid FROM role WHERE role = 19";
             break;
 
+        case 10: // Admin
+            $sql = "SELECT memberid FROM role WHERE role = 22";
+            break;
+
         case "all":
-            $sql = "SELECT memberid FROM role WHERE role IN (1,2,3,4,12,13,14,18,19)";
+            $sql = "SELECT memberid FROM role WHERE role IN (1,2,3,4,12,13,14,18,19,22)";
             break;
 
         default:
@@ -297,6 +305,9 @@ function send_complaint_closed_email($complaint_id)
             break;
         case 9:
             $team = "inventory";
+            break;
+        case 10:               
+            $team = "admin";
             break;
         default:
             return "";
@@ -1748,6 +1759,10 @@ function check_permission($type, $memberid)
             $sql = "SELECT 1 FROM role WHERE role IN (19,21) AND memberid=$memberid";
             break;
 
+        case '10': // Admin
+        $sql = "SELECT 1 FROM role WHERE role IN (22,23) AND memberid=$memberid";
+        break;
+
         case 'LA': // Lab Admin
             $sql = "SELECT 1 FROM role WHERE role IN (9,10,11) AND memberid=$memberid";
             break;
@@ -2005,6 +2020,10 @@ function getUserHeadLabels($memberid)
         // ✅ NEW — Inventory
         20 => 'Inventory Head',
         21 => 'Inventory Team',
+
+        // ✅ NEW — Admin
+        22 => 'Admin Head',
+        23 => 'Admin Team',
     ];
 
     $heads = [];
@@ -2233,6 +2252,27 @@ function is_InventoryTeam($memberid){
     return false;
 }
 
+function is_AdminHead($memberid){
+    global $db_equip;
+    $sql = "SELECT * FROM role WHERE memberid = $memberid AND role = 22";
+    if (mysqli_num_rows(mysqli_query($db_equip, $sql)) > 0) {
+        return true;
+    }
+
+    return false;
+}
+
+function is_AdminTeam($memberid){
+    global $db_equip;
+    $sql = "SELECT * FROM role WHERE memberid = $memberid AND role = 23";
+    if (mysqli_num_rows(mysqli_query($db_equip, $sql)) > 0) {
+        return true;
+    }
+
+    return false;
+}
+
+
 
 
 
@@ -2293,11 +2333,12 @@ function getTxtCategories($type) {
 
     // Map type to specific text files
     $map = [
-        5 => $basePath . 'hr.txt',
-        6 => $basePath . 'it.txt',
-        7 => $basePath . 'purchase.txt',
-        8 => $basePath . 'training.txt',   // Added Training
-        9 => $basePath . 'inventory.txt',  // Added Inventory
+        5  => $basePath . 'hr.txt',
+        6  => $basePath . 'it.txt',
+        7  => $basePath . 'purchase.txt',
+        8  => $basePath . 'training.txt',
+        9  => $basePath . 'inventory.txt',
+        10 => $basePath . 'admin.txt',   // ✅ Added Admin
     ];
 
     // If type not found in map or file doesn't exist, return empty array
@@ -2322,6 +2363,7 @@ function getTxtCategories($type) {
 
     return $data;
 }
+
 
 function renderComplaintDesc(string $text): string
 {
@@ -2405,6 +2447,7 @@ function canUserUpdateType($member_id, $type) {
     case 7: return is_PurchaseHead($member_id);
     case 8: return is_TrainingHead($member_id);
     case 9: return is_InventoryHead($member_id);
+    case 10: return is_AdminHead($member_id);   
     default: return false;
   }
 }

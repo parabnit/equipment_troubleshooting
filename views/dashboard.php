@@ -19,8 +19,10 @@ $types = [
     6 => "IT",
     7 => "Purchase",
     8 => "Training",
-    9 => "Inventory"
+    9 => "Inventory",
+    10 => "Admin"
 ];
+
 
 
 
@@ -58,6 +60,8 @@ $types = [
 .theme-purchase  { --card-main: #ec4899; --card-light: #fce7f3; }
 .theme-training  { --card-main: #14b8a6; --card-light: #ccfbf1; }
 .theme-inventory { --card-main: #64748b; --card-light: #e2e8f0; }
+.theme-admin { --card-main: #7c066cff; --card-light: #e5e7eb; }
+
 
 /* ================================
    DASHBOARD GRID
@@ -307,17 +311,19 @@ table.dataTable tbody tr:hover {
                 <?php foreach ($types as $tid => $tname): ?>
                     <?php
                     // Set icons for the card header
-                    $icons = [
-                        1 => "⚙️", // Equipment
-                        2 => "🏢", // Facility
-                        3 => "🚨", // Safety
-                        4 => "📈", // Process
-                        5 => "👥", // HR
-                        6 => "💻", // IT
-                        7 => "🛒", // Purchase
-                        8 => "🎓", // Training
-                        9 => "📦"  // Inventory
-                    ];
+                   $icons = [
+                    1 => "⚙️",
+                    2 => "🏢",
+                    3 => "🚨",
+                    4 => "📈",
+                    5 => "👥",
+                    6 => "💻",
+                    7 => "🛒",
+                    8 => "🎓",
+                    9 => "📦",
+                    10 => "🛠️"
+                ];
+
 
                     switch ($tid) {
                         case 1: $team="equipment"; break;
@@ -329,6 +335,7 @@ table.dataTable tbody tr:hover {
                         case 7: $team="purchase"; break;
                         case 8: $team="training"; break;
                         case 9: $team="inventory"; break;
+                        case 10: $team="admin"; break;
                         default: $team=""; break;
                     }
 

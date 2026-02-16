@@ -71,7 +71,12 @@ if (is_LabManager($member_id) || is_AssistLabManager($member_id)) {
 } elseif (is_InventoryHead($member_id) && $type == 9) {
   $user_role = 'head';
   $head = 1;
-} elseif (is_EquipmentTeam($member_id) && $type == 1) {
+} elseif (is_AdminHead($member_id) && $type == 10) {
+  $user_role = 'head';
+  $head = 1;
+
+}
+ elseif (is_EquipmentTeam($member_id) && $type == 1) {
   $user_role = 'team';
 } elseif (is_FacilityTeam($member_id) && $type == 2) {
   $user_role = 'team';
@@ -89,7 +94,10 @@ if (is_LabManager($member_id) || is_AssistLabManager($member_id)) {
   $user_role = 'team';
 }elseif (is_InventoryTeam($member_id) && $type == 9) {
   $user_role = 'team';
-} else {
+}elseif (is_AdminTeam($member_id) && $type == 10) {
+  $user_role = 'team';
+}
+ else {
   echo "<script>
         Swal.fire({
             icon:'error',
@@ -575,7 +583,19 @@ body {
 <!-- Header -->
 <div class="page-header d-flex justify-content-between align-items-center">
   <h4 class="mb-0">
-   <?= [1=>'Equipment',2=>'Facility',3=>'Safety',4=>'Process',5=>'HR',6=>'IT',7=>'Purchase',8=>'Training', 9=>'Inventory'][$type] ?? '' ?>
+   <?= [
+        1=>'Equipment',
+        2=>'Facility',
+        3=>'Safety',
+        4=>'Process',
+        5=>'HR',
+        6=>'IT',
+        7=>'Purchase',
+        8=>'Training',
+        9=>'Inventory',
+        10=>'Admin'
+        ][$type] ?? '' ?>
+
 
     – Daily Tasks
   </h4>
@@ -592,7 +612,7 @@ body {
    <div class="d-flex align-items-center gap-2">
       <select name="tools_name" class="form-select">
         <option value="">All Tools & Cat</option>
-        <?php if (!in_array($type, [5,6,7,8,9])): ?>
+        <?php if (!in_array($type, [5,6,7,8,9,10])): ?>
         <option value="0" <?= $tools_name === '0' ? 'selected' : '' ?>>Miscellaneous</option>
         <?php endif; ?>
         <?php

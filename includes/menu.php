@@ -18,7 +18,9 @@ $canViewTasksAndComplaints = (
     is_ITHead($_SESSION['memberid'])        || is_ITTeam($_SESSION['memberid']) ||
     is_PurchaseHead($_SESSION['memberid'])  || is_PurchaseTeam($_SESSION['memberid']) ||
     is_TrainingHead($_SESSION['memberid'])  || is_TrainingTeam($_SESSION['memberid']) ||
-    is_InventoryHead($_SESSION['memberid']) || is_InventoryTeam($_SESSION['memberid'])
+    is_InventoryHead($_SESSION['memberid']) || is_InventoryTeam($_SESSION['memberid']) ||
+    is_Admin($_SESSION['memberid']) == 1 ||
+    is_ITadmin($_SESSION['memberid']) == 1
 );
 ?>
 
@@ -358,6 +360,15 @@ $canViewTasksAndComplaints = (
                             Inventory
                         </a>
                     <?php } ?>
+                    <?php
+                    if (is_Admin($_SESSION['memberid']) == 1 || is_ITadmin($_SESSION['memberid']) == 1) {
+                    ?>
+                        <a href="../views/daily_tasks.php?type=10"
+                        class="list-group-item list-group-item-action ps-4">
+                            Admin
+                        </a>
+                    <?php } ?>
+
 
                         
             </div>
@@ -420,6 +431,15 @@ $canViewTasksAndComplaints = (
                 ?>
                     <a href="../views/all_complaints.php?type=9&status=pending&importance=all" class="list-group-item list-group-item-action ps-4">Inventory</a>
                 <?php } ?>
+
+                <?php
+                if (is_Admin($_SESSION['memberid']) == 1 || is_ITadmin($_SESSION['memberid']) == 1) {
+                ?>
+                   <a href="../views/all_complaints.php?type=10&status=pending&importance=all" class="list-group-item list-group-item-action ps-4">
+                        Admin
+                    </a>
+                <?php } ?>
+
 
                         
         </div>
@@ -488,6 +508,16 @@ $canViewTasksAndComplaints = (
                         Inventory
                     </a>
                 <?php } ?>
+
+                <?php
+                if (is_Admin($_SESSION['memberid']) == 1 || is_ITadmin($_SESSION['memberid']) == 1) {
+                ?>
+                    <a href="../views/closed_complaints.php?type=10&status=closed&importance=all"
+                    class="list-group-item list-group-item-action ps-4">
+                        Admin
+                    </a>
+                <?php } ?>
+
                      
 
         </div>

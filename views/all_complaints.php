@@ -39,7 +39,7 @@ $head = 0;
 $type = isset($_GET['type']) ? (int)$_GET['type'] : 0;
 $tabledata = ($importance === 'critical') ? 1 : 0;
 
-$allowedTypes = [1,2,3,4,5,6,7,8,9];
+$allowedTypes = [1,2,3,4,5,6,7,8,9,10];
 if (!in_array($type, $allowedTypes, true)) {
   // invalid type = deny
   echo "<script>
@@ -239,6 +239,25 @@ $permission_key = check_permission($type, $member_id);
           
         }
       break;
+
+      case 10:
+      if (is_Admin($member_id)) 
+      { 
+          $user_role = 'admin_head'; 
+          $head = 1; 
+          $details = all_complaint($head, $type, 0, $tools_name, $tabledata);
+
+          $permission_key = check_permission($type, $member_id); 
+      }
+      elseif (is_AdminTeam($member_id)) 
+      { 
+          $user_role = 'admin_team'; 
+          $details = my_allocated_complaint($member_id, $type, 0, $tools_name, $tabledata);
+
+          $permission_key = check_permission($type, $member_id); 
+      }
+      break;
+
   }
 }
 
@@ -591,7 +610,19 @@ if (!empty($_SESSION['flash_message'])) {
     <div class="col-md-10">
 <h4 class="my-3">
         <!-- Page Heading -->
-        <?= ['1' => 'Equipment', '2' => 'Facility', '3' => 'Safety', '4' => 'Process','HR','IT','Purchase','Training','Inventory'][$type] ?? 'All' ?> -
+       <?= [
+      1 => 'Equipment',
+      2 => 'Facility',
+      3 => 'Safety',
+      4 => 'Process',
+      5 => 'HR',
+      6 => 'IT',
+      7 => 'Purchase',
+      8 => 'Training',
+      9 => 'Inventory',
+      10 => 'Admin'
+    ][$type] ?? 'All' ?>
+
         <?= ucfirst($status ?? '') ?> Complaints
       </h4>
       <!-- Show success message -->
@@ -636,12 +667,12 @@ if (!empty($_SESSION['flash_message'])) {
           <div class="col-auto">
             <select name="tools_name" id="tools_name" class="form-select">
               <option value="">-- Select Tool --</option>
-             <?php if (!in_array($type, [5,6,7,8,9])): ?>
+             <?php if (!in_array($type, [5,6,7,8,9,10])): ?>
               <option value="0" <?= $tools_name === '0' ? 'selected' : '' ?>>Miscellaneous</option>
             <?php endif; ?>
 
               <?php
-              if (in_array($type, [5,6,7,8,9])) {  // Added 8 and 9 for Training & Inventory
+              if (in_array($type, [5,6,7,8,9,10])) {  // Added 8 and 9 for Training & Inventory
                   $categories = getTxtCategories($type);
                   foreach ($categories as $id => $name) {
                       echo "<option value='{$id}' " . ($tools_name == $id ? 'selected' : '') . ">
@@ -791,7 +822,7 @@ if (!empty($_SESSION['flash_message'])) {
                   }
               }
               // For category types: HR, IT, Purchase, Training, Inventory
-              elseif (in_array($type, [5,6,7,8,9])) {
+              elseif (in_array($type, [5,6,7,8,9,10])) {
                   $categories = getTxtCategories($type);
                   $toolName = $categories[$d['machine_id']] ?? 'Miscellaneous';
               }
@@ -881,6 +912,8 @@ if (!empty($_SESSION['flash_message'])) {
                   elseif ($type == 7) $allowed_ids = getTeamMembers('purchase');
                   elseif ($type == 8) $allowed_ids = getTeamMembers('training');
                   elseif ($type == 9) $allowed_ids = getTeamMembers('inventory');
+                  elseif ($type == 10) $allowed_ids = getTeamMembers('admin');
+
 
                   $members = [];
                   foreach ($allowed_ids as $id) {
@@ -1179,6 +1212,8 @@ const statusText =
           case 7: typeName = "Purchase"; roleKey = "purchase_head"; break;
           case 8: typeName = "Training"; roleKey = "training_head"; break;
           case 9: typeName = "Inventory"; roleKey = "inventory_head"; break;
+          case 10: typeName = "Admin"; roleKey = "admin_head"; break;
+
           default: typeName = "N/A"; roleKey = "N/A"; break;
         }
 
