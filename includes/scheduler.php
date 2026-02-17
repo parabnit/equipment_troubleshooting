@@ -156,10 +156,6 @@ try {
                         $cats = getTxtCategories(9);
                         $toolName = $cats[$tools_name] ?? 'N/A';
                         break;
-                    case 9:
-                    $cats = getTxtCategories(10);
-                    $toolName = $cats[$tools_name] ?? 'N/A';
-                    break;
                     case 10:
                     $cats = getTxtCategories(10);
                     $toolName = $cats[$tools_name] ?? 'N/A';
