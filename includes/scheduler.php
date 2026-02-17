@@ -113,6 +113,7 @@ try {
                     7 => "Purchase",
                     8 => "Training",
                     9 => "Inventory",
+                    10 => "Admin",
                     default => "General"
                 };
 
@@ -155,6 +156,10 @@ try {
                         $cats = getTxtCategories(9);
                         $toolName = $cats[$tools_name] ?? 'N/A';
                         break;
+                    case 9:
+                    $cats = getTxtCategories(10);
+                    $toolName = $cats[$tools_name] ?? 'N/A';
+                    break;
                      default:
                         $team = "";
                         $t_name = "";
