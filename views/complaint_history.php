@@ -35,7 +35,7 @@ if (!empty($complaintHistory)) {
 
     $typeMapping = [
         1 => "Equipment", 2 => "Facility", 3 => "Safety", 4 => "Process",
-        5 => "HR", 6 => "IT", 7 => "Purchase", 8 => "Training", 9 => "Inventory"
+        5 => "HR", 6 => "IT", 7 => "Purchase", 8 => "Training", 9 => "Inventory",10 => "Admin"
     ];
 
     $originalDetails = [
@@ -98,6 +98,12 @@ if (!empty($complaintHistory)) {
   padding: 3px 10px;
   border-radius: 12px;
   font-weight: 600;
+}
+
+/* ✅ Admin Special Color */
+.bg-purple {
+  background-color: #6f42c1 !important;
+  color: #fff !important;
 }
 
 .status-badge {
@@ -218,7 +224,7 @@ if (!empty($complaintHistory)) {
 
               $typeMapping = [
                 1=>"Equipment",2=>"Facility",3=>"Safety",4=>"Process",
-                5=>"HR",6=>"IT",7=>"Purchase",8=>"Training",9=>"Inventory"
+                5=>"HR",6=>"IT",7=>"Purchase",8=>"Training",9=>"Inventory",10=>'Admin'
               ];
 
               $typeColors = [
@@ -230,7 +236,8 @@ if (!empty($complaintHistory)) {
                 'IT'=>'bg-secondary text-white',
                 'Purchase'=>'bg-dark text-white',
                 'Training'=>'bg-warning text-dark',
-                'Inventory'=>'bg-secondary text-white'
+                'Inventory'=>'bg-secondary text-white',
+                'Admin'     => 'bg-purple text-white',
               ];
 
               $complaintType = $typeMapping[(int)$row['type']] ?? 'Unknown';
