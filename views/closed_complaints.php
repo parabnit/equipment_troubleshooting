@@ -281,12 +281,12 @@ unset($_SESSION['flash_message']);
         <select name="tools_name" class="form-select form-select-sm">
             <option value="">-- Select Tool & Category --</option>
 
-            <?php if (!in_array($type, [5,6,7,8,9])): ?>
+            <?php if (!in_array($type, [5,6,7,8,9,10])): ?>
                 <option value="0" <?= $tools_name==='0'?'selected':'' ?>>Miscellaneous</option>
             <?php endif; ?>
 
             <?php
-            if (in_array($type, [5,6,7,8,9])) {
+            if (in_array($type, [5,6,7,8,9,10])) {
                 foreach (getTxtCategories($type) as $id=>$name) {
                     echo "<option value='{$id}' ".($tools_name==$id?'selected':'').">{$name}</option>";
                 }
@@ -349,7 +349,7 @@ $toolName = 'Miscellaneous';
 if (in_array($type, [1,4]) && $d['machine_id']!=0) $toolName = getToolName($d['machine_id']);
 elseif ($type==2 && $d['machine_id']!=0) $toolName = getToolName_facility($d['machine_id']);
 elseif ($type==3 && $d['machine_id']!=0) $toolName = getToolName_safety($d['machine_id']);
-elseif (in_array($type,[5,6,7,8,9])) {
+elseif (in_array($type,[5,6,7,8,9,10])) {
     $cats = getTxtCategories($type);
     $toolName = $cats[$d['machine_id']] ?? 'Miscellaneous';
 }
