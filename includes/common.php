@@ -273,30 +273,53 @@ function send_complaint_closed_email($complaint_id)
     switch ($type) {
         case 1:
             $team = "equipment";
+            $t_name = "Equipment";
+            $toolName = ($machine_id == 0) ? 'Miscellaneous' : getToolName($machine_id);
             break;
         case 2:
             $team = "facility";
+            $t_name = "Facility";
+            $toolName = ($machine_id == 0) ? 'Miscellaneous' : getToolName_facility($machine_id);
             break;
         case 3:
             $team = "safety";
+            $t_name = "Safety";
+            $toolName = ($machine_id == 0) ? 'Miscellaneous' : getToolName_safety($machine_id);
             break;
         case 4:
             $team = "process";
+            $t_name = "Process";
+            $toolName = ($machine_id == 0) ? 'Miscellaneous' : getToolName($machine_id);
             break;
         case 5:
             $team = "hr";
+            $t_name = "HR";
+            $cats = getTxtCategories(5);
+            $toolName = $cats[$machine_id] ?? 'N/A';
             break;
         case 6:
             $team = "it";
+            $t_name = "IT";
+            $cats = getTxtCategories(6);
+            $toolName = $cats[$machine_id] ?? 'N/A';
             break;
         case 7:
             $team = "purchase";
+            $t_name = "Purchase";
+            $cats = getTxtCategories(7);
+            $toolName = $cats[$machine_id] ?? 'N/A';
             break;
         case 8:
             $team = "training";
+            $t_name = "Training";
+            $cats = getTxtCategories(8);
+            $toolName = $cats[$machine_id] ?? 'N/A';
             break;
         case 9:
             $team = "inventory";
+            $t_name = "Inventory";
+            $cats = getTxtCategories(9);
+            $toolName = $cats[$machine_id] ?? 'N/A';
             break;
         default:
             return "";
@@ -308,17 +331,12 @@ function send_complaint_closed_email($complaint_id)
     // 2) convert real newlines to <br> for HTML
     $description_html  = nl2br($plain_description, false); // gives <br>
 
-    $members = getTeamMembers($team);
-    $member_email = [];
-    foreach ($members as $member) {
-        $member_email[] = get_email_user($member);
-    }
-    $to    = implode(",", $member_email);
+    $head  = getTeamHead($type);
+    $head_email  = get_email_user($head[0]);
 
     $from    = get_email_user($row['status_updated_by']);
-     $cc = "deepti.rukade@gmail.com";
+     $cc = "deepti.rukade@gmail.com,".$head_email;
     
-    $toolName = ($machine_id == 0) ? 'Miscellaneous' : getToolName($machine_id);
     $subject = "The Task/Complaint for $team has been closed";
 
     $body = "<table border='0' width='100%'>\n".
@@ -333,7 +351,7 @@ function send_complaint_closed_email($complaint_id)
     // remove debug echo when done
     // echo $body;
 
-    sendEmailCC($to, $cc, $from, $subject, $body);
+    sendEmailCC($head_email, $cc, $from, $subject, $body);
 }
 
 

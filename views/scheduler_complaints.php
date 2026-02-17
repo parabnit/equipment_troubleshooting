@@ -45,6 +45,7 @@ include("../includes/common.php");
                             <thead class="table-light text-center">
                                 <tr>
                                     <th width="50">Sr No</th>
+                                    <th width="120">Type</th>
                                     <th width="120">Complaint ID</th>
                                     <th>Member</th>
                                     <th width="120">Tool</th>
@@ -96,6 +97,10 @@ function loadSchedulerTable() {
                 data: null,
                 className: "text-center",
                 render: (data, type, row, meta) => meta.row + 1
+            },
+            {
+                data: "team",
+                render: val => `<span class="badge bg-primary">${val}</span>`
             },
             {
                 data: "complaint_id",

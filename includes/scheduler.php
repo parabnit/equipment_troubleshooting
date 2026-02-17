@@ -74,29 +74,24 @@ try {
                 "type" => $row['type'],
                 "allocated_to" => $row['allocated_to']
             ];
-
+            
+           $tools_name = $row['machine_id']; // for email later
             /* =======================
                INSERT NEW COMPLAINT
                ======================= */
             try {
-                scheduler_complaint_submit($data);
+                $newInsertedId = scheduler_complaint_submit($data);
                 logMsg("success", "Complaint inserted from scheduler");
             } catch (Exception $e) {
                 logMsg("error", "Insert failed → " . $e->getMessage());
-                continue;
+                exit(0);
             }
 
             /* =======================
                GET NEW COMPLAINT ID
                ======================= */
-            $last = $db_equip->query("
-                SELECT complaint_id
-                FROM equipment_complaint
-                ORDER BY complaint_id DESC
-                LIMIT 1
-            ")->fetch_assoc();
-
-            $newComplaintId = $last['complaint_id'];
+    
+            $newComplaintId = $newInsertedId['id'];
 
             /* =======================
                EMAIL NOTIFICATION (COMMENTED)
@@ -106,24 +101,74 @@ try {
                
                 $to = get_email_user($row['allocated_to']);
                 $from = get_email_user($row['created_by']);
-                
+                $cc = "deepti.rukade@gmail.com,".$from;
+		//$cc = "rohansghumare@gmail.com,".$from;
                 $team = match ($row['type']) {
                     1 => "Equipment",
                     2 => "Facility",
                     3 => "Safety",
                     4 => "Process",
+                    5 => "HR",
+                    6 => "IT",
+                    7 => "Purchase",
+                    8 => "Training",
+                    9 => "Inventory",
                     default => "General"
                 };
 
-                $toolName = ($row['machine_id'] == 0)
-                    ? "Miscellaneous"
-                    : getToolName($row['machine_id']);
+		switch ($row['type']) 
+                {
+                    case 1:
+                        $toolName = ($tools_name == 0) ? 'Miscellaneous' : getToolName($tools_name);
+                        break;
+                    case 2:
+                        $toolName = ($tools_name == 0) ? 'Miscellaneous' : getToolName_facility($tools_name);
+                        break;
+                    case 3:
+                        $toolName = ($tools_name == 0) ? 'Miscellaneous' : getToolName_safety($tools_name);
+                        break;
+                    case 4:
+                        $toolName = ($tools_name == 0) ? 'Miscellaneous' : getToolName($tools_name);
+                        break;
+                        
+                    case 5:
+                        $cats = getTxtCategories(5);
+                        $toolName = $cats[$tools_name] ?? 'N/A';
+                        break;
+
+                    case 6:
+                        $cats = getTxtCategories(6);
+                        $toolName = $cats[$tools_name] ?? 'N/A';
+                        break;
+
+                    case 7:
+                        $cats = getTxtCategories(7);
+                        $toolName = $cats[$tools_name] ?? 'N/A';
+                        break;
+
+                    case 8:
+                        $cats = getTxtCategories(8);
+                        $toolName = $cats[$tools_name] ?? 'N/A';
+                        break;
+
+                    case 9:
+                        $cats = getTxtCategories(9);
+                        $toolName = $cats[$tools_name] ?? 'N/A';
+                        break;
+                     default:
+                        $team = "";
+                        $t_name = "";
+                        // or throw an exception if invalid:
+                        // throw new Exception("Invalid complaint type");
+                        break;
+        }
+
 
                 
                 $description = nl2br(htmlspecialchars($row['complaint_description']));
                 $subject = "New Complaint -$team Submitted";
                 $body = "<table border='0' width='100%'>\n".
-                    "<tr><td colspan='2'><table><tr><td colspan='2'><b>A Complaint has been received for $team - (Complaint ID - $newComplaintId)</b>,<br>\n".
+                    "<tr><td colspan='2'><table><tr><td colspan='2'><b>A Task/Complaint has been received for $team - (Complaint ID - $newComplaintId)</b>,<br>\n".
                     "</td></tr><tr><td colspan='2' height='10'></td></tr>\n".
                 
                     "<tr><td valign='top' align='right'><b>From: </b></td><td>".getName($row['member_id'])."</td></tr>\n".
@@ -131,7 +176,7 @@ try {
                     "<tr><td valign='top' align='right'><b>Description: </b></td><td>".$description."</td></tr>\n".
                     "<tr><td valign='top' align='right'><b>Submitted at:</b></td><td>".date("F j, Y, g:i a", time())."</td></tr>\n".
                     "</table></td></tr></table>\n";
-                    sendEmail($to,$from,$subject, $body);
+			sendEmailCC($to,$cc,$from,$subject, $body);
                     logMsg("success", "Mail sent for complaint #$newComplaintId");
 
                 } catch (Exception $e) {
@@ -142,24 +187,20 @@ try {
             /* =======================
             CALCULATE NEXT TRIGGER (INT TIMER)
             ======================= */
-            $timer_days = (int)$row['timer'];  // timer is now INT
+            $timer_days = (int)$row['timer'];  // timer is INT
 
-            // $time = "05:00";  // trigger time (same as before)
-
-            // NEXT trigger calculation
-            if ($timer_days === 0) {
-                // One-time complaint → no next trigger
-                $next = null;
-                $schedule_datetime = null;
-            } elseif ($timer_days === 30) {
-                // Monthly → first day of next month
-                $next = strtotime("first day of next month $time");
+            // NEXT trigger calculation (DATE-ONLY logic)
+            if ($timer_days === 30) {
+                // Monthly → first day of next month (00:00)
+                $next = strtotime(date('Y-m-01', strtotime('+1 month')));
                 $schedule_datetime = date("Y-m-d H:i:s", $next);
+
             } else {
                 // Daily / Weekly / Bi-Weekly / Custom X days
-                $next = strtotime("+$timer_days days $time");
+                $next = strtotime(date('Y-m-d', strtotime("+$timer_days days")));
                 $schedule_datetime = date("Y-m-d H:i:s", $next);
             }
+
 
             /* =======================
             UPDATE SCHEDULER
@@ -171,13 +212,7 @@ try {
             ");
 
             // For one-time tasks, keep NULL if no next
-
             $upd->bind_param("isi", $next, $schedule_datetime, $row['complaint_id']);
-            // if ($next === null) {
-            //     $upd->bind_param("isi", $next, $schedule_datetime, $row['complaint_id']);
-            // } else {
-            //     $upd->bind_param("isi", $next, $schedule_datetime, $row['complaint_id']);
-            // }
 
             $upd->execute();
             $upd->close();
@@ -186,16 +221,16 @@ try {
             /* =======================
                TRACKING
                ======================= */
-            $triggered_date = date("Y-m-d H:i:s");
+          
             $oldcomplaint_id = $row['complaint_id'];
 
             $stmt_track = $db_equip->prepare("
                 INSERT INTO cron_scheduler_tracking
                 (old_complaint_id,new_complaint_id, triggered_date)
-                VALUES (?, ?, ?)
+                VALUES (?, ?, now())
             ");
 
-            $stmt_track->bind_param("iis",$oldcomplaint_id, $newComplaintId, $triggered_date);
+            $stmt_track->bind_param("ii",$oldcomplaint_id, $newComplaintId);
             $stmt_track->execute();
             $stmt_track->close();
 

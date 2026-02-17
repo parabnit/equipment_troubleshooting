@@ -8,8 +8,8 @@ function connect_db($host, $user, $pass, $dbname) {
 }
 
 // All connections
-$db_slot     = connect_db("localhost", "root", "Pass@1234", "slotbooking");
-$db_equip    = connect_db("localhost", "root", "Pass@1234", "equipment_troubleshooting");
-$db_safety   = connect_db("localhost", "root", "Pass@1234", "safety");
-$db_facility = connect_db("localhost", "root", "Pass@1234", "facility_management");
+$db_slot     = connect_db("10.107.103.8", "root", "2022*Iitbnf!", "slotbooking");
+$db_equip    = connect_db("10.107.103.8", "root", "2022*Iitbnf!", "iitbnf_troubleshooting");
+$db_safety   = connect_db("10.107.103.8", "root", "2022*Iitbnf!", "safety");
+$db_facility = connect_db("10.107.103.8", "root", "2022*Iitbnf!", "facility_management");
 ?>

@@ -139,6 +139,7 @@ $isITHead   = in_array($_SESSION['memberid'], getTeamHead(6));
 $isPurchaseHead   = in_array($_SESSION['memberid'], getTeamHead(7));
 $isTrainingHead  = in_array($_SESSION['memberid'], getTeamHead(8));
 $isInventoryHead = in_array($_SESSION['memberid'], getTeamHead(9));
+// $isAdminHead = in_array($_SESSION['memberid'], getTeamHead(10));
 
 
 
@@ -266,91 +267,83 @@ if (!empty($team_head_arr[0])) {
         upload_file_complaint($target, $complaint_id);
     }
 
-    // Email notifications (unchanged)
+$team = $t_name = "";
+$head = get_email_user($team_head);
 switch ($type) {
     case 1:
         $team = "equipment";
+        $t_name = "Equipment";
         $toolName = ($tools_name == 0) ? 'Miscellaneous' : getToolName($tools_name);
         break;
     case 2:
         $team = "facility";
+        $t_name = "Facility";
         $toolName = ($tools_name == 0) ? 'Miscellaneous' : getToolName_facility($tools_name);
         break;
     case 3:
         $team = "safety";
+        $t_name = "Safety";
         $toolName = ($tools_name == 0) ? 'Miscellaneous' : getToolName_safety($tools_name);
         break;
     case 4:
         $team = "process";
+        $t_name = "Process";  
         $toolName = ($tools_name == 0) ? 'Miscellaneous' : getToolName($tools_name);
         break;
     case 5:
       $team = "hr";
+      $t_name = "HR";
       $cats = getTxtCategories(5);
       $toolName = $cats[$tools_name] ?? 'N/A';
       break;
 
     case 6:
         $team = "it";
+        $t_name = "IT";
         $cats = getTxtCategories(6);
         $toolName = $cats[$tools_name] ?? 'N/A';
         break;
 
     case 7:
         $team = "purchase";
+        $t_name = "Purchase";
         $cats = getTxtCategories(7);
         $toolName = $cats[$tools_name] ?? 'N/A';
         break;
 
     case 8:
         $team = "training";
+        $t_name = "Training";
         $cats = getTxtCategories(8);
         $toolName = $cats[$tools_name] ?? 'N/A';
         break;
 
     case 9:
         $team = "inventory";
+        $t_name = "Inventory";
         $cats = getTxtCategories(9);
         $toolName = $cats[$tools_name] ?? 'N/A';
         break;
 
     default:
         $team = "";
+        $t_name = "";
         // or throw an exception if invalid:
         // throw new Exception("Invalid complaint type");
         break;
 }
-// echo $type;
-// echo $team;
+
 // ini_set('display_errors', 1);
 // ini_set('display_startup_errors', 1);
 // error_reporting(E_ALL);
 //$complaint_id = mysqli_insert_id($db_equip);
     $success = true;
     $from = get_email_user($memberid);
-    $cc = "deepti.rukade@gmail.com";
-    //$cc = "rohansghumare@gmail.com";
-    $members = getTeamMembers($team);
-    
-    // echo "<pre>".print_r($members)."</pre>";
-    if(empty($members))
-      {
-        echo json_encode(["status" => "error", "message" =>"Please contact IT team"]);
-        exit;
-      }
-  if(!empty($input['timer'])) 
-    {
-      $member_email[] = get_email_user($allocated_to);
+    $member_email = get_email_user($allocated_to);
 
-    }
-    else
-    {
-        foreach ($members as $member) {
-      $member_email[] = get_email_user($member);
-    }
-    }
-    $subject = "New Task/Complaint - $team Submitted";
-    //$member_email = ['30004916@iitb.ac.in','parabnitin51@gmail.com','30005869@iitb.ac.in','30005964@iitb.ac.in','pateltausif78@gmail.com','p15430@iitb.ac.in'];
+   $cc = "deepti.rukade@gmail.com,".$head;
+//    $cc = "rohansghumare@gmail.com,".$head;
+    $subject = "New Task/Complaint - $t_name Submitted";
 $desc = $description;
 
 // if description contains literal "\n"
@@ -367,7 +360,7 @@ $body = '<table width="100%" cellpadding="0" cellspacing="0" border="0" role="pr
       <table width="100%" cellpadding="0" cellspacing="0" border="0" role="presentation">
         <tr>
           <td style="font-size:16px; font-weight:bold; padding-bottom:12px;">
-            A Complaint has been received for '.htmlspecialchars($team, ENT_QUOTES, "UTF-8").'
+            A Task/Complaint has been received for '.htmlspecialchars($t_name, ENT_QUOTES, "UTF-8").'
             - (Complaint ID - '.(int)$complaint_id.')
           </td>
         </tr>
@@ -395,7 +388,7 @@ $body = '<table width="100%" cellpadding="0" cellspacing="0" border="0" role="pr
   </tr>
 </table>';
 
-        $member_email = implode(",", $member_email);
+
      sendEmailCC($member_email,$cc,$from,$subject, $body);
     echo json_encode(["status" => "success", "message" => "Complaint submitted successfully"]);
 

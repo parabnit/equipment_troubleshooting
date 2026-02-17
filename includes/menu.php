@@ -274,10 +274,10 @@ $canViewTasksAndComplaints = (
             Dashboard
         </a>
         <?php } ?>
-        <a href="../views/productivity_dashboard.php" 
+       <!--  <a href="../views/productivity_dashboard.php" 
         class="list-group-item list-group-item-action <?php echo ($currentPage == 'productivity_dashboard.php') ? 'active' : ''; ?>">
             Productivity Dashboard
-        </a>
+        </a> -->
 
         <a href="../views/complaint.php" class="list-group-item list-group-item-action">
             Complaint Form
@@ -524,7 +524,7 @@ $canViewTasksAndComplaints = (
 
 
         <!-- Help -->
-        <a href="../assets/efp_troubleshooting_help.pdf" class="list-group-item list-group-item-action" target="_blank">
+        <a href="../assets/efp_troubleshooting_help_New.pdf" class="list-group-item list-group-item-action" target="_blank">
             Help
         </a>
 
