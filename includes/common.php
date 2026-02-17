@@ -329,7 +329,7 @@ function send_complaint_closed_email($complaint_id)
     $from    = get_email_user($row['status_updated_by']);
      $cc = "deepti.rukade@gmail.com";
     
-    $toolName = ($machine_id == 0) ? 'Miscellaneous' : getToolName($machine_id);
+    $toolName = getComplaintComponentName($row);
     $subject = "The Task/Complaint for $team has been closed";
 
     $body = "<table border='0' width='100%'>\n".
