@@ -117,56 +117,7 @@ try {
                     default => "General"
                 };
 
-		switch ($row['type']) 
-                {
-                    case 1:
-                        $toolName = ($tools_name == 0) ? 'Miscellaneous' : getToolName($tools_name);
-                        break;
-                    case 2:
-                        $toolName = ($tools_name == 0) ? 'Miscellaneous' : getToolName_facility($tools_name);
-                        break;
-                    case 3:
-                        $toolName = ($tools_name == 0) ? 'Miscellaneous' : getToolName_safety($tools_name);
-                        break;
-                    case 4:
-                        $toolName = ($tools_name == 0) ? 'Miscellaneous' : getToolName($tools_name);
-                        break;
-                        
-                    case 5:
-                        $cats = getTxtCategories(5);
-                        $toolName = $cats[$tools_name] ?? 'N/A';
-                        break;
-
-                    case 6:
-                        $cats = getTxtCategories(6);
-                        $toolName = $cats[$tools_name] ?? 'N/A';
-                        break;
-
-                    case 7:
-                        $cats = getTxtCategories(7);
-                        $toolName = $cats[$tools_name] ?? 'N/A';
-                        break;
-
-                    case 8:
-                        $cats = getTxtCategories(8);
-                        $toolName = $cats[$tools_name] ?? 'N/A';
-                        break;
-
-                    case 9:
-                        $cats = getTxtCategories(9);
-                        $toolName = $cats[$tools_name] ?? 'N/A';
-                        break;
-                    case 10:
-                    $cats = getTxtCategories(10);
-                    $toolName = $cats[$tools_name] ?? 'N/A';
-                    break;
-                     default:
-                        $team = "";
-                        $t_name = "";
-                        // or throw an exception if invalid:
-                        // throw new Exception("Invalid complaint type");
-                        break;
-        }
+		        $toolName = getComplaintComponentName($row);
 
 
                 
