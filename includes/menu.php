@@ -360,9 +360,7 @@ $canViewTasksAndComplaints = (
                             Inventory
                         </a>
                     <?php } ?>
-                    <?php
-                    if (is_Admin($_SESSION['memberid']) == 1 || is_ITadmin($_SESSION['memberid']) == 1) {
-                    ?>
+                    <?php if(is_LabManager($_SESSION['memberid']) || is_AssistLabManager($_SESSION['memberid']) || is_AdminHead($_SESSION['memberid']) || is_AdminTeam($_SESSION['memberid']) ){ ?>
                         <a href="../views/daily_tasks.php?type=10"
                         class="list-group-item list-group-item-action ps-4">
                             Admin
@@ -433,7 +431,7 @@ $canViewTasksAndComplaints = (
                 <?php } ?>
 
                 <?php
-                if (is_Admin($_SESSION['memberid']) == 1 || is_ITadmin($_SESSION['memberid']) == 1) {
+                if (is_AdminHead($_SESSION['memberid']) == 1 || is_AdminTeam($_SESSION['memberid']) == 1) {
                 ?>
                    <a href="../views/all_complaints.php?type=10&status=pending&importance=all" class="list-group-item list-group-item-action ps-4">
                         Admin
@@ -510,7 +508,10 @@ $canViewTasksAndComplaints = (
                 <?php } ?>
 
                 <?php
-                if (is_Admin($_SESSION['memberid']) == 1 || is_ITadmin($_SESSION['memberid']) == 1) {
+                if ( is_LabManager($_SESSION['memberid']) ||
+                    is_AssistLabManager($_SESSION['memberid']) ||
+                    is_AdminHead($_SESSION['memberid']) ||
+                    is_AdminTeam($_SESSION['memberid'])) {
                 ?>
                     <a href="../views/closed_complaints.php?type=10&status=closed&importance=all"
                     class="list-group-item list-group-item-action ps-4">
