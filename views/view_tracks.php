@@ -228,15 +228,12 @@ file-attach,
   <h5><b>Created by:</b> <?= getName($complaint['member_id']); ?></h5>
   <p><b>Time of Complaint:</b> <?= display_timestamp($complaint['time_of_complaint']); ?></p>
 
-  <p>
-    <b>Tool Name:</b>
-    <span style="color:#0033FF;">
-      <?= $complaint['machine_id'] == 0 ? "Miscellaneous" :
-        ($type == 1 || $type == 4 ? getToolName($complaint['machine_id']) :
-        ($type == 2 ? getToolName_facility($complaint['machine_id']) :
-        ($type == 3 ? getToolName_safety($complaint['machine_id']) : ''))) ?>
-    </span>
-  </p>
+ <p>
+  <b>Tool Name:</b>
+  <span style="color:#0033FF;">
+    <?= getComplaintComponentName($complaint); ?>
+  </span>
+</p>
 
   <?php if (!empty($complaint['allocated_to'])): ?>
     <p><b>Allocated To:</b> <?= getName($complaint['allocated_to']); ?></p>
