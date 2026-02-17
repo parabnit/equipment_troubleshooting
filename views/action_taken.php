@@ -190,7 +190,8 @@ $type_map = [
   6 => 'IT',
   7 => 'Purchase',
   8 => 'Training',
-  9 => 'Inventory'
+  9 => 'Inventory',
+  10 => 'Admin'
 ];
 
 $complaint_type_text = $type_map[$_POST['type']] ?? 'Unknown';
@@ -221,7 +222,7 @@ elseif ($_POST['type'] == 3) {
 }
 
 // HR, IT, Purchase, Training, Inventory
-elseif (in_array($_POST['type'], [5, 6, 7, 8, 9])) {
+elseif (in_array($_POST['type'], [5, 6, 7, 8, 9,10])) {
 
     $categories = getTxtCategories($_POST['type']);
 
@@ -709,7 +710,7 @@ $shortDesc = shortDesc($desc);
 
     <h5 class="mb-0">
       🗂️ Complaint Information
-      <small class="ms-2 opacity-75">(Click to show / hide)</small>
+      <!-- <small class="ms-2 opacity-75">(Click to show / hide)</small> -->
     </h5>
 
     <button type="button"
