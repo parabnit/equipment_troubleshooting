@@ -1140,6 +1140,11 @@ if (timerSelect) {
       return ['id'=>$id, 'name'=>getName($id)];
   }, getTeamMembers("inventory")),
 
+
+  10 => array_map(function($id){
+      return ['id'=>$id, 'name'=>getName($id)];
+  }, getTeamMembers("admin")),
+
 ]) ?>;
 
 function canSeeAllocate(type) {
