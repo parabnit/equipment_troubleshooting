@@ -1170,7 +1170,7 @@ $(document).on("click", ".view-children-btn", function () {
         // Handle "type 4" extra info inside the loop where 'r' is defined
       let processTd = "";
       let antiTd = "";
-
+      let extra = "";
         if (type == 4) {
           processTd = `
             <td data-label="Process Development">

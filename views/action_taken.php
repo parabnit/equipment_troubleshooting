@@ -14,7 +14,7 @@ require_once("../includes/common.php");
  if (empty($_SESSION['csrf_token'])) {
   $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
 }
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && $_POST['submit'] === '1') {
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
 
   ob_clean();
   header("Content-Type: application/json");
