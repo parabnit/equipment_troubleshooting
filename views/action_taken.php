@@ -3,6 +3,8 @@ session_start();
 
 require_once("../config/connect.php");
 require_once("../includes/common.php");
+include("../includes/class.phpmailer.php");
+
 
 /**
  * ======================================================
