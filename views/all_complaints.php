@@ -630,7 +630,7 @@ if (!empty($_SESSION['flash_message'])) {
       <!-- Tool Filter Form -->
       <div class="d-flex align-items-center gap-3 mb-3">
 
-      <?php if (in_array($status, ['pending', 'inprocess', 'onhold', 'all', ''])): ?>
+      <?php if (in_array($status, ['pending', 'inprocess', 'onhold'])): ?>
       <form method="get" class="row g-3 align-items-center mb-3">
         <input type="hidden" name="return_to" value="all_complaints.php">
 
@@ -641,21 +641,11 @@ if (!empty($_SESSION['flash_message'])) {
         </div>
 
         <div class="col-auto">
-         <select name="status" class="form-select form-select-sm">
-          <option value="all" <?= ($status === 'all' || $status === '') ? 'selected' : '' ?>>
-            All Complaints
-          </option>
-          <option value="pending" <?= $status === 'pending' ? 'selected' : '' ?>>
-            Pending
-          </option>
-          <option value="inprocess" <?= $status === 'inprocess' ? 'selected' : '' ?>>
-            In Process
-          </option>
-          <option value="onhold" <?= $status === 'onhold' ? 'selected' : '' ?>>
-            On Hold
-          </option>
-        </select>
-
+          <select name="status" class="form-select form-select-sm">
+            <option value="pending" <?= $status === 'pending' ? 'selected' : '' ?>>Pending</option>
+            <option value="inprocess" <?= $status === 'inprocess' ? 'selected' : '' ?>>In Process</option>
+            <option value="onhold" <?= $status === 'onhold' ? 'selected' : '' ?>>On Hold</option>
+          </select>
 
         </div>
 
@@ -771,7 +761,6 @@ if (!empty($_SESSION['flash_message'])) {
               if ($status === 'inprocess' && $d['status'] != 1) continue;
               if ($status === 'onhold' && $d['status'] != 3) continue;
               if ($status === 'closed' && $d['status'] != 2) continue;
-              if (($status === 'all' || $status === '') && $d['status'] == 2) continue;
 
             ?>
                 <tr class="parent-row" id="row-<?= (int)$d['complaint_id'] ?>">
