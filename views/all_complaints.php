@@ -57,6 +57,12 @@ if (is_LabManager($member_id) || is_AssistLabManager($member_id) || is_PI($membe
   $details = all_complaint($head, $type, 0, $tools_name,$tabledata); 
   $permission_key = check_permission('LA', $member_id); 
 }
+
+elseif(is_FOC_member($member_id)){
+  $user_role = 'all';
+  $details = all_complaint($head, $type, 0, $tools_name,$tabledata); 
+  $permission_key = 0; 
+}
 // 2) For everyone else: allow only their own type
 else {
   switch ($type) {

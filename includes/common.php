@@ -2154,6 +2154,16 @@ function is_PI($memberid){
     return false;
 }
 
+function is_FOC_member($memberid){
+    global $db_equip;
+    $sql = "SELECT * FROM role WHERE memberid = $memberid AND role = 24";
+    if (mysqli_num_rows(mysqli_query($db_equip, $sql)) > 0) {
+        return true;
+    }
+
+    return false;
+}
+
 function is_HRHead($memberid){
     global $db_equip;
     $sql = "SELECT * FROM role WHERE memberid = $memberid AND role = 12";

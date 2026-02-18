@@ -11,6 +11,7 @@ $canViewTasksAndComplaints = (
     is_LabManager($_SESSION['memberid']) ||
     is_AssistLabManager($_SESSION['memberid']) ||
     is_PI($_SESSION['memberid']) ||
+    is_FOC_member($_SESSION['memberid']) ||
     is_EquipmentHead($_SESSION['memberid']) || is_EquipmentTeam($_SESSION['memberid']) ||
     is_FacilityHead($_SESSION['memberid'])  || is_FacilityTeam($_SESSION['memberid']) ||
     is_SafetyHead($_SESSION['memberid'])    || is_SafetyTeam($_SESSION['memberid']) ||
@@ -270,7 +271,7 @@ $canViewTasksAndComplaints = (
     <div class="list-group">
 <!-- Dashboard -->
   <?php
-                 if(is_LabManager($_SESSION['memberid']) || is_AssistLabManager($_SESSION['memberid']) || is_PI($_SESSION['memberid']) ||is_EquipmentHead($_SESSION['memberid']) || is_EquipmentTeam($_SESSION['memberid']) || is_FacilityHead($_SESSION['memberid']) || is_FacilityTeam($_SESSION['memberid']) || is_SafetyHead($_SESSION['memberid']) || is_SafetyTeam($_SESSION['memberid']) || is_ProcessHead($_SESSION['memberid']) || is_ProcessTeam($_SESSION['memberid']) || is_HRHead($_SESSION['memberid']) || is_HRTeam($_SESSION['memberid']) || is_ITHead($_SESSION['memberid']) || is_ITTeam($_SESSION['memberid']) || is_PurchaseHead($_SESSION['memberid']) || is_PurchaseTeam($_SESSION['memberid']) || is_TrainingHead($_SESSION['memberid']) || is_TrainingTeam($_SESSION['memberid']) || is_InventoryHead($_SESSION['memberid']) || is_InventoryTeam($_SESSION['memberid']) ){
+                 if(is_LabManager($_SESSION['memberid']) || is_AssistLabManager($_SESSION['memberid']) || is_PI($_SESSION['memberid']) || is_FOC_member($_SESSION['memberid']) ||is_EquipmentHead($_SESSION['memberid']) || is_EquipmentTeam($_SESSION['memberid']) || is_FacilityHead($_SESSION['memberid']) || is_FacilityTeam($_SESSION['memberid']) || is_SafetyHead($_SESSION['memberid']) || is_SafetyTeam($_SESSION['memberid']) || is_ProcessHead($_SESSION['memberid']) || is_ProcessTeam($_SESSION['memberid']) || is_HRHead($_SESSION['memberid']) || is_HRTeam($_SESSION['memberid']) || is_ITHead($_SESSION['memberid']) || is_ITTeam($_SESSION['memberid']) || is_PurchaseHead($_SESSION['memberid']) || is_PurchaseTeam($_SESSION['memberid']) || is_TrainingHead($_SESSION['memberid']) || is_TrainingTeam($_SESSION['memberid']) || is_InventoryHead($_SESSION['memberid']) || is_InventoryTeam($_SESSION['memberid']) ){
                    ?>
         <a href="../views/dashboard.php" 
            class="list-group-item list-group-item-action <?php echo ($currentPage == 'dashboard.php') ? 'active' : ''; ?>">
@@ -307,39 +308,39 @@ $canViewTasksAndComplaints = (
                 id="collapseDailyTasks">
 
                 <?php
-                 if(is_LabManager($_SESSION['memberid']) || is_AssistLabManager($_SESSION['memberid']) || is_PI($_SESSION['memberid']) ||is_EquipmentHead($_SESSION['memberid']) || is_EquipmentTeam($_SESSION['memberid']) ){
+                 if(is_LabManager($_SESSION['memberid']) || is_AssistLabManager($_SESSION['memberid']) || is_PI($_SESSION['memberid']) || is_FOC_member($_SESSION['memberid']) || is_EquipmentHead($_SESSION['memberid']) || is_EquipmentTeam($_SESSION['memberid']) ){
                    ?>
                     <a href="../views/daily_tasks.php?type=1"
                     class="list-group-item list-group-item-action ps-4">
                     Equipment
                     </a>
-                <?php } if(is_LabManager($_SESSION['memberid']) || is_AssistLabManager($_SESSION['memberid']) || is_PI($_SESSION['memberid']) ||    is_FacilityHead($_SESSION['memberid']) || is_FacilityTeam($_SESSION['memberid']) ){?>
+                <?php } if(is_LabManager($_SESSION['memberid']) || is_AssistLabManager($_SESSION['memberid']) || is_PI($_SESSION['memberid']) ||    is_FOC_member($_SESSION['memberid']) || is_FacilityHead($_SESSION['memberid']) || is_FacilityTeam($_SESSION['memberid']) ){?>
                     <a href="../views/daily_tasks.php?type=2"
                     class="list-group-item list-group-item-action ps-4">
                     Facility
                     </a>
 
-                    <?php } if(is_LabManager($_SESSION['memberid']) || is_AssistLabManager($_SESSION['memberid']) || is_PI($_SESSION['memberid']) ||is_SafetyHead($_SESSION['memberid']) || is_SafetyTeam($_SESSION['memberid']) ){?>
+                    <?php } if(is_LabManager($_SESSION['memberid']) || is_AssistLabManager($_SESSION['memberid']) || is_PI($_SESSION['memberid']) || is_FOC_member($_SESSION['memberid']) ||is_SafetyHead($_SESSION['memberid']) || is_SafetyTeam($_SESSION['memberid']) ){?>
                     <a href="../views/daily_tasks.php?type=3"
                     class="list-group-item list-group-item-action ps-4">
                     Safety
                     </a>
-                    <?php } if(is_LabManager($_SESSION['memberid']) || is_AssistLabManager($_SESSION['memberid']) || is_PI($_SESSION['memberid']) ||is_ProcessHead($_SESSION['memberid']) || is_ProcessTeam($_SESSION['memberid']) ){?>
+                    <?php } if(is_LabManager($_SESSION['memberid']) || is_AssistLabManager($_SESSION['memberid']) || is_PI($_SESSION['memberid']) || is_FOC_member($_SESSION['memberid']) ||is_ProcessHead($_SESSION['memberid']) || is_ProcessTeam($_SESSION['memberid']) ){?>
                     <a href="../views/daily_tasks.php?type=4"
                     class="list-group-item list-group-item-action ps-4">
                     Process
                     </a>
-                    <?php } if(is_LabManager($_SESSION['memberid']) || is_AssistLabManager($_SESSION['memberid']) || is_PI($_SESSION['memberid']) ||is_HRHead($_SESSION['memberid']) || is_HRTeam($_SESSION['memberid']) ){?>
+                    <?php } if(is_LabManager($_SESSION['memberid']) || is_AssistLabManager($_SESSION['memberid']) || is_PI($_SESSION['memberid']) || is_FOC_member($_SESSION['memberid']) ||is_HRHead($_SESSION['memberid']) || is_HRTeam($_SESSION['memberid']) ){?>
                     <a href="../views/daily_tasks.php?type=5"
                     class="list-group-item list-group-item-action ps-4">
                     HR
                     </a>
-                    <?php }  if(is_LabManager($_SESSION['memberid']) || is_AssistLabManager($_SESSION['memberid']) || is_PI($_SESSION['memberid']) ||is_ITHead($_SESSION['memberid']) || is_ITTeam($_SESSION['memberid']) ){?>
+                    <?php }  if(is_LabManager($_SESSION['memberid']) || is_AssistLabManager($_SESSION['memberid']) || is_PI($_SESSION['memberid']) || is_FOC_member($_SESSION['memberid']) ||is_ITHead($_SESSION['memberid']) || is_ITTeam($_SESSION['memberid']) ){?>
                     <a href="../views/daily_tasks.php?type=6"
                     class="list-group-item list-group-item-action ps-4">
                     IT
                     </a>
-                    <?php }  if(is_LabManager($_SESSION['memberid']) || is_AssistLabManager($_SESSION['memberid']) || is_PI($_SESSION['memberid']) ||is_PurchaseHead($_SESSION['memberid']) || is_PurchaseTeam($_SESSION['memberid']) ){?>
+                    <?php }  if(is_LabManager($_SESSION['memberid']) || is_AssistLabManager($_SESSION['memberid']) || is_PI($_SESSION['memberid']) || is_FOC_member($_SESSION['memberid']) ||is_PurchaseHead($_SESSION['memberid']) || is_PurchaseTeam($_SESSION['memberid']) ){?>
                     <a href="../views/daily_tasks.php?type=7"
                     class="list-group-item list-group-item-action ps-4">
                     Purchase
@@ -355,13 +356,13 @@ $canViewTasksAndComplaints = (
                     <?php } ?>
 
                     <!-- Added Inventory -->
-                    <?php if(is_LabManager($_SESSION['memberid']) || is_AssistLabManager($_SESSION['memberid']) || is_PI($_SESSION['memberid']) ||is_InventoryHead($_SESSION['memberid']) || is_InventoryTeam($_SESSION['memberid']) ){ ?>
+                    <?php if(is_LabManager($_SESSION['memberid']) || is_AssistLabManager($_SESSION['memberid']) || is_PI($_SESSION['memberid']) || is_FOC_member($_SESSION['memberid']) ||is_InventoryHead($_SESSION['memberid']) || is_InventoryTeam($_SESSION['memberid']) ){ ?>
                         <a href="../views/daily_tasks.php?type=9"
                         class="list-group-item list-group-item-action ps-4">
                             Inventory
                         </a>
                     <?php } ?>
-                    <?php if(is_LabManager($_SESSION['memberid']) || is_AssistLabManager($_SESSION['memberid']) || is_PI($_SESSION['memberid']) ||is_AdminHead($_SESSION['memberid']) || is_AdminTeam($_SESSION['memberid']) ){ ?>
+                    <?php if(is_LabManager($_SESSION['memberid']) || is_AssistLabManager($_SESSION['memberid']) || is_PI($_SESSION['memberid']) || is_FOC_member($_SESSION['memberid']) ||is_AdminHead($_SESSION['memberid']) || is_AdminTeam($_SESSION['memberid']) ){ ?>
                         <a href="../views/daily_tasks.php?type=10"
                         class="list-group-item list-group-item-action ps-4">
                             Admin
@@ -387,31 +388,31 @@ $canViewTasksAndComplaints = (
 
         <div class="collapse <?php echo ($currentPage == 'all_complaints.php' && $currentStatus == 'pending') ? 'show' : ''; ?>" id="collapsePending">
         <?php
-                 if(is_LabManager($_SESSION['memberid']) || is_AssistLabManager($_SESSION['memberid']) || is_PI($_SESSION['memberid']) || is_EquipmentHead($_SESSION['memberid']) || is_EquipmentTeam($_SESSION['memberid']) ){
+                 if(is_LabManager($_SESSION['memberid']) || is_AssistLabManager($_SESSION['memberid']) || is_PI($_SESSION['memberid']) || is_FOC_member($_SESSION['memberid']) || is_EquipmentHead($_SESSION['memberid']) || is_EquipmentTeam($_SESSION['memberid']) ){
                    ?>
                 <a href="../views/all_complaints.php?type=1&status=pending&importance=all" class="list-group-item list-group-item-action ps-4">Equipment</a>
 
-                <?php } if(is_LabManager($_SESSION['memberid']) || is_AssistLabManager($_SESSION['memberid']) || is_PI($_SESSION['memberid']) ||is_FacilityHead($_SESSION['memberid']) || is_FacilityTeam($_SESSION['memberid']) ){?>
+                <?php } if(is_LabManager($_SESSION['memberid']) || is_AssistLabManager($_SESSION['memberid']) || is_PI($_SESSION['memberid']) || is_FOC_member($_SESSION['memberid']) ||is_FacilityHead($_SESSION['memberid']) || is_FacilityTeam($_SESSION['memberid']) ){?>
 
                 <a href="../views/all_complaints.php?type=2&status=pending&importance=all" class="list-group-item list-group-item-action ps-4">Facility</a>
 
-                    <?php }  if(is_LabManager($_SESSION['memberid']) || is_AssistLabManager($_SESSION['memberid']) || is_PI($_SESSION['memberid']) ||is_SafetyHead($_SESSION['memberid']) || is_SafetyTeam($_SESSION['memberid']) ){?>
+                    <?php }  if(is_LabManager($_SESSION['memberid']) || is_AssistLabManager($_SESSION['memberid']) || is_PI($_SESSION['memberid']) || is_FOC_member($_SESSION['memberid']) ||is_SafetyHead($_SESSION['memberid']) || is_SafetyTeam($_SESSION['memberid']) ){?>
 
                 <a href="../views/all_complaints.php?type=3&status=pending&importance=all" class="list-group-item list-group-item-action ps-4">Safety</a>
 
-                        <?php }  if(is_LabManager($_SESSION['memberid']) || is_AssistLabManager($_SESSION['memberid']) || is_PI($_SESSION['memberid']) ||is_ProcessHead($_SESSION['memberid']) || is_ProcessTeam($_SESSION['memberid']) ){?>
+                        <?php }  if(is_LabManager($_SESSION['memberid']) || is_AssistLabManager($_SESSION['memberid']) || is_PI($_SESSION['memberid']) || is_FOC_member($_SESSION['memberid']) ||is_ProcessHead($_SESSION['memberid']) || is_ProcessTeam($_SESSION['memberid']) ){?>
  
                 <a href="../views/all_complaints.php?type=4&status=pending&importance=all" class="list-group-item list-group-item-action ps-4">Process</a>
 
-                            <?php } if(is_LabManager($_SESSION['memberid']) || is_AssistLabManager($_SESSION['memberid']) || is_PI($_SESSION['memberid']) || is_HRHead($_SESSION['memberid']) || is_HRTeam($_SESSION['memberid']) ){?>
+                            <?php } if(is_LabManager($_SESSION['memberid']) || is_AssistLabManager($_SESSION['memberid']) || is_PI($_SESSION['memberid']) || is_FOC_member($_SESSION['memberid']) || is_HRHead($_SESSION['memberid']) || is_HRTeam($_SESSION['memberid']) ){?>
  
                 <a href="../views/all_complaints.php?type=5&status=pending&importance=all" class="list-group-item list-group-item-action ps-4">HR</a>
 
-                            <?php } if(is_LabManager($_SESSION['memberid']) || is_AssistLabManager($_SESSION['memberid']) || is_PI($_SESSION['memberid']) || is_ITHead($_SESSION['memberid']) || is_ITTeam($_SESSION['memberid']) ){?>
+                            <?php } if(is_LabManager($_SESSION['memberid']) || is_AssistLabManager($_SESSION['memberid']) || is_PI($_SESSION['memberid']) || is_FOC_member($_SESSION['memberid']) || is_ITHead($_SESSION['memberid']) || is_ITTeam($_SESSION['memberid']) ){?>
  
                 <a href="../views/all_complaints.php?type=6&status=pending&importance=all" class="list-group-item list-group-item-action ps-4">IT</a>
 
-                            <?php }  if(is_LabManager($_SESSION['memberid']) || is_AssistLabManager($_SESSION['memberid']) || is_PI($_SESSION['memberid']) || is_PurchaseHead($_SESSION['memberid']) || is_PurchaseTeam($_SESSION['memberid']) ){?>
+                            <?php }  if(is_LabManager($_SESSION['memberid']) || is_AssistLabManager($_SESSION['memberid']) || is_PI($_SESSION['memberid']) || is_FOC_member($_SESSION['memberid']) || is_PurchaseHead($_SESSION['memberid']) || is_PurchaseTeam($_SESSION['memberid']) ){?>
  
                 <a href="../views/all_complaints.php?type=7&status=pending&importance=all" class="list-group-item list-group-item-action ps-4">Purchase</a>
 
@@ -419,20 +420,20 @@ $canViewTasksAndComplaints = (
 
                              <?php
                 // Training
-                if(is_LabManager($_SESSION['memberid']) || is_AssistLabManager($_SESSION['memberid']) || is_PI($_SESSION['memberid']) || is_TrainingHead($_SESSION['memberid']) || is_TrainingTeam($_SESSION['memberid']) ){
+                if(is_LabManager($_SESSION['memberid']) || is_AssistLabManager($_SESSION['memberid']) || is_PI($_SESSION['memberid']) || is_FOC_member($_SESSION['memberid']) || is_TrainingHead($_SESSION['memberid']) || is_TrainingTeam($_SESSION['memberid']) ){
                 ?>
                     <a href="../views/all_complaints.php?type=8&status=pending&importance=all" class="list-group-item list-group-item-action ps-4">Training</a>
                 <?php } ?>
 
                 <?php
                 // Inventory
-                if(is_LabManager($_SESSION['memberid']) || is_AssistLabManager($_SESSION['memberid']) || is_PI($_SESSION['memberid']) || is_InventoryHead($_SESSION['memberid']) || is_InventoryTeam($_SESSION['memberid']) ){
+                if(is_LabManager($_SESSION['memberid']) || is_AssistLabManager($_SESSION['memberid']) || is_PI($_SESSION['memberid']) || is_FOC_member($_SESSION['memberid']) || is_InventoryHead($_SESSION['memberid']) || is_InventoryTeam($_SESSION['memberid']) ){
                 ?>
                     <a href="../views/all_complaints.php?type=9&status=pending&importance=all" class="list-group-item list-group-item-action ps-4">Inventory</a>
                 <?php } ?>
 
                 <?php
-                if (is_AdminHead($_SESSION['memberid']) == 1 || is_AdminTeam($_SESSION['memberid']) == 1) {
+                if (is_LabManager($_SESSION['memberid']) || is_AssistLabManager($_SESSION['memberid']) || is_PI($_SESSION['memberid']) || is_FOC_member($_SESSION['memberid']) || is_AdminHead($_SESSION['memberid']) == 1 || is_AdminTeam($_SESSION['memberid']) == 1) {
                 ?>
                    <a href="../views/all_complaints.php?type=10&status=pending&importance=all" class="list-group-item list-group-item-action ps-4">
                         Admin
@@ -458,27 +459,27 @@ $canViewTasksAndComplaints = (
 
         <div class="collapse <?php echo ($currentPage == 'all_complaints.php' && $currentStatus == 'closed') ? 'show' : ''; ?>" id="collapseClosed">
         <?php
-                 if(is_LabManager($_SESSION['memberid']) || is_AssistLabManager($_SESSION['memberid']) || is_PI($_SESSION['memberid']) || is_EquipmentHead($_SESSION['memberid']) || is_EquipmentTeam($_SESSION['memberid']) ){
+                 if(is_LabManager($_SESSION['memberid']) || is_AssistLabManager($_SESSION['memberid']) || is_PI($_SESSION['memberid']) || is_FOC_member($_SESSION['memberid']) || is_EquipmentHead($_SESSION['memberid']) || is_EquipmentTeam($_SESSION['memberid']) ){
                    ?>
                 <a href="../views/closed_complaints.php?type=1&status=closed&importance=all" class="list-group-item list-group-item-action ps-4">Equipment</a>
-                <?php } if(is_LabManager($_SESSION['memberid']) || is_AssistLabManager($_SESSION['memberid']) || is_PI($_SESSION['memberid']) || is_FacilityHead($_SESSION['memberid']) || is_FacilityTeam($_SESSION['memberid']) ){?>
+                <?php } if(is_LabManager($_SESSION['memberid']) || is_AssistLabManager($_SESSION['memberid']) || is_PI($_SESSION['memberid']) || is_FOC_member($_SESSION['memberid']) || is_FacilityHead($_SESSION['memberid']) || is_FacilityTeam($_SESSION['memberid']) ){?>
                 <a href="../views/closed_complaints.php?type=2&status=closed&importance=all" class="list-group-item list-group-item-action ps-4">Facility</a>
                   
-                    <?php } if(is_LabManager($_SESSION['memberid']) || is_AssistLabManager($_SESSION['memberid']) || is_PI($_SESSION['memberid']) || is_SafetyHead($_SESSION['memberid']) || is_SafetyTeam($_SESSION['memberid']) ){?>
+                    <?php } if(is_LabManager($_SESSION['memberid']) || is_AssistLabManager($_SESSION['memberid']) || is_PI($_SESSION['memberid']) || is_FOC_member($_SESSION['memberid']) || is_SafetyHead($_SESSION['memberid']) || is_SafetyTeam($_SESSION['memberid']) ){?>
                 <a href="../views/closed_complaints.php?type=3&status=closed&importance=all" class="list-group-item list-group-item-action ps-4">Safety</a>
                            
-                        <?php } if(is_LabManager($_SESSION['memberid']) || is_AssistLabManager($_SESSION['memberid']) || is_PI($_SESSION['memberid']) || is_ProcessHead($_SESSION['memberid']) || is_ProcessTeam($_SESSION['memberid']) ){?>
+                        <?php } if(is_LabManager($_SESSION['memberid']) || is_AssistLabManager($_SESSION['memberid']) || is_PI($_SESSION['memberid']) || is_FOC_member($_SESSION['memberid']) || is_ProcessHead($_SESSION['memberid']) || is_ProcessTeam($_SESSION['memberid']) ){?>
                 <a href="../views/closed_complaints.php?type=4&status=closed&importance=all" class="list-group-item list-group-item-action ps-4">Process</a>
                                
-                            <?php } if(is_LabManager($_SESSION['memberid']) || is_AssistLabManager($_SESSION['memberid']) || is_PI($_SESSION['memberid']) || is_HRHead($_SESSION['memberid']) || is_HRTeam($_SESSION['memberid']) ){?>
+                            <?php } if(is_LabManager($_SESSION['memberid']) || is_AssistLabManager($_SESSION['memberid']) || is_PI($_SESSION['memberid']) || is_FOC_member($_SESSION['memberid']) || is_HRHead($_SESSION['memberid']) || is_HRTeam($_SESSION['memberid']) ){?>
  
                 <a href="../views/closed_complaints.php?type=5&status=closed&importance=all" class="list-group-item list-group-item-action ps-4">HR</a>
 
-                            <?php } if(is_LabManager($_SESSION['memberid']) || is_AssistLabManager($_SESSION['memberid']) || is_PI($_SESSION['memberid']) || is_ITHead($_SESSION['memberid']) || is_ITTeam($_SESSION['memberid']) ){?>
+                            <?php } if(is_LabManager($_SESSION['memberid']) || is_AssistLabManager($_SESSION['memberid']) || is_PI($_SESSION['memberid']) || is_FOC_member($_SESSION['memberid']) || is_ITHead($_SESSION['memberid']) || is_ITTeam($_SESSION['memberid']) ){?>
  
                 <a href="../views/closed_complaints.php?type=6&status=closed&importance=all" class="list-group-item list-group-item-action ps-4">IT</a>
 
-                            <?php }  if(is_LabManager($_SESSION['memberid']) || is_AssistLabManager($_SESSION['memberid']) || is_PI($_SESSION['memberid']) || is_PurchaseHead($_SESSION['memberid']) || is_PurchaseTeam($_SESSION['memberid']) ){?>
+                            <?php }  if(is_LabManager($_SESSION['memberid']) || is_AssistLabManager($_SESSION['memberid']) || is_PI($_SESSION['memberid']) || is_FOC_member($_SESSION['memberid']) || is_PurchaseHead($_SESSION['memberid']) || is_PurchaseTeam($_SESSION['memberid']) ){?>
  
                 <a href="../views/closed_complaints.php?type=7&status=closed&importance=all" class="list-group-item list-group-item-action ps-4">Purchase</a>
 
@@ -488,6 +489,7 @@ $canViewTasksAndComplaints = (
                     is_LabManager($_SESSION['memberid']) ||
                     is_AssistLabManager($_SESSION['memberid']) ||
                     is_PI($_SESSION['memberid']) ||
+                    is_FOC_member($_SESSION['memberid']) ||
                     is_TrainingHead($_SESSION['memberid']) ||
                     is_TrainingTeam($_SESSION['memberid'])
                 ) { ?>
@@ -501,6 +503,7 @@ $canViewTasksAndComplaints = (
                     is_LabManager($_SESSION['memberid']) ||
                     is_AssistLabManager($_SESSION['memberid']) ||
                     is_PI($_SESSION['memberid']) ||
+                    is_FOC_member($_SESSION['memberid']) ||
                     is_InventoryHead($_SESSION['memberid']) ||
                     is_InventoryTeam($_SESSION['memberid'])
                 ) { ?>
@@ -514,6 +517,7 @@ $canViewTasksAndComplaints = (
                 if ( is_LabManager($_SESSION['memberid']) ||
                     is_AssistLabManager($_SESSION['memberid']) ||
                     is_PI($_SESSION['memberid']) ||
+                    is_FOC_member($_SESSION['memberid']) ||
                     is_AdminHead($_SESSION['memberid']) ||
                     is_AdminTeam($_SESSION['memberid'])) {
                 ?>

@@ -44,6 +44,8 @@ $head = 0;
 
 if (is_LabManager($member_id) || is_AssistLabManager($member_id) || is_PI($member_id)) {
   $user_role = 'all';
+} elseif (is_FOC_member($member_id)) {
+  $user_role = 'viewer';
 } elseif (is_EquipmentHead($member_id) && $type == 1) {
   $user_role = 'head';
   $head = 1;
@@ -125,6 +127,11 @@ if (is_LabManager($member_id) || is_AssistLabManager($member_id) || is_PI($membe
 if ($user_role == 'all') {
   $details = all_complaint($head,$type, 1,$tools_name,0);
   $permission_key = check_permission('LA',$member_id);
+}
+
+elseif ($user_role == 'viewer') {
+  $details = all_complaint($head,$type, 1,$tools_name,0);
+  $permission_key = 0; // viewers have no update permissions
 }
 elseif ($user_role == 'head') {
   $details = all_complaint($head,$type, 1,$tools_name,0);
