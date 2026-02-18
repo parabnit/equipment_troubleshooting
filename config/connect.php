@@ -9,7 +9,7 @@ function connect_db($host, $user, $pass, $dbname) {
 
 // All connections
 $db_slot     = connect_db("localhost", "root", "Pass@1234", "slotbooking");
-$db_equip    = connect_db("localhost", "root", "Pass@1234", "equipment_troubleshooting");
+$db_equip    = connect_db("localhost", "root", "Pass@1234", "iitbnf_troubleshooting");
 $db_safety   = connect_db("localhost", "root", "Pass@1234", "safety");
 $db_facility = connect_db("localhost", "root", "Pass@1234", "facility_management");
 ?>
