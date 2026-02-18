@@ -810,34 +810,13 @@ if (!empty($_SESSION['flash_message'])) {
 
                 <!-- Tool Info -->
               <td data-label="Tool & Category">
-              <?php
-              // Default tool name
-              $toolName = 'Miscellaneous';
+             <?php
+              // IMPORTANT: ensure row contains type
+              $d['type'] = $type; // only if type is not already in query result
 
-              // For Equipment & Process
-              if (in_array($type, [1, 4])) {
-                  if ($d['machine_id'] != 0) {
-                      $toolName = getToolName($d['machine_id']);
-                  }
-              }
-              // For Facility
-              elseif ($type == 2) {
-                  if ($d['machine_id'] != 0) {
-                      $toolName = getToolName_facility($d['machine_id']);
-                  }
-              }
-              // For Safety
-              elseif ($type == 3) {
-                  if ($d['machine_id'] != 0) {
-                      $toolName = getToolName_safety($d['machine_id']);
-                  }
-              }
-              // For category types: HR, IT, Purchase, Training, Inventory
-              elseif (in_array($type, [5,6,7,8,9,10])) {
-                  $categories = getTxtCategories($type);
-                  $toolName = $categories[$d['machine_id']] ?? 'Miscellaneous';
-              }
+              $toolName = getComplaintToolName($d);
               ?>
+
               <?= $toolName ?>
 
               <?php if ($tabledata): ?>

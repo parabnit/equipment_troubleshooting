@@ -325,7 +325,7 @@ $statusMap = [
                     [$typeText, $typeColor] = $typeMap[$c['type']] ?? ['Unknown', 'dark'];
                     [$statusText, $statusColor] = $statusMap[$c['status']] ?? ['Unknown', 'dark'];
 
-                    $toolName = getComplaintComponentName($c);
+                    $toolName = getComplaintToolName($c);
 
                     /* RAW DB text (NO decode) */
                     $fullDesc  = trim($c['complaint_description']);

@@ -277,7 +277,7 @@ if (!empty($complaintHistory)) {
 
               <div class="assigned-to mb-1"><?= htmlspecialchars($assignedTo) ?></div>
 
-              <div class="fw-bold"><?= htmlspecialchars(getComplaintComponentName($row)) ?></div>
+              <div class="fw-bold"><?= htmlspecialchars(getComplaintToolName($row)) ?></div>
 
 <div class="history-desc" id="desc-<?= $index ?>">
                 <?= nl2br($desc) ?>

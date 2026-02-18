@@ -910,7 +910,7 @@ if ($is_existing_complaint) {
             <?php foreach ($complaintHistory as $row) { ?>
 
               <?php
-                $componentName = getComplaintComponentName($row);
+                $componentName = getComplaintToolName($row);
 
                 $assignedTo = !empty($row['allocated_to'])
                   ? getName($row['allocated_to'])

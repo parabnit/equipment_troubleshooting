@@ -231,7 +231,7 @@ file-attach,
   <p>
     <b>Tool Name:</b>
     <span style="color:#0033FF;">
-      <?= getComplaintComponentName($complaint); ?>
+      <?= getComplaintToolName($complaint); ?>
     </span>
   </p>
 

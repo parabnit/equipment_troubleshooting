@@ -700,30 +700,17 @@ body {
 
 <td data-label="Tool & Cat">
 <?php
-// TOOLS (Equipment, Facility, Safety, Process)
-if ($type == 1 || $type == 4) {
-    echo $d['machine_id'] ? getToolName($d['machine_id']) : 'Misc';
+  // Ensure type exists inside row
+    $d['type'] = $type;
 
-} elseif ($type == 2) {
-    echo $d['machine_id'] ? getToolName_facility($d['machine_id']) : 'Misc';
-
-} elseif ($type == 3) {
-    echo $d['machine_id'] ? getToolName_safety($d['machine_id']) : 'Misc';
-
-// CATEGORIES (IT, HR, Purchase, Training, Inventory)
-} else {
-    $categories = getTxtCategories($type); // returns array [id => name]
-    echo isset($categories[$d['machine_id']])
-        ? htmlspecialchars($categories[$d['machine_id']])
-        : 'Misc';
-}
-
-
-// Expected completion date
-$ec = EC_date($d['complaint_id']);
-if ($ec !== '') {
-    echo '<br><small class="text-muted"><b>Expected completion date:</b> ' . display_date($ec) . '</small>';
-}
+    echo htmlspecialchars(getComplaintToolName($d));
+    
+    // Expected completion date
+    $ec = EC_date($d['complaint_id']);
+    if ($ec !== '') {
+        echo '<br><small class="text-muted"><b>Expected completion date:</b> ' 
+              . display_date($ec) . '</small>';
+    }
 ?>
 
 

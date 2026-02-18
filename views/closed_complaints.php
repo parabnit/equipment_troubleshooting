@@ -345,14 +345,8 @@ unset($_SESSION['flash_message']);
 
 <td data-label="Tool & Category">
 <?php
-$toolName = 'Miscellaneous';
-if (in_array($type, [1,4]) && $d['machine_id']!=0) $toolName = getToolName($d['machine_id']);
-elseif ($type==2 && $d['machine_id']!=0) $toolName = getToolName_facility($d['machine_id']);
-elseif ($type==3 && $d['machine_id']!=0) $toolName = getToolName_safety($d['machine_id']);
-elseif (in_array($type,[5,6,7,8,9,10])) {
-    $cats = getTxtCategories($type);
-    $toolName = $cats[$d['machine_id']] ?? 'Miscellaneous';
-}
+$d['type'] = $type;   // ensure type exists in row
+$toolName = getComplaintToolName($d);
 ?>
 <div class="tool-name"><?= $toolName ?></div>
 
