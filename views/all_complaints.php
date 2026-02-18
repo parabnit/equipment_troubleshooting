@@ -52,7 +52,7 @@ if (!in_array($type, $allowedTypes, true)) {
 $user_role = null;
 
 // 1) Lab Manager / Assistant -> can view all types
-if (is_LabManager($member_id) || is_AssistLabManager($member_id)) {
+if (is_LabManager($member_id) || is_AssistLabManager($member_id) || is_PI($member_id)) {
   $user_role = 'all';
   $details = all_complaint($head, $type, 0, $tools_name,$tabledata); 
   $permission_key = check_permission('LA', $member_id); 

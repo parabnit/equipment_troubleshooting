@@ -22,7 +22,7 @@ $tabledata = ($importance === 'critical') ? 1 : 0;
 
 /* Role check */
 if (
-    is_LabManager($member_id) || is_AssistLabManager($member_id) ||
+    is_LabManager($member_id) || is_AssistLabManager($member_id) || is_PI($member_id) ||
     is_EquipmentHead($member_id) || is_FacilityHead($member_id) ||
     is_SafetyHead($member_id) || is_ProcessHead($member_id) ||
     is_HRHead($member_id) || is_ITHead($member_id) ||

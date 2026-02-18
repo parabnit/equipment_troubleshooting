@@ -42,7 +42,7 @@ $member_id = (int)$_SESSION['memberid'];
 $head = 0;
 
 
-if (is_LabManager($member_id) || is_AssistLabManager($member_id)) {
+if (is_LabManager($member_id) || is_AssistLabManager($member_id) || is_PI($member_id)) {
   $user_role = 'all';
 } elseif (is_EquipmentHead($member_id) && $type == 1) {
   $user_role = 'head';
