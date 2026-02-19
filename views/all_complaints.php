@@ -489,34 +489,64 @@ if (!empty($_SESSION['flash_message'])) {
 /* ==========================================================
    PARENT + CHILD DIFFERENCE
    ========================================================== */
+/* ================= PARENT ROW ================= */
 #allComplaints tbody tr.parent-row {
-  background: #f1f5ff !important;
-  border-left: 5px solid #2563eb;
+  background: linear-gradient(90deg, #e8efff, #f3f6ff) !important;
+  border-left: 6px solid #2563eb;
+  font-weight: 600;
 }
 
+/* ================= CHILD ROW ================= */
 #allComplaints tbody tr.child-row {
-  background: #ffffff !important;
-  border-left: 5px solid #94a3b8;
+  background: linear-gradient(90deg, #dde7ff, #e9efff) !important; /* NO WHITE */
+  border-left: 6px solid #94a3b8;
+  position: relative;
+  transition: all 0.2s ease;
 }
 
+/* Remove any white override from td */
+#allComplaints tbody tr.child-row td {
+  background: transparent !important;
+}
+
+/* Indentation */
 #allComplaints tbody tr.child-row td:first-child {
-  padding-left: 30px !important;
+  padding-left: 50px !important;
   position: relative;
 }
 
+/* Vertical tree connector */
 #allComplaints tbody tr.child-row td:first-child::before {
+  content: "";
+  position: absolute;
+  left: 25px;
+  top: -20px;
+  bottom: -20px;
+  width: 2px;
+  background: #c7d2fe;
+}
+
+/* Arrow indicator */
+#allComplaints tbody tr.child-row td:first-child::after {
   content: "↳";
   position: absolute;
-  left: 12px;
-  top: 14px;
+  left: 18px;
+  top: 50%;
+  transform: translateY(-50%);
   font-weight: bold;
-  color: #64748b;
+  color: #475569;
+}
+
+/* Hover */
+#allComplaints tbody tr.child-row:hover {
+  background: linear-gradient(90deg, #dbe4ff, #e3eaff) !important;
 }
 
 /* Hide child rows */
 #allComplaints tbody tr.child-row.d-none {
   display: none !important;
 }
+
 
 /* ==========================================================
    BUTTON FIX (View History inside properly)
