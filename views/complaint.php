@@ -337,8 +337,8 @@ switch ($type) {
 //$complaint_id = mysqli_insert_id($db_equip);
     $success = true;
     $from = get_email_user($memberid);
-    // $cc = "deepti.rukade@gmail.com";
-    $cc = "parabnitin51@gmail.com";
+    $cc = "deepti.rukade@gmail.com";
+    // $cc = "parabnitin51@gmail.com";
     //$cc = "rohansghumare@gmail.com";
     $members = getTeamMembers($team);
     
