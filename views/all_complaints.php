@@ -950,7 +950,7 @@ if (!empty($_SESSION['flash_message'])) {
                   ?>
                 </td>
 
-<?php if($user_role=="all" || $head==1): ?>
+<?php if(($head==1 || $user_role=="all") && $permission_key == 1): ?>
                   <!-- Status -->
                   <td data-label="Status">
                     <input type="hidden" name="complaint_id" value="<?= $d["complaint_id"]; ?>">
@@ -977,6 +977,10 @@ if (!empty($_SESSION['flash_message'])) {
                       Submit
                     </button>
                   </td>
+                  <?php  else :?>
+                    <td data-label="Status">
+                      <?= ['0' => 'Pending', '1' => 'In Process', '2' => 'Closed', '3' => 'On Hold'][$d['status']] ?? 'Unknown' ?>
+                    </td>
                   <?php endif; ?>
 
                 </form>
@@ -1160,6 +1164,7 @@ $(document).on("click", ".view-children-btn", function () {
       }
 
       const CURRENT_USER_ROLE = <?= json_encode($user_role) ?>;
+      const permission_key = <?= json_encode($permission_key) ?>;
       let html = "";
 
       rows.forEach(function (r) {
@@ -1213,8 +1218,8 @@ const statusText =
           default: typeName = "N/A"; roleKey = "N/A"; break;
         }
 
-        const canTransfer = (CURRENT_USER_ROLE === "all" || CURRENT_USER_ROLE === roleKey);
-        const canUpdateStatus = (CURRENT_USER_ROLE === "all" || CURRENT_USER_ROLE === roleKey);
+        const canTransfer = (CURRENT_USER_ROLE === "all" || CURRENT_USER_ROLE === roleKey) && permission_key == 1;
+        const canUpdateStatus = (CURRENT_USER_ROLE === "all" || CURRENT_USER_ROLE === roleKey) && permission_key == 1;
         
   // IMPORTANT: form must submit to THIS page (so status_update works)
   let status_extra = "";

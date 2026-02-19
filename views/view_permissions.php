@@ -17,20 +17,22 @@ $role_res = mysqli_query($db_equip, "SELECT memberid, role FROM role");
 $teams = [];
 
 while ($row = mysqli_fetch_assoc($role_res)) {
-    $memberid = $row['memberid'];
-    $role_id  = $row['role'];
-    $role_name = $role_master[$role_id] ?? "";
+    $memberid   = (int)$row['memberid'];
+    $role_id    = (int)$row['role'];
+    $role_name  = $role_master[$role_id] ?? "";
 
     $member_name = getName($memberid);
     if (!$role_name || !$member_name) continue;
 
-    $parts = explode(" ", $role_name);
-    $team = $parts[0];
+    // Team key = first word (same as your logic)
+    $parts = preg_split('/\s+/', trim($role_name));
+    $team  = $parts[0] ?? "Other";
 
     if (!isset($teams[$team])) {
         $teams[$team] = [
-            "heads" => [],
-            "members" => []
+            "heads"   => [],
+            "members" => [],
+            "special" => []  // ✅ new
         ];
     }
 
@@ -39,14 +41,25 @@ while ($row = mysqli_fetch_assoc($role_res)) {
     } elseif (stripos($role_name, "Team") !== false) {
         $teams[$team]["members"][] = $member_name;
     } else {
-        $teams[$team]["heads"][] = $member_name;
+        // ✅ roles without Head/Team suffix -> store full role name + member name
+        $teams[$team]["special"][] = [
+            "role" => $role_name,
+            "name" => $member_name
+        ];
     }
 }
 
 ksort($teams);
+
 foreach ($teams as $t => $vals) {
     sort($teams[$t]["heads"]);
     sort($teams[$t]["members"]);
+
+    // sort special by role then name (optional but clean)
+    usort($teams[$t]["special"], function($a, $b){
+        $c = strcasecmp($a["role"], $b["role"]);
+        return $c !== 0 ? $c : strcasecmp($a["name"], $b["name"]);
+    });
 }
 ?>
 
@@ -284,40 +297,78 @@ foreach ($teams as $t => $vals) {
                     <i class="fa-solid fa-users"></i>
                     <?php
                     $displayTeam = ($team === 'Lab') ? 'Lab Manager' : $team . ' Team';
+                    $displayTeam = ($team === 'FOC') ? 'FOC Member' : $displayTeam;
+                    $displayTeam = ($team === 'Assistant') ? 'Assistant Lab Manager' : $displayTeam;
+                    $displayTeam = ($team === 'PI') ? 'PI' : $displayTeam;
                     ?>
                     <?= htmlspecialchars($displayTeam) ?>
 
                 </div>
 
                 <div class="team-card-body">
-                    <div class="team-section">
-                        <div class="team-section-title">
-                            <i class="fa-solid fa-user-tie text-blue-600"></i>
-                            Head
-                        </div>
-                        <?php if (empty($grp['heads'])): ?>
-                            <span class="text-muted">None</span>
-                        <?php else: ?>
-                            <?php foreach ($grp['heads'] as $h): ?>
-                                <span class="name-pill"><?= htmlspecialchars($h) ?></span>
-                            <?php endforeach; ?>
-                        <?php endif; ?>
-                    </div>
 
-                    <div class="team-section">
-                        <div class="team-section-title">
-                            <i class="fa-solid fa-user-group text-green-600"></i>
-                            Members
-                        </div>
-                        <?php if (empty($grp['members'])): ?>
-                            <span class="text-muted">None</span>
-                        <?php else: ?>
-                            <?php foreach ($grp['members'] as $m): ?>
-                                <span class="name-pill"><?= htmlspecialchars($m) ?></span>
-                            <?php endforeach; ?>
-                        <?php endif; ?>
-                    </div>
+    <?php
+    $hasSpecialOnly = !empty($grp['special']) && empty($grp['heads']) && empty($grp['members']);
+    ?>
+
+    <?php if ($hasSpecialOnly): ?>
+        <!-- ✅ Special Permission: NO Head/Members heading -->
+        <?php foreach ($grp['special'] as $sp): ?>
+            <span class="name-pill">
+                <?= htmlspecialchars($sp['name']) ?>
+            </span>
+        <?php endforeach; ?>
+
+    <?php else: ?>
+
+        <!-- Normal Head Section -->
+        <div class="team-section">
+            <div class="team-section-title">
+                <i class="fa-solid fa-user-tie text-blue-600"></i>
+                Head
+            </div>
+            <?php if (empty($grp['heads'])): ?>
+                <span class="text-muted">None</span>
+            <?php else: ?>
+                <?php foreach ($grp['heads'] as $h): ?>
+                    <span class="name-pill"><?= htmlspecialchars($h) ?></span>
+                <?php endforeach; ?>
+            <?php endif; ?>
+        </div>
+
+        <!-- Normal Members Section -->
+        <div class="team-section">
+            <div class="team-section-title">
+                <i class="fa-solid fa-user-group text-green-600"></i>
+                Members
+            </div>
+            <?php if (empty($grp['members'])): ?>
+                <span class="text-muted">None</span>
+            <?php else: ?>
+                <?php foreach ($grp['members'] as $m): ?>
+                    <span class="name-pill"><?= htmlspecialchars($m) ?></span>
+                <?php endforeach; ?>
+            <?php endif; ?>
+        </div>
+
+        <!-- ✅ If special roles exist along with Head/Members, show them cleanly -->
+        <?php if (!empty($grp['special'])): ?>
+            <div class="team-section">
+                <div class="team-section-title">
+                    <i class="fa-solid fa-star text-purple-600"></i>
+                    Special Permissions
                 </div>
+                <?php foreach ($grp['special'] as $sp): ?>
+                    <span class="name-pill">
+                        <?= htmlspecialchars($sp['role'] . " - " . $sp['name']) ?>
+                    </span>
+                <?php endforeach; ?>
+            </div>
+        <?php endif; ?>
+
+    <?php endif; ?>
+
+</div>
             </div>
         <?php endforeach; ?>
 

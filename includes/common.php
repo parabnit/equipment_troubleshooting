@@ -2024,6 +2024,7 @@ function getUserHeadLabels($memberid)
         // ✅ NEW — Admin
         22 => 'Admin Head',
         23 => 'Admin Team',
+        24 => 'FOC Member',
     ];
 
     $heads = [];

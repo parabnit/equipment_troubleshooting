@@ -23,7 +23,6 @@ $tabledata = ($importance === 'critical') ? 1 : 0;
 /* Role check */
 if (
     is_LabManager($member_id) || is_AssistLabManager($member_id) || is_PI($member_id) || 
-    is_FOC_member($member_id) ||
     is_EquipmentHead($member_id) || is_FacilityHead($member_id) ||
     is_SafetyHead($member_id) || is_ProcessHead($member_id) ||
     is_HRHead($member_id) || is_ITHead($member_id) ||
@@ -31,7 +30,11 @@ if (
     is_InventoryHead($member_id)
 ) {
     $user_role = "head";
-} else {
+} 
+elseif(is_FOC_member($member_id)) {
+    $user_role = "viewer";  // FOC and Admins can see all
+}
+else {
     $user_role = "member";
 }
 
@@ -383,7 +386,7 @@ if ($ec) {
 <?= count_day($d['time_of_complaint'],$d['status_timestamp']) ?> days
 </div>
 
-<?php if ($user_role=="head"): ?>
+<?php if ($user_role=="head" ): ?>
 <form method="post" class="mt-2">
     <input type="hidden" name="complaint_id" value="<?= $d['complaint_id'] ?>">
     <button name="reopen" class="btn btn-sm btn-outline-danger"

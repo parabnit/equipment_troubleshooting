@@ -765,7 +765,7 @@ body {
 
 
 <td data-label="Allocation / Track" style="text-align:center;">
-   <?php if ($d['status'] != '2'): ?>
+   <?php if ($d['status'] != '2' && $permission_key == 1): ?>
                     <form action="action_taken.php" method="post" enctype="multipart/form-data" style="display:inline; ">
     <input type="hidden" name="return_to" value="daily_tasks">
 
