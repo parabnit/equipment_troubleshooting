@@ -4,7 +4,7 @@ include("../includes/header.php");
 require_once("../config/connect.php");
 require_once("../includes/common.php");
 
-if (isset($_SESSION['role_ITadmin']) && $_SESSION['role_ITadmin'] != 1) {
+if ((!isset($_SESSION['role_ITadmin']) || $_SESSION['role_ITadmin'] != 1) &&(!isset($_SESSION['role']) || $_SESSION['role'] != 1)){
     echo "<script>
         Swal.fire({
             icon:'error',

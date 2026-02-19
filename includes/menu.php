@@ -569,6 +569,12 @@ $canViewTasksAndComplaints = (
 
         <!-- Permission (admin) -->
         <?php if ($_SESSION['role'] == 1 || $_SESSION['role_ITadmin'] == 1): ?>
+
+            <!-- added by sowjanya on 18/02/2026 -->
+    <a href="../views/manage_categories.php" 
+       class="list-group-item list-group-item-action <?php echo ($currentPage == 'manage_categories.php') ? 'active' : ''; ?>">
+         Manage Categories
+    </a>
             <a href="../views/permission.php" class="list-group-item list-group-item-action">
                 Permission
             </a>

@@ -936,16 +936,14 @@ if (!empty($_SESSION['flash_message'])) {
                       View History
                     </a>
                   <?php }
-                  elseif($head==0 && $permission_key == 1) {
+                  else {
                     $history = trouble_track($d["complaint_id"], "");
                     ?>
 		   <a
                     href="complaint_history.php?complaint_id=<?= $d['complaint_id']; ?>&type=<?= $type; ?>&return=<?= urlencode($_SERVER['REQUEST_URI']); ?>"
                     class="btn btn-sm btn-outline-primary">
                     View History
-                  </a>                   <?php } else { ?>
-                    <span class="text-muted">N/A</span>
-                  <?php }
+                  </a>                   <?php } 
                   
                   ?>
                 </td>
