@@ -125,7 +125,7 @@ try {
 
                 
                 $description = nl2br(htmlspecialchars($row['complaint_description']));
-                $subject = "New Complaint -$team Submitted";
+                $subject = "New Task/Complaint -$team Submitted";
                 $body = "<table border='0' width='100%'>\n".
                     "<tr><td colspan='2'><table><tr><td colspan='2'><b>A Task/Complaint has been received for $team - (Complaint ID - $newComplaintId)</b>,<br>\n".
                     "</td></tr><tr><td colspan='2' height='10'></td></tr>\n".

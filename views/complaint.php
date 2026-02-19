@@ -406,7 +406,7 @@ $body = '<table width="100%" cellpadding="0" cellspacing="0" border="0" role="pr
 </table>';
 
         $member_email = implode(",", $member_email);
-    //  sendEmailCC($member_email,$cc,$from,$subject, $body);
+      sendEmailCC($member_email,$cc,$from,$subject, $body);
     echo json_encode(["status" => "success", "message" => "Complaint submitted successfully"]);
 
 } catch (Exception $e) {
