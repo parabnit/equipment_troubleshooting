@@ -944,29 +944,50 @@ if ($is_existing_complaint) {
                 </div>
 
                 <!-- Description -->
-<?php
-                $desc = $row['complaint_description'] ?? '';
+        <?php
+          $desc = $row['complaint_description'] ?? '';
 
-                // 1. Force remove literal backslash-n and backslash-r first
-                $desc = str_replace(['\n', '\r'], "\n", $desc);
+          // 1. Force remove literal backslash-n and backslash-r first
+          $desc = str_replace(['\n', '\r'], "\n", $desc);
 
-                // 2. Remove escaped backslashes specifically (the ones causing the \ before ')
-                $desc = str_replace(["\\'", '\\"', '\\\\'], ["'", '"', '\\'], $desc);
+          // 2. Remove escaped backslashes specifically (the ones causing the \ before ')
+          $desc = str_replace(["\\'", '\\"', '\\\\'], ["'", '"', '\\'], $desc);
 
-                // 3. Brute-force the "nn" sequence. 
-                // This handles "word\nnword", "word nn word", or "wordnnword"
-                $desc = preg_replace('/(\s|\\\\)?nn(\s)?/i', "\n\n", $desc);
+          // 3. Brute-force the "nn" sequence.
+          $desc = preg_replace('/(\s|\\\\)?nn(\s)?/i', "\n\n", $desc);
 
-                // 4. Run stripslashes as a final safety catch for any remaining system escapes
-                $desc = stripslashes($desc);
+          // 4. Run stripslashes as a final safety catch
+          $desc = stripslashes($desc);
 
-                // 5. Decode existing HTML entities so we don't double-encode them later
-                $desc = htmlspecialchars_decode($desc, ENT_QUOTES);
+          // 5. Decode existing HTML entities
+          $desc = htmlspecialchars_decode($desc, ENT_QUOTES);
 
-                // 6. Clean and Output
-                // We trim to remove leading/trailing junk and use nl2br for the browser
-                echo nl2br(htmlspecialchars(trim($desc), ENT_QUOTES, 'UTF-8'));
-                ?>
+          // 6. Trim final result
+          $desc = trim($desc);
+
+          $limit = 200;
+
+          if (mb_strlen($desc) > $limit) {
+
+              $short = mb_substr($desc, 0, $limit);
+
+              echo '
+                  <span class="short-text">'
+                  . nl2br(htmlspecialchars($short, ENT_QUOTES, "UTF-8")) .
+                  '...</span>
+
+                  <span class="full-text d-none">'
+                  . nl2br(htmlspecialchars($desc, ENT_QUOTES, "UTF-8")) .
+                  '</span>
+
+                  <a href="#" class="toggle-desc ms-1"> Show more</a>
+              ';
+
+          } else {
+
+              echo nl2br(htmlspecialchars($desc, ENT_QUOTES, 'UTF-8'));
+          }
+          ?>
 
 
                 <!-- FOOTER -->
@@ -1765,6 +1786,28 @@ function openAttachmentModal(filePath) {
   const modal = new bootstrap.Modal(document.getElementById("attachmentModal"));
   modal.show();
 }
+</script>
+<script>
+document.addEventListener("click", function(e) {
+
+  if (e.target.classList.contains("toggle-desc")) {
+    e.preventDefault();
+
+    const container = e.target.parentElement;
+
+    const shortText = container.querySelector(".short-text");
+    const fullText  = container.querySelector(".full-text");
+
+    shortText.classList.toggle("d-none");
+    fullText.classList.toggle("d-none");
+
+    e.target.textContent =
+      e.target.textContent.trim() === "Show more"
+        ? " Show less"
+        : " Show more";
+  }
+
+});
 </script>
 
 
