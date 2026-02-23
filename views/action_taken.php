@@ -731,6 +731,13 @@ $shortDesc = shortDesc($desc);
       <!-- ===== Ultra Colorful Complaint Info ===== -->
       <div class="row g-3 mb-4">
 
+          <div class="col-md-3">
+          <div class="complaint-tile tile-type">
+            <div class="label">Complaint ID</div>
+            <div class="value">🆔 <?= htmlspecialchars($complaint_id) ?></div>
+          </div>
+        </div>
+        
         <div class="col-md-3">
           <div class="complaint-tile tile-type">
             <div class="label">Complaint Type</div>
@@ -983,9 +990,17 @@ $shortDesc = shortDesc($desc);
 
                       <input type="hidden" name="c_date" id="c_date">
 
-                      <div class="text-end">
-                        <input type="submit" class="btn btn-primary" name="submit" value="Submit">
-                      </div>
+                      <?php if ($complaint['status'] != 2): ?>
+                        <div class="text-end">
+                          <input type="submit" class="btn btn-primary" name="submit" value="Submit">
+                        </div>
+                      <?php else: ?>
+                        <div class="text-end">
+                          <button type="button" class="btn btn-secondary" disabled>
+                            Complaint Closed
+                          </button>
+                        </div>
+                      <?php endif; ?>
 
                     </div>
                   </div>
@@ -1536,9 +1551,9 @@ document.addEventListener("DOMContentLoaded", function () {
         text: 'Action saved successfully.',
         timer: 1500,
         showConfirmButton: false
-      }).then(() => {
-        location.reload();
-      });
+        }).then(() => {
+          location.reload();
+        });
       } else {
         Swal.fire({
           icon: 'error',

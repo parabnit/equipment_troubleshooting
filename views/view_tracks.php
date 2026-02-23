@@ -15,24 +15,55 @@ $desc = nl2br(htmlspecialchars(trim($desc), ENT_QUOTES, 'UTF-8'));
 ?>
 
 <style>
-/* ==============================
-   jQuery UI Dialog – SHOW ✕ Button
-   ============================== */
+
+/* =====================================================
+   jQuery UI Dialog – Enhanced Close Button
+   ===================================================== */
+
+.ui-dialog .ui-dialog-titlebar {
+  padding: 14px 18px !important;
+  background: #f8f9fa;
+  border-bottom: 1px solid #dee2e6;
+}
+
 .ui-dialog-titlebar-close {
   display: block !important;
   visibility: visible !important;
   opacity: 1 !important;
+
+  width: 40px !important;
+  height: 40px !important;
+  background: transparent !important;
+  border: none !important;
+
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+
+  font-size: 22px;
+  font-weight: bold;
+  color: #dc3545;
+  text-align: center;
+  line-height: 38px;
+  border-radius: 50%;
+  transition: all 0.2s ease;
 }
 
-/* Optional: make close button clearer */
+.ui-dialog-titlebar-close::after {
+  content: "×";
+}
+
 .ui-dialog-titlebar-close:hover {
-  background: #dc3545 !important;
-  border-color: #dc3545 !important;
+  background-color: #dc3545 !important;
+  color: #fff !important;
 }
 
-/* ==============================
+
+/* =====================================================
    Complaint Tracking Table
-   ============================== */
+   ===================================================== */
+
 .tracking-table {
   table-layout: fixed;
   width: 100%;
@@ -45,8 +76,8 @@ $desc = nl2br(htmlspecialchars(trim($desc), ENT_QUOTES, 'UTF-8'));
   font-size: 13px;
   vertical-align: top;
   word-break: break-word;
-  white-space: normal;       /* allow wrap */
-  overflow-wrap: anywhere;   /* wrap anywhere */
+  white-space: normal;
+  overflow-wrap: anywhere;
 }
 
 /* Header */
@@ -63,9 +94,11 @@ $desc = nl2br(htmlspecialchars(trim($desc), ENT_QUOTES, 'UTF-8'));
   background: #f4f8ff;
 }
 
-/* ==============================
+
+/* =====================================================
    Column Resize Handle
-   ============================== */
+   ===================================================== */
+
 .col-resizer {
   position: absolute;
   right: -4px;
@@ -94,31 +127,37 @@ $desc = nl2br(htmlspecialchars(trim($desc), ENT_QUOTES, 'UTF-8'));
   border-left: 1px solid #ffc107;
 }
 
-/* ==============================
+
+/* =====================================================
    Attachments
-   ============================== */
-file-attach,
+   ===================================================== */
+
+.file-attach,
 .tracking-table td a.file-attach {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  padding: 4px 10px;
+  padding: 4px 12px;
   border-radius: 20px;
   background: linear-gradient(135deg, #0d6efd, #6610f2);
-  color: #fff !important;          /* White text */
+  color: #fff !important;
   font-size: 12px;
   text-decoration: none;
+  transition: opacity 0.2s ease;
 }
 
 .file-attach:hover,
 .tracking-table td a.file-attach:hover {
   opacity: 0.9;
-  color: #fff !important;          /* keep white on hover */
+  color: #fff !important;
   text-decoration: none;
 }
-/* ==============================
+
+
+/* =====================================================
    Links
-   ============================== */
+   ===================================================== */
+
 .tracking-table td a {
   color: #0d6efd;
   text-decoration: underline;
@@ -129,45 +168,24 @@ file-attach,
 
 .tracking-table td a:hover {
   color: #084298;
-  text-decoration: underline;
 }
 
-/* ==============================
+
+/* =====================================================
    Responsive Container
-   ============================== */
+   ===================================================== */
+
 .table-responsive {
   overflow-x: auto;
 }
 
-/* Make close button show a proper X */
-.ui-dialog-titlebar-close {
-  width: 30px;
-  height: 30px;
-  background: none !important;
-  border: none !important;
-  font-size: 18px;
-  font-weight: bold;
-  color: #dc3545;      /* red X color */
-  text-align: center;
-  line-height: 28px;
-}
 
-.ui-dialog-titlebar-close:after {
-  content: "×";       /* Multiplication sign = X */
-}
-
-.ui-dialog-titlebar-close:hover {
-  color: #fff;
-  background-color: #dc3545;
-  border-radius: 50%;
-}
-
-/* ==============================
+/* =====================================================
    MOBILE VIEW — Tracking Dialog
-   ============================== */
+   ===================================================== */
+
 @media (max-width: 768px) {
 
-  /* Hide header */
   .tracking-table thead {
     display: none;
   }
@@ -185,12 +203,12 @@ file-attach,
     background: #fff;
     border-radius: 12px;
     box-shadow: 0 2px 6px rgba(0,0,0,0.08);
-    padding: 8px;
+    padding: 10px 12px;
   }
 
   .tracking-table td {
     border: none !important;
-    padding: 8px 6px;
+    padding: 8px 4px;
   }
 
   .tracking-table td::before {
@@ -203,17 +221,14 @@ file-attach,
     text-transform: uppercase;
   }
 
-  /* Disable column resizer on mobile */
   .col-resizer {
     display: none !important;
   }
 
-  /* Remove horizontal scroll */
   .table-responsive {
     overflow-x: visible;
   }
 
-  /* Make attachments full width */
   .file-attach {
     width: 100%;
     justify-content: center;
@@ -280,12 +295,13 @@ file-attach,
             </td>
 
             <td data-label="Action Plan">
-              <?= htmlspecialchars_decode(makeLinksClickable($row['action_taken'])) ?>
+              <?= htmlspecialchars_decode(makeLinksClickable($row['action_plan'])) ?>
               <?php if (!empty($row['file'])): ?>
                 <br>
                 <a href="<?= htmlentities($row['file']) ?>" target="_blank" class="file-attach">Attachment</a>
               <?php endif; ?>
-            </td>              <td>
+            </td>
+              <td>
                 <?= $row['action_taken'] ?>
                 <?php if (!empty($row['file'])): ?>
                   <br>

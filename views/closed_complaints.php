@@ -422,7 +422,6 @@ $(function(){
 
 function viewTrack(id, type){
 
-  // Remove old dialog (IMPORTANT for mobile)
   $('#trackDialog').remove();
 
   const div = $('<div id="trackDialog"></div>');
@@ -431,11 +430,18 @@ function viewTrack(id, type){
     'view_tracks.php?complaint_id=' + id + '&type=' + type
   ).dialog({
     title: 'Complaint Tracking',
-    width: '98%',
-    height: window.innerHeight - 40,   // MOBILE SAFE
+
+    // 👇 Increased Size
+    width: window.innerWidth > 1200 ? 1100 : '96%',
+    height: window.innerWidth > 1200 ? 700 : 'auto',
+
+    maxHeight: window.innerHeight - 60,
     modal: true,
+    resizable: false,
+    draggable: false,
+
     close: function(){
-      $('#trackDialog').remove();      // CLEANUP
+      $('#trackDialog').remove();
     }
   });
 
