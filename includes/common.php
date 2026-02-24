@@ -2463,6 +2463,31 @@ function canUserUpdateType($member_id, $type) {
   }
 }
 
+function getMemberNotifications($recipient_id)
+{
+    global $db_equip;
+
+    $recipient_id = (int)$recipient_id;
+
+    $notifications = [];
+
+    $sql = "SELECT id, title, message, created_at
+            FROM notifications
+            WHERE recipient_id = $recipient_id
+            ORDER BY created_at DESC
+            LIMIT 10";
+
+    $res = mysqli_query($db_equip, $sql);
+
+    if ($res && mysqli_num_rows($res) > 0) {
+        while ($row = mysqli_fetch_assoc($res)) {
+            $notifications[] = $row;
+        }
+    }
+
+    return $notifications;
+}
+
 
 
 

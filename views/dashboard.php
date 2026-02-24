@@ -27,7 +27,10 @@ $types = [
 
 
 ?>
-
+<?php
+$recipient_id = $_SESSION['memberid'];
+$notifications = getMemberNotifications($recipient_id);
+?>
 <style>
 
 /* ================================
@@ -100,10 +103,10 @@ $types = [
     var(--card-main),
     #111827
   );
-  padding: 16px 20px !important;
+  padding: 10px 16px !important;   /* reduced height */
   color: #fff;
-  font-size: 18px;
-  font-weight: 700;
+  font-size: 15px;                 /* smaller title */
+  font-weight: 600;
 
   display: flex;
   justify-content: space-between;
@@ -112,6 +115,7 @@ $types = [
   position: relative;
   overflow: hidden;
 }
+
 
 /* Glow Overlay */
 .square-card-header::after {
@@ -127,9 +131,9 @@ $types = [
 
 /* Icon Bubble */
 .square-card-header::before {
-  content: attr(data-icon);
-  width: 44px;
-  height: 44px;
+  width: 34px;
+  height: 34px;
+  font-size: 16px;
   border-radius: 14px;
   background: rgba(255,255,255,0.18);
   display: flex;
@@ -176,9 +180,9 @@ $types = [
    CARD BODY
 ================================ */
 .square-card-body {
-  max-height: 480px;
+  max-height: 300px;   /* reduce height */
   overflow-y: auto;
-  padding: 16px;
+  padding: 12px;       /* slightly smaller padding */
 }
 
 /* Scrollbar */
@@ -213,11 +217,11 @@ table.dataTable {
 }
 
 /* Days Pending Header Highlight */
-.square-card thead th:last-child {
+/* .square-card thead th:last-child {
   background: var(--card-light) !important;
   color: var(--card-main);
   text-align: center;
-}
+} */
 
 /* Body Cells */
 .table tbody td {
@@ -234,13 +238,13 @@ table.dataTable tbody tr:hover {
 }
 
 /* Days Pending Badge Style */
-.table tbody td:last-child {
+/* .table tbody td:last-child {
   font-weight: 900;
   text-align: center;
   color: var(--card-main);
   background: var(--card-light);
   border-radius: 10px;
-}
+} */
 
 /* ================================
    PAGINATION BUTTONS
@@ -288,6 +292,185 @@ table.dataTable tbody tr:hover {
   }
 }
 
+
+.allocated-count-badge {
+  display: inline-block;
+  margin-left: 8px;
+  padding: 3px 8px;
+  font-size: 11px;
+  font-weight: 600;
+  border-radius: 20px;
+  background: #e2e8f0;
+  color: #1e293b;
+}
+
+/* Wrap 2nd column in all DataTables */
+table.dataTable tbody td:nth-child(2) {
+    white-space: normal !important;
+    word-break: break-word !important;
+    overflow-wrap: break-word !important;
+}
+
+/* Remove inner side padding from wrappers */
+.table-responsive,
+.dataTables_wrapper {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+}
+
+/* Make table full width */
+table.dataTable {
+    width: 100% !important;
+    margin: 0 !important;
+}
+
+table.dataTable thead th,
+table.dataTable tbody td {
+    padding: 8px !important;
+}
+/* ================================
+   NOTIFICATION CARD STYLE
+================================ */
+/* ================================
+   🔔 PREMIUM NOTIFICATION CARD
+================================ */
+
+/* Card */
+.notification-card {
+    position: sticky;
+    top: 20px;
+    max-height: 85vh;
+    border-radius: 18px;
+    backdrop-filter: blur(14px);
+    background: linear-gradient(145deg, #ffffff, #f3f4ff);
+    box-shadow: 
+        0 15px 35px rgba(0,0,0,0.08),
+        0 5px 15px rgba(99,102,241,0.08);
+    overflow: hidden;
+}
+
+/* Scroll area */
+.notification-card .square-card-body {
+    max-height: 70vh;
+    overflow-y: auto;
+    padding: 15px;
+}
+
+/* Custom Scrollbar */
+.notification-card .square-card-body::-webkit-scrollbar {
+    width: 6px;
+}
+.notification-card .square-card-body::-webkit-scrollbar-thumb {
+    background: linear-gradient(to bottom, #6366f1, #8b5cf6);
+    border-radius: 10px;
+}
+.notification-card .square-card-body::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+/* ================================
+   🔔 Notification Item
+================================ */
+
+.notification-item-custom {
+    position: relative;
+    padding: 14px;
+    border-radius: 16px;
+    background: rgba(255,255,255,0.75);
+    backdrop-filter: blur(10px);
+    margin-bottom: 14px;
+    display: flex;
+    align-items: flex-start;
+    transition: all 0.35s ease;
+    border: 1px solid rgba(99,102,241,0.08);
+}
+
+/* Hover Effect */
+.notification-item-custom:hover {
+    transform: translateX(6px) scale(1.01);
+    background: linear-gradient(135deg, #eef2ff, #f5f3ff);
+    box-shadow: 
+        0 10px 25px rgba(99,102,241,0.15);
+}
+
+/* ================================
+   👤 Avatar
+================================ */
+
+.notification-avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    margin-right: 10px;
+    border: 2px solid #e0e7ff;
+    object-fit: cover;
+    transition: 0.3s;
+}
+
+.notification-item-custom:hover .notification-avatar {
+    transform: scale(1.08);
+    border-color: #6366f1;
+}
+
+/* ================================
+   ❌ Close Button (Hidden until hover)
+================================ */
+
+.notif-close-btn {
+    position: absolute;
+    top: 8px;
+    right: 10px;
+    border: none;
+    background: rgba(255,255,255,0.6);
+    backdrop-filter: blur(6px);
+    color: #6b7280;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    font-size: 14px;
+    cursor: pointer;
+    opacity: 0;
+    transform: scale(0.8);
+    transition: all 0.25s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Show only on hover */
+.notification-item-custom:hover .notif-close-btn {
+    opacity: 1;
+    transform: scale(1);
+}
+
+/* Hover style */
+.notif-close-btn:hover {
+    background: linear-gradient(135deg, #ef4444, #dc2626);
+    color: #fff;
+    box-shadow: 0 5px 12px rgba(239,68,68,0.4);
+}
+
+/* ================================
+   📝 Text Styling
+================================ */
+
+.notification-item-custom strong {
+    font-size: 14px;
+    color: #111827;
+}
+
+.notification-item-custom p {
+    font-size: 13px;
+    color: #4b5563;
+    margin-bottom: 4px;
+}
+
+.notification-item-custom small {
+    font-size: 11px;
+    color: #9ca3af;
+}
+
+
 </style>
 
 
@@ -297,33 +480,28 @@ table.dataTable tbody tr:hover {
 <link rel="stylesheet" href="../css/jquery.dataTables.min.css">
 
 
-<main class="container py-4">
+<main class="container-fluid py-4 px-4">
     <div class="row">
+
+        <!-- LEFT MENU -->
         <div class="col-md-3">
-          <?php include("../includes/menu.php"); ?>
+            <?php include("../includes/menu.php"); ?>
         </div>
 
-        <div class="col-md-9">
-            <h3 class="dashboard-title pending-title">Pending Complaints</h3>
-
+        <!-- CENTER DASHBOARD -->
+        <div class="col-md-6">
+            <h3 class="dashboard-title pending-title mb-4">
+                Pending Complaints
+            </h3>
 
             <div class="dashboard-grid">
                 <?php foreach ($types as $tid => $tname): ?>
                     <?php
-                    // Set icons for the card header
-                   $icons = [
-                    1 => "⚙️",
-                    2 => "🏢",
-                    3 => "🚨",
-                    4 => "📈",
-                    5 => "👥",
-                    6 => "💻",
-                    7 => "🛒",
-                    8 => "🎓",
-                    9 => "📦",
-                    10 => "🛠️"
-                ];
-
+                    $icons = [
+                        1 => "⚙️", 2 => "🏢", 3 => "🚨", 4 => "📈",
+                        5 => "👥", 6 => "💻", 7 => "🛒",
+                        8 => "🎓", 9 => "📦", 10 => "🛠️"
+                    ];
 
                     switch ($tid) {
                         case 1: $team="equipment"; break;
@@ -342,17 +520,14 @@ table.dataTable tbody tr:hover {
                     $icon = $icons[$tid] ?? '📝';
                     $members = getTeamMembers($team);
                     ?>
-    
-                    <div class="square-card theme-<?= $team ?>">
 
-    
-                        <div class="square-card-header" data-icon="<?= $icon ?>">
-                            <span><?= $tname ?></span>
+                    <div class="square-card theme-<?= $team ?>">
+                        <div class="square-card-header">
+                            <span><?= $icon ?> <?= $tname ?></span>
 
                             <div class="controls">
-                                <!-- Month dropdown (last 6 months) -->
                                 <select class="form-select form-select-sm month-filter-<?= $tid ?>"
-                                        onchange="loadTable(<?= $tid ?>, document.querySelector('.user-filter-<?= $tid ?>').value, this.value)">
+                                    onchange="loadTable(<?= $tid ?>, document.querySelector('.user-filter-<?= $tid ?>').value, this.value)">
                                     <option value="">Last 3 Months</option>
                                     <?php
                                     for ($i = 0; $i < 3; $i++) {
@@ -363,17 +538,18 @@ table.dataTable tbody tr:hover {
                                     ?>
                                 </select>
 
-                                <!-- User dropdown -->
                                 <select class="form-select form-select-sm user-filter-<?= $tid ?>"
-                                        onchange="loadTable(<?= $tid ?>, this.value, document.querySelector('.month-filter-<?= $tid ?>').value)">
+                                    onchange="loadTable(<?= $tid ?>, this.value, document.querySelector('.month-filter-<?= $tid ?>').value)">
                                     <option value="">All Users</option>
                                     <?php foreach ($members as $mid): ?>
-                                        <option value="<?= $mid ?>"><?= htmlspecialchars(getName($mid)) ?></option>
+                                        <option value="<?= $mid ?>">
+                                            <?= htmlspecialchars(getName($mid)) ?>
+                                        </option>
                                     <?php endforeach; ?>
                                 </select>
                             </div>
                         </div>
-    
+
                         <div class="square-card-body">
                             <div class="table-responsive">
                                 <table id="table_<?= $tid ?>" class="table table-bordered table-striped" width="100%">
@@ -381,24 +557,83 @@ table.dataTable tbody tr:hover {
                                         <tr>
                                             <th>Allocated To</th>
                                             <th>Description</th>
-                                            <th>Days Pending</th>
                                         </tr>
                                     </thead>
                                     <tbody></tbody>
                                 </table>
                             </div>
                         </div>
-    
                     </div>
+
                 <?php endforeach; ?>
             </div>
         </div>
+
+        <!-- RIGHT NOTIFICATION PANEL -->
+      <div class="col-md-3">
+        <div class="square-card notification-card">
+
+            <div class="square-card-header notification-header">
+                <span>🔔 Notifications</span>
+                <span class="badge bg-light text-dark">
+                    <?= count($notifications); ?>
+                </span>
+            </div>
+
+            <div class="square-card-body">
+
+                <?php if (!empty($notifications)) : ?>
+
+                    <?php foreach ($notifications as $row) : ?>
+
+                        <div class="notification-item-custom d-flex align-items-start position-relative">
+
+                            <!-- ❌ Close Button -->
+                            <button class="notif-close-btn"
+                                onclick="deleteNotification(<?= $row['id']; ?>, this)">
+                                ×
+                            </button>
+
+                            <!-- Cartoon Avatar -->
+                            <img src="https://api.dicebear.com/7.x/avataaars/png?seed=<?= $row['id']; ?>"
+                                class="notification-avatar">
+
+                            <div class="flex-grow-1">
+                                <strong>
+                                    <?= htmlspecialchars($row['title']); ?>
+                                </strong>
+
+                                <p class="mb-1">
+                                    <?= htmlspecialchars($row['message']); ?>
+                                </p>
+
+                                <small class="text-muted">
+                                    <?= date("d M Y, h:i A", strtotime($row['created_at'])); ?>
+                                </small>
+                            </div>
+
+                        </div>
+
+                    <?php endforeach; ?>
+
+                <?php else : ?>
+
+                    <div class="text-center text-muted py-3">
+                        No notifications found
+                    </div>
+
+                <?php endif; ?>
+
+            </div>
+        </div>
+    </div>
+
     </div>
 </main>
 
 <script>
 function loadTable(typeId, memberId = "", month = "") {
-    // ensure strings
+
     memberId = memberId === null ? "" : String(memberId);
     month = month === null ? "" : String(month);
 
@@ -406,11 +641,8 @@ function loadTable(typeId, memberId = "", month = "") {
         processing: true,
         serverSide: true,
         destroy: true,
-
-        // Disable search + limit dropdown
         searching: false,
         lengthChange: false,
-
         pageLength: 5,
 
         ajax: {
@@ -420,22 +652,48 @@ function loadTable(typeId, memberId = "", month = "") {
             data: function (d) {
                 d.typeId = typeId;
                 d.memberId = memberId;
-                d.month = month; // YYYY-MM or ""
+                d.month = month;
                 return JSON.stringify(d);
             }
         },
 
         columns: [
             { data: "allocated_to" },
-            { data: "description" },
-            { data: "days_pending" }
+            { data: "description" }
         ],
 
-        createdRow: function(row, data, dataIndex) {
-            // nothing destructive — keeping as-is
+        drawCallback: function(settings) {
+
+            let table = $('#table_' + typeId).DataTable();
+            let data = table.rows({ page: 'current' }).data().toArray();
+
+            let counts = {};
+
+            // Count occurrences per allocated_to in current page
+            data.forEach(function(row) {
+                counts[row.allocated_to] = (counts[row.allocated_to] || 0) + 1;
+            });
+
+            // Update cells
+            $('#table_' + typeId + ' tbody tr').each(function(index) {
+                let rowData = data[index];
+                if (!rowData) return;
+
+                let count = counts[rowData.allocated_to] || 0;
+
+                $(this).find('td:eq(0)').html(`
+                    <div>
+                        <strong>${rowData.allocated_to}</strong>
+                        <span class="allocated-count-badge">
+                            ${count} Complaints
+                        </span>
+                    </div>
+                `);
+            });
         }
     });
 }
+
 
 
 
@@ -445,5 +703,19 @@ document.addEventListener("DOMContentLoaded", () => {
     <?php endforeach; ?>
 });
 </script>
+
+<script>
+function deleteNotification(id, btn) {
+    btn.closest('.notification-item-custom').remove();
+
+    // Optional backend delete
+    /*
+    fetch("delete_notification.php?id=" + id)
+        .then(response => response.text())
+        .then(data => console.log(data));
+    */
+}
+</script>
+
 
 <?php include("../includes/footer.php"); ?>
