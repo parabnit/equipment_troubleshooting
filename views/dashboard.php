@@ -470,7 +470,38 @@ table.dataTable tbody td {
     color: #9ca3af;
 }
 
+/* ================================
+   ❌ Premium Always-Visible Close Button
+================================ */
 
+.notif-close-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+
+    border: none;
+    cursor: pointer;
+
+    background: linear-gradient(135deg, #f87171, #dc2626);
+    color: #ffffff;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    box-shadow: 0 6px 14px rgba(220,38,38,0.35);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+/* Simple click feedback (no hover dependency) */
+.notif-close-btn:active {
+    transform: scale(0.9);
+    box-shadow: 0 3px 8px rgba(220,38,38,0.4);
+}
 </style>
 
 
@@ -596,7 +627,12 @@ table.dataTable tbody td {
                             <!-- ❌ Close Button -->
                             <button class="notif-close-btn"
                                 onclick="deleteNotification(<?= $row['id']; ?>, this)">
-                                ×
+                                <svg viewBox="0 0 24 24" width="14" height="14">
+                                    <path d="M6 6L18 18M6 18L18 6"
+                                        stroke="currentColor"
+                                        stroke-width="2"
+                                        stroke-linecap="round"/>
+                                </svg>
                             </button>
 
                             <!-- Offline Cartoon Avatar -->
