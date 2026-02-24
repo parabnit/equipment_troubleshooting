@@ -961,7 +961,7 @@ if (!empty($_SESSION['flash_message'])) {
                     Transfer
                   </a>
 		    <a
-                      href="complaint_history.php?complaint_id=<?= $d['complaint_id']; ?>&type=<?= $type; ?>&return=<?= urlencode($_SERVER['REQUEST_URI']); ?>"
+                      href="complaint_history.php?complaint_id=<?= $d['complaint_id']; ?>&type=<?= $type; ?>"
                       class="btn btn-sm btn-outline-primary">
                       View History
                     </a>
@@ -970,7 +970,7 @@ if (!empty($_SESSION['flash_message'])) {
                     $history = trouble_track($d["complaint_id"], "");
                     ?>
 		   <a
-                    href="complaint_history.php?complaint_id=<?= $d['complaint_id']; ?>&type=<?= $type; ?>&return=<?= urlencode($_SERVER['REQUEST_URI']); ?>"
+                    href="complaint_history.php?complaint_id=<?= $d['complaint_id']; ?>&type=<?= $type; ?>"
                     class="btn btn-sm btn-outline-primary">
                     View History
                   </a>                   <?php } 

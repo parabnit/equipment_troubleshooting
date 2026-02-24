@@ -201,17 +201,11 @@ if (!empty($complaintHistory)) {
 
               <!-- RIGHT BACK BUTTON -->
               <div>
-                  <?php if (!empty($returnUrl)): ?>
-                      <a href="<?= !empty($returnUrl) ? htmlspecialchars($returnUrl) : 'javascript:history.back()' ?>"
-                        class="btn btn-navbar-back btn-sm px-3">
-                        ← Back
-                      </a>
-                  <?php else: ?>
-                      <a href="<?= !empty($returnUrl) ? htmlspecialchars($returnUrl) : 'javascript:history.back()' ?>"
-                        class="btn btn-navbar-back btn-sm px-3">
-                        ← Back
-                      </a>
-                  <?php endif; ?>
+                  <a href="javascript:void(0);" 
+                    onclick="history.back();" 
+                    class="btn btn-navbar-back btn-sm px-3">
+                      ← Back
+                  </a>
               </div>
 
           </div>
@@ -378,6 +372,27 @@ function openAttachmentModal(filePath) {
   const modal = new bootstrap.Modal(document.getElementById("attachmentModal"));
   modal.show();
 }
+</script>
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+    const backBtn = document.getElementById("backButton");
+
+    if (backBtn) {
+        backBtn.addEventListener("click", function (e) {
+            e.preventDefault();
+
+            // If there is browser history, go back
+            if (window.history.length > 1) {
+                window.history.back();
+            } else {
+                // Fallback if opened directly
+                window.location.href = "dashboard.php";
+            }
+        });
+    }
+
+});
 </script>
 
 <?php include("../includes/footer.php"); ?>
