@@ -207,8 +207,6 @@ while ($row = $res->fetch_assoc()) {
     // Replace real newlines/tabs
     $desc = str_replace(["\n", "\r", "\t"], " ", $desc);
 
-    // Normalize spaces
-    $desc = preg_replace('/\s+/', ' ', $desc);
 
     $data[] = [
         "allocated_to" => getName($row['allocated_to']),
