@@ -1348,7 +1348,7 @@ ${r.has_track == 1 ? `
             </td>
            <td style="text-align:center;" data-label="Transfer / History">
               ${canTransfer ? `
-                <a href="complaint.php?complaint_id=${r.complaint_id}&type=${type}&return=${encodeURIComponent(window.location.href)}" class="btn btn-sm btn-outline-primary">Transfer</a>
+                <a href="complaint.php?complaint_id=${r.complaint_id}&type=${type}" class="btn btn-sm btn-outline-primary">Transfer</a>
               ` : '<span class="text-muted">N/A</span>'}
             </td>
             

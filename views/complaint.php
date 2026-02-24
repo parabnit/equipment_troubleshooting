@@ -201,8 +201,10 @@ if (!empty($team_head_arr[0])) {
 
     $tools_name = mysqli_real_escape_string($db_equip, $input['tools_name']);
 
-    $description_decoded = base64_decode($input['description']);
-    $description = mysqli_real_escape_string($db_equip, $description_decoded);
+    // $description_decoded = base64_decode($input['description']);
+    // $description = mysqli_real_escape_string($db_equip, $description_decoded);
+
+    $description = base64_decode($input['description']);
 
     $memberid = mysqli_real_escape_string($db_equip, $_SESSION['memberid']);
 
@@ -634,7 +636,7 @@ small {
   line-height: 1.6;
   margin-top: 6px;
   white-space: pre-wrap !important;
-  word-break: break-word;
+  /* word-break: break-word; */
   overflow: visible !important;
   max-height: none !important;
 }
@@ -882,11 +884,9 @@ if ($is_existing_complaint) {
                       Refresh
                   </button>
 
-                  <?php if (!empty($returnUrl)): ?>
-                      <a href="<?= htmlspecialchars($returnUrl) ?>" class="btn btn-dark btn-sm px-3">
-                          ← Back
-                      </a>
-                  <?php endif; ?>
+                     <a id="backButton" class="btn btn-dark btn-sm px-3" style="display:none;">
+                      ← Back
+                  </a>
               </div>
 
               </div>
@@ -922,6 +922,11 @@ if ($is_existing_complaint) {
 
               <div class="history-item p-3 mb-3 border rounded bg-white">
 
+
+                <p><strong>Complaint ID:</strong> 
+                  <?php echo htmlspecialchars($row['complaint_id']); ?>
+                </p>
+
                 <!-- Status + Date + Assigned -->
                 <div class="d-flex justify-content-between align-items-start mb-2">
                   <div>
@@ -946,16 +951,16 @@ if ($is_existing_complaint) {
                 <!-- Description -->
         <?php
           $desc = $row['complaint_description'] ?? '';
-
+            
           // 1. Force remove literal backslash-n and backslash-r first
           $desc = str_replace(['\n', '\r'], "\n", $desc);
-
+          
           // 2. Remove escaped backslashes specifically (the ones causing the \ before ')
           $desc = str_replace(["\\'", '\\"', '\\\\'], ["'", '"', '\\'], $desc);
 
           // 3. Brute-force the "nn" sequence.
-          $desc = preg_replace('/(\s|\\\\)?nn(\s)?/i', "\n\n", $desc);
-
+          // $desc = preg_replace('/(\s|\\\\)?nn(\s)?/i', "\n\n", $desc);
+          // echo $desc ;
           // 4. Run stripslashes as a final safety catch
           $desc = stripslashes($desc);
 
@@ -1808,6 +1813,21 @@ document.addEventListener("click", function(e) {
   }
 
 });
+</script>
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+
+      const backBtn = document.getElementById("backButton");
+      const urlParams = new URLSearchParams(window.location.search);
+      const complaintId = urlParams.get("complaint_id");
+
+      // Show back button ONLY if complaint_id exists
+      if (complaintId && document.referrer) {
+          backBtn.href = document.referrer;
+          backBtn.style.display = "inline-block";
+      }
+
+  });
 </script>
 
 

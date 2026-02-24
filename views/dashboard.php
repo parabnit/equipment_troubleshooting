@@ -570,7 +570,7 @@ table.dataTable tbody td {
         </div>
 
         <!-- RIGHT NOTIFICATION PANEL -->
-      <div class="col-md-3">
+     <div class="col-md-3">
         <div class="square-card notification-card">
 
             <div class="square-card-header notification-header">
@@ -586,6 +586,11 @@ table.dataTable tbody td {
 
                     <?php foreach ($notifications as $row) : ?>
 
+                        <?php
+                            // Rotate between 12 offline avatars
+                            $avatarNumber = ($row['id'] % 12) + 1;
+                        ?>
+
                         <div class="notification-item-custom d-flex align-items-start position-relative">
 
                             <!-- ❌ Close Button -->
@@ -594,9 +599,10 @@ table.dataTable tbody td {
                                 ×
                             </button>
 
-                            <!-- Cartoon Avatar -->
-                            <img src="https://api.dicebear.com/7.x/avataaars/png?seed=<?= $row['id']; ?>"
-                                class="notification-avatar">
+                            <!-- Offline Cartoon Avatar -->
+                            <img src="../assets/avatars/avatar<?= $avatarNumber; ?>.png"
+                                class="notification-avatar"
+                                alt="Avatar">
 
                             <div class="flex-grow-1">
                                 <strong>
@@ -685,7 +691,7 @@ function loadTable(typeId, memberId = "", month = "") {
                     <div>
                         <strong>${rowData.allocated_to}</strong>
                         <span class="allocated-count-badge">
-                            ${count} Complaints
+                            ${count} Days pending 
                         </span>
                     </div>
                 `);
