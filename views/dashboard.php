@@ -502,6 +502,22 @@ table.dataTable tbody td {
     transform: scale(0.9);
     box-shadow: 0 3px 8px rgba(220,38,38,0.4);
 }
+
+.time-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+
+    padding: 4px 10px;
+    font-size: 11px;
+    font-weight: 600;
+
+    border-radius: 20px;
+    background: linear-gradient(135deg, #eef2ff, #f5f3ff);
+    color: #4f46e5;
+
+    border: 1px solid rgba(79,70,229,0.15);
+}
 </style>
 
 
@@ -649,8 +665,8 @@ table.dataTable tbody td {
                                     <?= htmlspecialchars($row['message']); ?>
                                 </p>
 
-                                <small class="text-muted">
-                                    <?= date("d M Y, h:i A", strtotime($row['created_at'])); ?>
+                                <small class="time-badge">
+                                    ⏱ <?= timeAgo($row['created_at']); ?>
                                 </small>
                             </div>
 

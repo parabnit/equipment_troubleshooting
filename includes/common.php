@@ -2490,5 +2490,34 @@ function getMemberNotifications($recipient_id)
 
 
 
+function timeAgo($datetime) {
+    $timestamp = strtotime($datetime);
+    $diff = time() - $timestamp;
 
+    if ($diff < 60) {
+        return "Just now";
+    }
+
+    $minutes = floor($diff / 60);
+    if ($minutes < 60) {
+        return $minutes . " minute" . ($minutes > 1 ? "s" : "") . " ago";
+    }
+
+    $hours = floor($diff / 3600);
+    if ($hours < 24) {
+        return $hours . " hour" . ($hours > 1 ? "s" : "") . " ago";
+    }
+
+    $days = floor($diff / 86400);
+    if ($days < 7) {
+        return $days . " day" . ($days > 1 ? "s" : "") . " ago";
+    }
+
+    $weeks = floor($diff / 604800);
+    if ($weeks < 4) {
+        return $weeks . " week" . ($weeks > 1 ? "s" : "") . " ago";
+    }
+
+    return date("d M Y", $timestamp);
+}
 
