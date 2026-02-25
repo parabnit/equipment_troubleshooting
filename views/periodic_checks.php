@@ -11,7 +11,7 @@ $msg1 = '';
 $periodicChecks = [
 
   'Electrical' => [
-    'ups_log'        => 'Daily UPS log',
+    'daily_ups_log'        => 'Daily UPS log',
     'dg_weekly'      => 'DG weekly check',
     'ir_panel'       => 'Electrical Panel IR Gun',
     'ups_battery'    => 'UPS Batteries Readings',
@@ -22,7 +22,7 @@ $periodicChecks = [
   ],
 
   'AHU & Chiller' => [
-    'water_filter'   => 'Water filter change log',
+    'water_filter_change_log'   => 'Water filter change log',
     'ir_ahu'         => 'IR Gun weekly – AHU & Chiller panel',
     'datalogger'     => 'Datalogger deviation data analysis',
     'chiller_level'  => 'Chiller Tank level check',
@@ -39,6 +39,13 @@ $periodicChecks = [
     'toxic_pressure' => 'Toxic cylinder pressure (Monthly)',
     'toxic_usage'    => 'Daily usage of toxic gases',
     'n2_plant'       => 'N2 plant checks'
+  ],
+
+  // ✅ NEW EMT SECTION
+  'EMT' => [
+    'hot_plates'        => 'Hot plates',
+    'spinners'          => 'Spinners',
+    'nano_ro_refill'    => 'Nano RO water tank refill'
   ]
 
 ];
@@ -164,17 +171,19 @@ foreach ($_POST as $key => $value) {
                       <td><?= $i++ ?></td>
                       <td class="text-start"><?= $label ?></td>
                       <td>
-                        <?php
-                        $path = "../periodic_checks/{$key}.xlsx";
-                        if (file_exists($path)) {
-                          echo "<a href='{$path}' target='_blank' class='btn btn-outline-success btn-sm'>
-                                  <i class='bi bi-download'></i>
-                                </a>";
-                        } else {
-                          echo "<span class='text-muted'>No file</span>";
-                        }
+                       <?php
+                          $fileName = strtolower(str_replace(' ', '_', $label));
+                          $fileName = preg_replace('/[^a-z0-9_]/', '', $fileName);
+                          $path = "../periodic_checks/" . $fileName . ".xlsx";
+
+                          if (file_exists($path)) {
+                            echo "<a href='{$path}' target='_blank' class='btn btn-outline-success btn-sm'>
+                                    <i class='bi bi-download'></i>
+                                  </a>";
+                          } else {
+                            echo "<span class='text-muted'>No file</span>";
+                          }
                         ?>
-                      </td>
 
                       <?php if (check_permission('facility', $_SESSION['memberid'])): ?>
                         <td>

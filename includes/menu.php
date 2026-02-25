@@ -21,7 +21,7 @@ $canViewTasksAndComplaints = (
     is_PurchaseHead($_SESSION['memberid'])  || is_PurchaseTeam($_SESSION['memberid']) ||
     is_TrainingHead($_SESSION['memberid'])  || is_TrainingTeam($_SESSION['memberid']) ||
     is_InventoryHead($_SESSION['memberid']) || is_InventoryTeam($_SESSION['memberid']) ||
-    is_Admin($_SESSION['memberid']) == 1 ||
+    is_AdminHead($_SESSION['memberid']) == 1 || is_AdminTeam(($_SESSION['memberid'])) ||
     is_ITadmin($_SESSION['memberid']) == 1
 );
 ?>
@@ -271,7 +271,7 @@ $canViewTasksAndComplaints = (
     <div class="list-group">
 <!-- Dashboard -->
   <?php
-                 if(is_LabManager($_SESSION['memberid']) || is_AssistLabManager($_SESSION['memberid']) || is_PI($_SESSION['memberid']) || is_FOC_member($_SESSION['memberid']) ||is_EquipmentHead($_SESSION['memberid']) || is_EquipmentTeam($_SESSION['memberid']) || is_FacilityHead($_SESSION['memberid']) || is_FacilityTeam($_SESSION['memberid']) || is_SafetyHead($_SESSION['memberid']) || is_SafetyTeam($_SESSION['memberid']) || is_ProcessHead($_SESSION['memberid']) || is_ProcessTeam($_SESSION['memberid']) || is_HRHead($_SESSION['memberid']) || is_HRTeam($_SESSION['memberid']) || is_ITHead($_SESSION['memberid']) || is_ITTeam($_SESSION['memberid']) || is_PurchaseHead($_SESSION['memberid']) || is_PurchaseTeam($_SESSION['memberid']) || is_TrainingHead($_SESSION['memberid']) || is_TrainingTeam($_SESSION['memberid']) || is_InventoryHead($_SESSION['memberid']) || is_InventoryTeam($_SESSION['memberid']) ){
+                 if(is_LabManager($_SESSION['memberid']) || is_AssistLabManager($_SESSION['memberid']) || is_PI($_SESSION['memberid']) || is_FOC_member($_SESSION['memberid']) ||is_EquipmentHead($_SESSION['memberid']) || is_EquipmentTeam($_SESSION['memberid']) || is_FacilityHead($_SESSION['memberid']) || is_FacilityTeam($_SESSION['memberid']) || is_SafetyHead($_SESSION['memberid']) || is_SafetyTeam($_SESSION['memberid']) || is_ProcessHead($_SESSION['memberid']) || is_ProcessTeam($_SESSION['memberid']) || is_HRHead($_SESSION['memberid']) || is_HRTeam($_SESSION['memberid']) || is_ITHead($_SESSION['memberid']) || is_ITTeam($_SESSION['memberid']) || is_PurchaseHead($_SESSION['memberid']) || is_PurchaseTeam($_SESSION['memberid']) || is_TrainingHead($_SESSION['memberid']) || is_TrainingTeam($_SESSION['memberid']) || is_InventoryHead($_SESSION['memberid']) || is_InventoryTeam($_SESSION['memberid']) || is_AdminHead($_SESSION['memberid']) || is_AdminTeam($_SESSION['memberid']) ){
                    ?>
         <a href="../views/dashboard.php" 
            class="list-group-item list-group-item-action <?php echo ($currentPage == 'dashboard.php') ? 'active' : ''; ?>">
